@@ -1,0 +1,3 @@
+Bundle-Name: NexusInfrastructureEntityApiImpl
+Bundle-SymbolicName: org.etan.portal.integration.prototype.nexusinfrastructureentityapiimpl.service.impl
+Bundle-Version: 1.0.0
