@@ -21,7 +21,7 @@ public interface ProjectDto {
      *
      * @return map pf external systems projects ids
      */
-    Map<String, Long> getInfrastructureEntityProjectIdMap();
+    Map<String, String> getInfrastructureEntityProjectIdMap();
 
     /**
      * Set map, where
@@ -30,7 +30,21 @@ public interface ProjectDto {
      *
      * @param infrastructureEntityProjectIdMap map of infrastructure entity project id
      */
-    void setInfrastructureEntityProjectIdMap(Map<String, Long> infrastructureEntityProjectIdMap);
+    void setInfrastructureEntityProjectIdMap(Map<String, String> infrastructureEntityProjectIdMap);
+
+    /**
+     * Gives project id
+     *
+     * @return project id
+     */
+    long getProjectId();
+
+    /**
+     * Set project id
+     *
+     * @param projectId id of project
+     */
+    void setProjectId(long projectId);
 
     /**
      * Gives project name

@@ -4,7 +4,9 @@ import org.etan.portal.integration.prototype.gitlabservice.service.GitLabService
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author eta
+ *
+ * @author Efimov Timur
+ * @version 0.0.1
  */
 @Component(
         immediate = true,
