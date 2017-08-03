@@ -11,18 +11,19 @@ import java.util.Map;
  * @version 1.0.1
  */
 public class ProjectDtoImpl implements ProjectDto {
-    private Map<String, Long> internalProjectsIdMap;
+    private Map<String, Long> infrastructureEntityProjectIdMap;
     private String projectName;
     private List<User> members;
 
+
     @Override
-    public Map<String, Long> getInternalProjectsIdMap() {
-        return internalProjectsIdMap;
+    public Map<String, Long> getInfrastructureEntityProjectIdMap() {
+        return infrastructureEntityProjectIdMap;
     }
 
     @Override
-    public void setInternalProjectsIdMap(Map<String, Long> internalProjectsIdMap) {
-        this.internalProjectsIdMap = internalProjectsIdMap;
+    public void setInfrastructureEntityProjectIdMap(Map<String, Long> infrastructureEntityProjectIdMap) {
+        this.infrastructureEntityProjectIdMap = infrastructureEntityProjectIdMap;
     }
 
     @Override

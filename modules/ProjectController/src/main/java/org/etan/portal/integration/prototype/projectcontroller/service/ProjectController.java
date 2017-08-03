@@ -56,11 +56,11 @@ public interface ProjectController {
     /**
      * Creates organization of organization type Project. Also creates site
      * by template Project Template and assign to created organization.
-     * Saves in database list of "external system project id" with mapping on
+     * Saves in database list of "infrastructure entity project id" with mapping on
      * created organization.
      *
      * @param projectName           name of project, will match the name of organization
-     * @param internalProjectsIdMap "external system project id" mapped to "external system name"
+     * @param internalProjectsIdMap "infrastructure entity project id" mapped to "infrastructure entity name"
      * @param context               context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
      */
@@ -69,10 +69,10 @@ public interface ProjectController {
     /**
      * Creates organization of organization type Project. Also creates site
      * by template Project Template and assign to created organization.
-     * Saves in database list of "external system project id" with mapping on
+     * Saves in database list of "infrastructure entity project id" with mapping on
      * created organization.
      *
-     * @param projectDto only projectName and map with "external system project id" uses
+     * @param projectDto only projectName and map with "infrastructure entity project id" uses
      * @param context    context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
      */

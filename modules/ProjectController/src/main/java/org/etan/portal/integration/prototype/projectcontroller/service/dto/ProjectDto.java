@@ -16,21 +16,21 @@ public interface ProjectDto {
 
     /**
      * Gives map, where
-     * key = name of external system,
-     * value = external system project id
+     * key = infrastructure entity name,
+     * value = infrastructure entity project id
      *
      * @return map pf external systems projects ids
      */
-    Map<String, Long> getInternalProjectsIdMap();
+    Map<String, Long> getInfrastructureEntityProjectIdMap();
 
     /**
      * Set map, where
-     * key = name of external system,
-     * value = external system project id
+     * key = infrastructure entity name,
+     * value = infrastructure entity project id
      *
-     * @param internalProjectsIdMap map pf external systems projects ids
+     * @param infrastructureEntityProjectIdMap map of infrastructure entity project id
      */
-    void setInternalProjectsIdMap(Map<String, Long> internalProjectsIdMap);
+    void setInfrastructureEntityProjectIdMap(Map<String, Long> infrastructureEntityProjectIdMap);
 
     /**
      * Gives project name
@@ -40,7 +40,7 @@ public interface ProjectDto {
     String getProjectName();
 
     /**
-     * set project name
+     * Set project name
      *
      * @param projectName name of project
      */
