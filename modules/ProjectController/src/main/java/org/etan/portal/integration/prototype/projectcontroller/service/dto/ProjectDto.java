@@ -12,7 +12,12 @@ import java.util.Map;
  * @author Efimov Timur
  * @version 1.0.1
  */
-public interface ProjectDto {
+public class ProjectDto {
+    private Map<String, String> infrastructureEntityProjectIdMap;
+    private String projectName;
+    private long projectId;
+    private List<User> members;
+
 
     /**
      * Gives map, where
@@ -21,7 +26,9 @@ public interface ProjectDto {
      *
      * @return map pf external systems projects ids
      */
-    Map<String, String> getInfrastructureEntityProjectIdMap();
+    public Map<String, String> getInfrastructureEntityProjectIdMap() {
+        return infrastructureEntityProjectIdMap;
+    }
 
     /**
      * Set map, where
@@ -30,47 +37,61 @@ public interface ProjectDto {
      *
      * @param infrastructureEntityProjectIdMap map of infrastructure entity project id
      */
-    void setInfrastructureEntityProjectIdMap(Map<String, String> infrastructureEntityProjectIdMap);
+    public void setInfrastructureEntityProjectIdMap(Map<String, String> infrastructureEntityProjectIdMap) {
+        this.infrastructureEntityProjectIdMap = infrastructureEntityProjectIdMap;
+    }
 
     /**
      * Gives project id
      *
      * @return project id
      */
-    long getProjectId();
+    public long getProjectId() {
+        return projectId;
+    }
 
     /**
      * Set project id
      *
      * @param projectId id of project
      */
-    void setProjectId(long projectId);
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
+    }
 
     /**
      * Gives project name
      *
      * @return project name
      */
-    String getProjectName();
+    public String getProjectName() {
+        return projectName;
+    }
 
     /**
      * Set project name
      *
      * @param projectName name of project
      */
-    void setProjectName(String projectName);
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 
     /**
      * Gives project members
      *
      * @return project members
      */
-    List<User> getMembers();
+    public List<User> getMembers() {
+        return members;
+    }
 
     /**
      * Set project members.
      *
      * @param members project members
      */
-    void setMembers(List<User> members);
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
 }

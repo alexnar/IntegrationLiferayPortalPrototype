@@ -15,11 +15,7 @@
 package org.etan.portal.integration.prototype.projectservice.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.transaction.Transactional;
 import org.etan.portal.integration.prototype.projectcontroller.service.dto.ProjectDto;
-import org.etan.portal.integration.prototype.projectcontroller.service.dto.factory.ProjectDtoFactory;
 import org.etan.portal.integration.prototype.projectservice.model.InfrastructureEntityProject;
 import org.etan.portal.integration.prototype.projectservice.service.base.InfrastructureEntityProjectLocalServiceBaseImpl;
 
@@ -29,10 +25,10 @@ import java.util.Map;
 
 /**
  * The implementation of the infrastructure entity project local service.
- * <p>
+ *
  * <p>
  * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link org.etan.portal.integration.prototype.projectservice.service.InfrastructureEntityProjectLocalService} interface.
- * <p>
+ *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
@@ -50,6 +46,7 @@ public class InfrastructureEntityProjectLocalServiceImpl
 	 * Never reference this class directly. Always use {@link org.etan.portal.integration.prototype.projectservice.service.InfrastructureEntityProjectLocalServiceUtil} to access the infrastructure entity project local service.
 	 */
 
+
     /**
      * Get InfrastructureEntityProject by organizationId
      *
@@ -57,16 +54,15 @@ public class InfrastructureEntityProjectLocalServiceImpl
      * @return InfrastructureEntityProject
      */
     public List<InfrastructureEntityProject> findByOrganizationId(long organizationId) {
+
         return infrastructureEntityProjectPersistence.findByOrganizationId(organizationId);
     }
 
     /**
      * Add all InfrastructureEntityProjects from ProjectDto.
      */
-    @Indexable(type = IndexableType.REINDEX)
-    @Transactional //todo не уверен, что это работает
     public void saveAllInfrastructureEntityProjects(ProjectDto projectDto) {
-        ProjectDto newProjectDto = new ProjectDtoFactory().getInstance();
+        ProjectDto newProjectDto = new ProjectDto();
         newProjectDto.setProjectId(projectDto.getProjectId());
 
         Map<String, String> addedFromInfrastructureEntityProjectIdMap = new HashMap<>();
@@ -80,7 +76,6 @@ public class InfrastructureEntityProjectLocalServiceImpl
             infrastructureEntityProject.setOrganizationId(projectDto.getProjectId());
             infrastructureEntityProject.setInfrastructureEntityName(entry.getKey());
             infrastructureEntityProject.setInfrastructureEntityProjectId(entry.getValue());
-
 
             addedFromInfrastructureEntityProjectIdMap.put(entry.getKey(), entry.getValue());
         }
