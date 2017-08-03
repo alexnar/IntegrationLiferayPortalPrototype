@@ -1,0 +1,5 @@
+Bundle-Name: NexusService
+Bundle-SymbolicName: org.etan.portal.integration.prototype
+Bundle-Version: 1.0.0
+Export-Package:\
+    org.etan.portal.integration.prototype.nexusservice.service
