@@ -43,4 +43,11 @@ public interface InfrastructureEntityApi {
      *                                        where user would be unassigned.
      */
     void unassignUser(long userId, String infrastructureEntityProjectId);
+
+    /**
+     * Get name of infrastructure entity.
+     *
+     * @return - name of infrastructure entity.
+     */
+    String getName();
 }
