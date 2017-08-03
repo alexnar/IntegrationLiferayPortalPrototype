@@ -1,0 +1,4 @@
+Bundle-Name: InfrastructureEntityApi
+Bundle-SymbolicName: org.etan.portal.integration.prototype.infrastructureentityapi
+Bundle-Version: 1.0.0
+Export-Package: org.etan.portal.integration.prototype.infrastructureentityapi.service
