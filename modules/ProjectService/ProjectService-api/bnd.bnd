@@ -1,0 +1,9 @@
+Bundle-Name: ProjectService-api
+Bundle-SymbolicName: org.etan.portal.integration.prototype.projectservice.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	org.etan.portal.integration.prototype.projectservice.exception,\
+	org.etan.portal.integration.prototype.projectservice.model,\
+	org.etan.portal.integration.prototype.projectservice.service,\
+	org.etan.portal.integration.prototype.projectservice.service.persistence
+-includeresource: META-INF/service.xml=../ProjectService-service/service.xml

@@ -1,0 +1,1 @@
+create index IX_AD8647D8 on ProjectService_InfrastructureEntityProject (organizationId);

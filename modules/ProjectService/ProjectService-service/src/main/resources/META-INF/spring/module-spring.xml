@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+       default-destroy-method="destroy" default-init-method="afterPropertiesSet"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean class="org.etan.portal.integration.prototype.projectservice.service.impl.InfrastructureEntityProjectLocalServiceImpl"
+          id="org.etan.portal.integration.prototype.projectservice.service.InfrastructureEntityProjectLocalService"/>
+    <bean class="org.etan.portal.integration.prototype.projectservice.service.impl.InfrastructureEntityProjectServiceImpl"
+          id="org.etan.portal.integration.prototype.projectservice.service.InfrastructureEntityProjectService"/>
+    <bean class="org.etan.portal.integration.prototype.projectservice.service.persistence.impl.InfrastructureEntityProjectPersistenceImpl"
+          id="org.etan.portal.integration.prototype.projectservice.service.persistence.InfrastructureEntityProjectPersistence"
+          parent="basePersistence"/>
+</beans>
