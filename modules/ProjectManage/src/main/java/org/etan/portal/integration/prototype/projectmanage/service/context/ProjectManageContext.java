@@ -10,19 +10,19 @@ import javax.portlet.RenderRequest;
  */
 public class ProjectManageContext {
 
-    private long organizationId;
+    private long projectId;
     private long userId;
 
     public ProjectManageContext(RenderRequest renderRequest) {
 
     }
 
-    public long getOrganizationId() {
-        return organizationId;
+    public long getProjectId() {
+        return projectId;
     }
 
-    public void setOrganizationId(long organizationId) {
-        this.organizationId = organizationId;
+    public void setProjectId(long projectId) {
+        this.projectId = projectId;
     }
 
     public long getUserId() {
@@ -32,6 +32,4 @@ public class ProjectManageContext {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-
-
 }

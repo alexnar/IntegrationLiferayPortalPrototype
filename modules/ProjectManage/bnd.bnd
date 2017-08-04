@@ -1,4 +1,5 @@
 Bundle-Name: ProjectManage
 Bundle-SymbolicName: org.etan.portal.integration.prototype.projectmanage
 Bundle-Version: 1.0.0
-Export-Package: org.etan.portal.integration.prototype.projectmanage.service
+Export-Package: org.etan.portal.integration.prototype.projectmanage.service,\
+                org.etan.portal.integration.prototype.projectmanage.service.context

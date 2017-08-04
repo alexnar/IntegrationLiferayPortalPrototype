@@ -2,7 +2,7 @@ package org.etan.portal.integration.prototype.projectcontroller.service;
 
 import com.liferay.portal.kernel.model.User;
 import org.etan.portal.integration.prototype.projectcontroller.service.dto.ProjectDto;
-import org.etan.portal.integration.prototype.projectmanage.context.ProjectManageContext;
+import org.etan.portal.integration.prototype.projectmanage.service.context.ProjectManageContext;
 
 import java.util.List;
 import java.util.Map;
@@ -59,12 +59,13 @@ public interface ProjectController {
      * Saves in database list of "infrastructure entity project id" with mapping on
      * created organization.
      *
-     * @param projectName           name of project, will match the name of organization
-     * @param internalProjectsIdMap "infrastructure entity project id" mapped to "infrastructure entity name"
-     * @param context               context of action, used for get owner userId
+     * @param projectName                      name of project, will match the name of organization
+     * @param infrastructureEntityProjectIdMap "infrastructure entity project id" mapped to "infrastructure entity name"
+     * @param context                          context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
      */
-    ProjectDto createProject(String projectName, Map<String, Long> internalProjectsIdMap, ProjectManageContext context);
+    ProjectDto createProject(String projectName, Map<String, String> infrastructureEntityProjectIdMap,
+                             ProjectManageContext context);
 
     /**
      * Creates organization of organization type Project. Also creates site
@@ -113,6 +114,16 @@ public interface ProjectController {
      * @param context context of action, used for get owner userId, organizationId
      */
     void deleteUsers(List<User> users, ProjectManageContext context);
+
+    /**
+     * Get infrastructureEntityProjectId by projectId
+     * and infrastructureEntityName.
+     *
+     * @param projectId                - id of project
+     * @param infrastructureEntityName - name of infrastructure entity
+     * @return - infrastructureEntityProjectId
+     */
+    String getInfrastructureEntityProjectId(long projectId, String infrastructureEntityName);
 
     /**
      * Gives a list of available for user projects in current ProjectsCatalog organization

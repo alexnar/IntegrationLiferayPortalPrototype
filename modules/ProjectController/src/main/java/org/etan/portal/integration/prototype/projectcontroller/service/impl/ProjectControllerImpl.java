@@ -3,7 +3,7 @@ package org.etan.portal.integration.prototype.projectcontroller.service.impl;
 import com.liferay.portal.kernel.model.User;
 import org.etan.portal.integration.prototype.projectcontroller.service.ProjectController;
 import org.etan.portal.integration.prototype.projectcontroller.service.dto.ProjectDto;
-import org.etan.portal.integration.prototype.projectmanage.context.ProjectManageContext;
+import org.etan.portal.integration.prototype.projectmanage.service.context.ProjectManageContext;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.List;
@@ -41,7 +41,8 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     @Override
-    public ProjectDto createProject(String projectName, Map<String, Long> internalProjectsIdMap, ProjectManageContext context) {
+    public ProjectDto createProject(String projectName, Map<String, String> infrastructureEntityProjectIdMap,
+                                    ProjectManageContext context) {
         return null;
     }
 
@@ -68,6 +69,11 @@ public class ProjectControllerImpl implements ProjectController {
     @Override
     public void deleteUsers(List<User> users, ProjectManageContext context) {
 
+    }
+
+    @Override
+    public String getInfrastructureEntityProjectId(long projectId, String infrastructureEntityName) {
+        return null;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.etan.portal.integration.prototype.projectmanage.service;
 
+import com.liferay.portal.kernel.model.User;
+import org.etan.portal.integration.prototype.projectcontroller.service.dto.ProjectDto;
 import org.etan.portal.integration.prototype.projectmanage.service.context.ProjectManageContext;
 
 /**
@@ -25,8 +27,9 @@ public interface ProjectManage {
      * @param projectManageContext - Context which contain information
      *                             about who and where initiate calling
      *                             of this method.
+     * @return - ProjectDto of created project
      */
-    void createProject(String projectName, ProjectManageContext projectManageContext);
+    ProjectDto createProject(String projectName, ProjectManageContext projectManageContext);
 
 
     /**
@@ -40,12 +43,12 @@ public interface ProjectManage {
      * If user already exists in some infrastructure
      * entity project, then just skip assign to it.
      *
-     * @param userId               - id of user to assign
+     * @param user                 -  user to assign
      * @param projectManageContext - Context which contain information
      *                             about who and where initiate calling
      *                             of this method.
      */
-    void assignUser(long userId, ProjectManageContext projectManageContext);
+    void assignUser(User user, ProjectManageContext projectManageContext);
 
     /**
      * Unassign user from project. This method will
@@ -58,10 +61,10 @@ public interface ProjectManage {
      * If there is not such User in infrastructure
      * entity project, then just skip unassign to it.
      *
-     * @param userId               - id of user to unassign
+     * @param user                 - id of user to unassign
      * @param projectManageContext - Context which contain information
      *                             about who and where initiate calling
      *                             of this method.
      */
-    void unassignUser(long userId, ProjectManageContext projectManageContext);
+    void unassignUser(User user, ProjectManageContext projectManageContext);
 }

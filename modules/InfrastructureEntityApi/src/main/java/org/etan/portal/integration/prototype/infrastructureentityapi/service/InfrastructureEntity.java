@@ -1,5 +1,6 @@
 package org.etan.portal.integration.prototype.infrastructureentityapi.service;
 
+import com.liferay.portal.kernel.model.User;
 import org.etan.portal.integration.prototype.infrastructureentityapi.service.exception.InfrastructureEntityException;
 
 /**
@@ -32,24 +33,24 @@ public interface InfrastructureEntity {
     /**
      * Assign user to infrastructure entity.
      *
-     * @param userId                        - id of user to assign
+     * @param user                          -  user to assign
      * @param infrastructureEntityProjectId - String id of infrastructure entity project
      *                                      where user would be assigned.
      * @throws InfrastructureEntityException - throws if some exception happened while
      *                                       assign user
      */
-    void assignUser(long userId, String infrastructureEntityProjectId) throws InfrastructureEntityException;
+    void assignUser(User user, String infrastructureEntityProjectId) throws InfrastructureEntityException;
 
     /**
      * Unassign user from infrastructure entity.
      *
-     * @param userId                        - id of user to unassign
+     * @param user                          - user to unassign
      * @param infrastructureEntityProjectId - String id of infrastructure entity project
      *                                      where user would be unassigned.
      * @throws InfrastructureEntityException - throws if some exception happened while
      *                                       unassign user
      */
-    void unassignUser(long userId, String infrastructureEntityProjectId) throws InfrastructureEntityException;
+    void unassignUser(User user, String infrastructureEntityProjectId) throws InfrastructureEntityException;
 
     /**
      * Get name of infrastructure entity.
