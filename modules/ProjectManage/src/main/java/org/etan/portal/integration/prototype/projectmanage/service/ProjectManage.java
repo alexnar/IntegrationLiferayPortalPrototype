@@ -21,7 +21,7 @@ public interface ProjectManage {
      * UserId of current user and current organization
      * can be received from projectManageContext.
      *
-     * @param projectName - Name of project.
+     * @param projectName          - Name of project.
      * @param projectManageContext - Context which contain information
      *                             about who and where initiate calling
      *                             of this method.
@@ -36,8 +36,11 @@ public interface ProjectManage {
      * <p>
      * UserId of current user and current organization
      * can be received from projectManageContext.
+     * <p>
+     * If user already exists in some infrastructure
+     * entity project, then just skip assign to it.
      *
-     * @param userId - id of user to assign
+     * @param userId               - id of user to assign
      * @param projectManageContext - Context which contain information
      *                             about who and where initiate calling
      *                             of this method.
@@ -51,6 +54,9 @@ public interface ProjectManage {
      * <p>
      * UserId of current user and current organization
      * can be received from projectManageContext.
+     * <p>
+     * If there is not such User in infrastructure
+     * entity project, then just skip unassign to it.
      *
      * @param userId               - id of user to unassign
      * @param projectManageContext - Context which contain information
