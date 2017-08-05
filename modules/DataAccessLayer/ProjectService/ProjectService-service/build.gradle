@@ -12,4 +12,4 @@ buildService {
 	apiDir = "../ProjectService-api/src/main/java"
 }
 
-group = "org.etan.portal.integration.prototype.projectservice"
+group = "org.etan.portal.integration.projectservice"

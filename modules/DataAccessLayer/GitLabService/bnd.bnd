@@ -1,7 +1,7 @@
 Bundle-Name: GitLabService
-Bundle-SymbolicName: org.etan.portal.integration.prototype.gitlabservice.service.impl
+Bundle-SymbolicName: org.etan.portal.integration.gitlabservice.service.impl
 Bundle-Version: 1.0.0
 Bundle-Description: Provide service that used for get aces to some methods of GitLab system
 
 Export-Package:\
-    org.etan.portal.integration.prototype.gitlabservice.service
+    org.etan.portal.integration.gitlabservice.service

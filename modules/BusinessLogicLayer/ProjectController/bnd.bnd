@@ -1,9 +1,9 @@
 Bundle-Name: ProjectController
-Bundle-SymbolicName: org.etan.portal.integration.prototype.projectcontroller.service.impl
+Bundle-SymbolicName: org.etan.portal.integration.projectcontroller.service.impl
 Bundle-Version: 1.0.0
 Bundle-Description: Manage organization of organization type Project
 
 Export-Package:\
-    org.etan.portal.integration.prototype.projectcontroller.service\
-    org.etan.portal.integration.prototype.projectcontroller.service.dto\
-    org.etan.portal.integration.prototype.projectcontroller.service.dto.factory\
+    org.etan.portal.integration.projectcontroller.service\
+    org.etan.portal.integration.projectcontroller.service.dto\
+    org.etan.portal.integration.projectcontroller.service.dto.factory\

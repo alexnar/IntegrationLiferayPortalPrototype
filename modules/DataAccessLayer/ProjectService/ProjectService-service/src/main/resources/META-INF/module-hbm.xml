@@ -3,8 +3,8 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
-    <import class="org.etan.portal.integration.prototype.projectservice.model.InfrastructureEntityProject"/>
-    <class name="org.etan.portal.integration.prototype.projectservice.model.impl.InfrastructureEntityProjectImpl"
+    <import class="org.etan.portal.integration.projectservice.model.InfrastructureEntityProject"/>
+    <class name="org.etan.portal.integration.projectservice.model.impl.InfrastructureEntityProjectImpl"
            table="ProjectService_InfrastructureEntityProject">
         <id name="infrastructureEntityProjectPKId" type="long">
             <generator class="assigned"/>

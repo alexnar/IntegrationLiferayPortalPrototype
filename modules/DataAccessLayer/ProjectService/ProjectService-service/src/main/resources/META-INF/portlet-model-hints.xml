@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <model-hints>
-    <model name="org.etan.portal.integration.prototype.projectservice.model.InfrastructureEntityProject">
+    <model name="org.etan.portal.integration.projectservice.model.InfrastructureEntityProject">
         <field name="infrastructureEntityProjectPKId" type="long"/>
         <field name="organizationId" type="long"/>
         <field name="infrastructureEntityName" type="String"/>

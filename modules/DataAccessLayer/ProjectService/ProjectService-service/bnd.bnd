@@ -1,5 +1,5 @@
 Bundle-Name: ProjectService-service
-Bundle-SymbolicName: org.etan.portal.integration.prototype.projectservice.service
+Bundle-SymbolicName: org.etan.portal.integration.projectservice.service
 Bundle-Version: 1.0.0
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
