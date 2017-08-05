@@ -13,7 +13,12 @@ import java.util.Map;
  * @version 1.0.1
  */
 public class ProjectDto {
+    /**
+     * key = infrastructure entity name,
+     * value = infrastructure entity project id
+     */
     private Map<String, String> infrastructureEntityProjectIdMap;
+
     private String projectName;
     private long projectId;
     private List<User> members;

@@ -1,5 +1,6 @@
 package org.etan.portal.integration.prototype.nexusinfrastructureentityapiimpl.service.impl;
 
+import com.liferay.portal.kernel.model.User;
 import org.etan.portal.integration.prototype.infrastructureentityapi.service.InfrastructureEntity;
 
 import org.etan.portal.integration.prototype.infrastructureentityapi.service.exception.InfrastructureEntityException;
@@ -14,21 +15,18 @@ import org.osgi.service.component.annotations.Component;
         service = InfrastructureEntity.class
 )
 public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
-
-    // TODO: implement methods
-
     @Override
     public String createInfrastructureEntityProject(String projectName) throws InfrastructureEntityException {
         return null;
     }
 
     @Override
-    public void assignUser(long userId, String infrastructureEntityProjectId) throws InfrastructureEntityException {
+    public void assignUser(User user, String infrastructureEntityProjectId) throws InfrastructureEntityException {
 
     }
 
     @Override
-    public void unassignUser(long userId, String infrastructureEntityProjectId) throws InfrastructureEntityException {
+    public void unassignUser(User user, String infrastructureEntityProjectId) throws InfrastructureEntityException {
 
     }
 
@@ -36,6 +34,9 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
     public String getName() {
         return null;
     }
+
+    // TODO: implement methods
+
 
 
 }

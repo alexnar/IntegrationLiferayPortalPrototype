@@ -1,8 +1,8 @@
 package org.etan.portal.integration.prototype.projectmanage.service;
 
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import org.etan.portal.integration.prototype.projectcontroller.service.dto.ProjectDto;
-import org.etan.portal.integration.prototype.projectmanage.service.context.ProjectManageContext;
 
 /**
  * Interface provide methods for
@@ -23,13 +23,13 @@ public interface ProjectManage {
      * UserId of current user and current organization
      * can be received from projectManageContext.
      *
-     * @param projectName          - Name of project.
-     * @param projectManageContext - Context which contain information
-     *                             about who and where initiate calling
-     *                             of this method.
+     * @param projectName    - Name of project.
+     * @param serviceContext - Context which contain information
+     *                       about who and where initiate calling
+     *                       of this method.
      * @return - ProjectDto of created project
      */
-    ProjectDto createProject(String projectName, ProjectManageContext projectManageContext);
+    ProjectDto createProject(String projectName, ServiceContext serviceContext);
 
 
     /**
@@ -43,12 +43,12 @@ public interface ProjectManage {
      * If user already exists in some infrastructure
      * entity project, then just skip assign to it.
      *
-     * @param user                 -  user to assign
-     * @param projectManageContext - Context which contain information
-     *                             about who and where initiate calling
-     *                             of this method.
+     * @param user           -  user to assign
+     * @param serviceContext - Context which contain information
+     *                       about who and where initiate calling
+     *                       of this method.
      */
-    void assignUser(User user, ProjectManageContext projectManageContext);
+    void assignUser(User user, ServiceContext serviceContext);
 
     /**
      * Unassign user from project. This method will
@@ -61,10 +61,10 @@ public interface ProjectManage {
      * If there is not such User in infrastructure
      * entity project, then just skip unassign to it.
      *
-     * @param user                 - id of user to unassign
-     * @param projectManageContext - Context which contain information
-     *                             about who and where initiate calling
-     *                             of this method.
+     * @param user           - id of user to unassign
+     * @param serviceContext - Context which contain information
+     *                       about who and where initiate calling
+     *                       of this method.
      */
-    void unassignUser(User user, ProjectManageContext projectManageContext);
+    void unassignUser(User user, ServiceContext serviceContext);
 }

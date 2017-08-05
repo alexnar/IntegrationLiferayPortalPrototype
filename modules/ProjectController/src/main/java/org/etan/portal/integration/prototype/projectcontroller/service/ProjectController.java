@@ -1,8 +1,8 @@
 package org.etan.portal.integration.prototype.projectcontroller.service;
 
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import org.etan.portal.integration.prototype.projectcontroller.service.dto.ProjectDto;
-import org.etan.portal.integration.prototype.projectmanage.service.context.ProjectManageContext;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ public interface ProjectController {
      * @param userId  id of user, who was added to project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void addUser(long userId, ProjectManageContext context);
+    void addUser(long userId, ServiceContext context);
 
     /**
      * Add user to project organization .
@@ -33,7 +33,7 @@ public interface ProjectController {
      * @param user    was added to project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void addUser(User user, ProjectManageContext context);
+    void addUser(User user, ServiceContext context);
 
     /**
      * Add users to project organization .
@@ -42,7 +42,7 @@ public interface ProjectController {
      * @param userIds ids of users, who was added to project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void addUsers(long[] userIds, ProjectManageContext context);
+    void addUsers(long[] userIds, ServiceContext context);
 
     /**
      * Add users to project organization .
@@ -51,7 +51,7 @@ public interface ProjectController {
      * @param users   who was added to project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void addUsers(List<User> users, ProjectManageContext context);
+    void addUsers(List<User> users, ServiceContext context);
 
     /**
      * Creates organization of organization type Project. Also creates site
@@ -65,7 +65,7 @@ public interface ProjectController {
      * @return dto of created "project" or null, If there is a problem
      */
     ProjectDto createProject(String projectName, Map<String, String> infrastructureEntityProjectIdMap,
-                             ProjectManageContext context);
+                             ServiceContext context);
 
     /**
      * Creates organization of organization type Project. Also creates site
@@ -77,7 +77,7 @@ public interface ProjectController {
      * @param context    context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
      */
-    ProjectDto createProject(ProjectDto projectDto, ProjectManageContext context);
+    ProjectDto createProject(ProjectDto projectDto, ServiceContext context);
 
     /**
      * Delete user from project organization .
@@ -86,7 +86,7 @@ public interface ProjectController {
      * @param userId  id of user, who was deleted from project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void deleteUser(long userId, ProjectManageContext context);
+    void deleteUser(long userId, ServiceContext context);
 
     /**
      * Delete user from project organization .
@@ -95,7 +95,7 @@ public interface ProjectController {
      * @param user    who was deleted from project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void deleteUser(User user, ProjectManageContext context);
+    void deleteUser(User user, ServiceContext context);
 
     /**
      * Delete user from project organization .
@@ -104,7 +104,7 @@ public interface ProjectController {
      * @param userIds ids of users, who was deleted from project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void deleteUsers(long[] userIds, ProjectManageContext context);
+    void deleteUsers(long[] userIds, ServiceContext context);
 
     /**
      * Delete user from project organization .
@@ -113,17 +113,16 @@ public interface ProjectController {
      * @param users   who was deleted from project organization
      * @param context context of action, used for get owner userId, organizationId
      */
-    void deleteUsers(List<User> users, ProjectManageContext context);
+    void deleteUsers(List<User> users, ServiceContext context);
+
 
     /**
-     * Get infrastructureEntityProjectId by projectId
-     * and infrastructureEntityName.
+     * Get project by service context.
      *
-     * @param projectId                - id of project
-     * @param infrastructureEntityName - name of infrastructure entity
-     * @return - infrastructureEntityProjectId
+     * @param context - context of action, used for get owner userId, organizationId
+     * @return - ProjectDto
      */
-    String getInfrastructureEntityProjectId(long projectId, String infrastructureEntityName);
+    ProjectDto getProject(ServiceContext context);
 
     /**
      * Gives a list of available for user projects in current ProjectsCatalog organization
@@ -131,5 +130,5 @@ public interface ProjectController {
      * @param context context of action, used for get owner userId, organizationId
      * @return list of available for projects
      */
-    List<ProjectDto> getProjects(ProjectManageContext context);
+    List<ProjectDto> getProjects(ServiceContext context);
 }
