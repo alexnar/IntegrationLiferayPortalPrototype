@@ -79,8 +79,9 @@ public class ProjectDto {
          *
          * @param infrastructureEntityProjectIdMap map of infrastructure entity project id
          */
-        public void setInfrastructureEntityProjectIdMap(Map<String, String> infrastructureEntityProjectIdMap) {
+        public Builder setInfrastructureEntityProjectIdMap(Map<String, String> infrastructureEntityProjectIdMap) {
             this.infrastructureEntityProjectIdMap = infrastructureEntityProjectIdMap;
+            return this;
         }
 
         /**
@@ -88,8 +89,9 @@ public class ProjectDto {
          *
          * @param projectId id of project
          */
-        public void setProjectId(long projectId) {
+        public Builder setProjectId(long projectId) {
             this.projectId = projectId;
+            return this;
         }
 
         /**
@@ -97,8 +99,9 @@ public class ProjectDto {
          *
          * @param projectName name of project
          */
-        public void setProjectName(String projectName) {
+        public Builder setProjectName(String projectName) {
             this.projectName = projectName;
+            return this;
         }
 
         /**
@@ -106,8 +109,9 @@ public class ProjectDto {
          *
          * @param members project members
          */
-        public void setMembers(List<User> members) {
+        public Builder setMembers(List<User> members) {
             this.members = members;
+            return this;
         }
 
         public ProjectDto build() {

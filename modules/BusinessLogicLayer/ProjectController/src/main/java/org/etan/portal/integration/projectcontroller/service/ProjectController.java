@@ -15,23 +15,15 @@ import java.util.Map;
  * @author Efimov Timur
  * @version 1.0.1
  */
+//todo mb rename class name
 public interface ProjectController {
 
     /**
-     * Add user to project organization .
-     * Do nothing, if user is already in.
-     *
-     * @param userId  id of user, who was added to project organization
-     * @param context context of action, used for get owner userId, organizationId
-     */
-    void addUser(long userId, ServiceContext context);
-
-    /**
-     * Add user to project organization .
+     * Add user to project organization.
      * Do nothing, if user is already in.
      *
      * @param user    was added to project organization
-     * @param context context of action, used for get owner userId, organizationId
+     * @param context context of action, uses for get owner userId, organizationId
      */
     void addUser(User user, ServiceContext context);
 
@@ -39,17 +31,8 @@ public interface ProjectController {
      * Add users to project organization .
      * Do nothing with user, if it is already in.
      *
-     * @param userIds ids of users, who was added to project organization
-     * @param context context of action, used for get owner userId, organizationId
-     */
-    void addUsers(long[] userIds, ServiceContext context);
-
-    /**
-     * Add users to project organization .
-     * Do nothing with user, if it is already in.
-     *
      * @param users   who was added to project organization
-     * @param context context of action, used for get owner userId, organizationId
+     * @param context context of action, uses for get owner userId, organizationId
      */
     void addUsers(List<User> users, ServiceContext context);
 
@@ -64,6 +47,7 @@ public interface ProjectController {
      * @param context                          context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
      */
+    //todo mb delete
     ProjectDto createProject(String projectName, Map<String, String> infrastructureEntityProjectIdMap,
                              ServiceContext context);
 
@@ -83,28 +67,10 @@ public interface ProjectController {
      * Delete user from project organization .
      * Do nothing, if user is not in.
      *
-     * @param userId  id of user, who was deleted from project organization
-     * @param context context of action, used for get owner userId, organizationId
-     */
-    void deleteUser(long userId, ServiceContext context);
-
-    /**
-     * Delete user from project organization .
-     * Do nothing, if user is not in.
-     *
      * @param user    who was deleted from project organization
      * @param context context of action, used for get owner userId, organizationId
      */
     void deleteUser(User user, ServiceContext context);
-
-    /**
-     * Delete user from project organization .
-     * Do nothing with user, if it is already in.
-     *
-     * @param userIds ids of users, who was deleted from project organization
-     * @param context context of action, used for get owner userId, organizationId
-     */
-    void deleteUsers(long[] userIds, ServiceContext context);
 
     /**
      * Delete user from project organization .
@@ -115,20 +81,22 @@ public interface ProjectController {
      */
     void deleteUsers(List<User> users, ServiceContext context);
 
-
     /**
-     * Get project by service context.
+     * Get a project related to the current Project organization
      *
-     * @param context - context of action, used for get owner userId, organizationId
+     * @param context - context of action, used for get owner userId, current organizationId
      * @return - ProjectDto
      */
+    //todo mb runtime, when invoked not in Project organization or etc.
     ProjectDto getProject(ServiceContext context);
 
     /**
-     * Gives a list of available for user projects in current ProjectsCatalog organization
+     * Gives a list of available for user projects in current ProjectsCatalog organization.
+     *
      *
      * @param context context of action, used for get owner userId, organizationId
      * @return list of available for projects
      */
+    //todo mb runtime, when invoked not in ProjectsCatalog organization or etc.
     List<ProjectDto> getProjects(ServiceContext context);
 }
