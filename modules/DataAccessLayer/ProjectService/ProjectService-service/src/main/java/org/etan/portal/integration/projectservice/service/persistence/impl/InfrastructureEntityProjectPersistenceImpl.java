@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- * <p>
+ *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- * <p>
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -23,12 +23,11 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.spring.extender.service.ServiceReference;
+import org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 import org.etan.portal.integration.projectservice.model.impl.InfrastructureEntityProjectImpl;
-import org.etan.portal.integration.projectservice.service.persistence.InfrastructureEntityProjectPersistence;
-import org.etan.portal.integration.projectservice.service.persistence.InfrastructureEntityProjectUtil;
-import org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException;
 import org.etan.portal.integration.projectservice.model.impl.InfrastructureEntityProjectModelImpl;
+import org.etan.portal.integration.projectservice.service.persistence.InfrastructureEntityProjectPersistence;
 
 import java.io.Serializable;
 import java.util.*;
@@ -42,7 +41,7 @@ import java.util.*;
  *
  * @author Brian Wing Shun Chan
  * @see InfrastructureEntityProjectPersistence
- * @see InfrastructureEntityProjectUtil
+ * @see org.etan.portal.integration.projectservice.service.persistence.InfrastructureEntityProjectUtil
  * @generated
  */
 @ProviderType
@@ -1243,13 +1242,13 @@ public class InfrastructureEntityProjectPersistenceImpl
     /**
      * Initializes the infrastructure entity project persistence.
      */
-    public void afterPropertiesSet() {
-    }
+	public void afterPropertiesSet() {
+	}
 
-    public void destroy() {
+	public void destroy() {
         entityCache.removeCache(InfrastructureEntityProjectImpl.class.getName());
-        finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
-        finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-        finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-    }
+		finderCache.removeCache(FINDER_CLASS_NAME_ENTITY);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
+		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
+	}
 }

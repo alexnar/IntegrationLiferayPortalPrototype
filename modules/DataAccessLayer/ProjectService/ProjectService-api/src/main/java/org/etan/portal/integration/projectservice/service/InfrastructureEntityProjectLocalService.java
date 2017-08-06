@@ -30,11 +30,11 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service interface for InfrastructureEntityProject. Methods of this
@@ -133,13 +133,13 @@ public interface InfrastructureEntityProjectLocalService
                                     int end, OrderByComparator<T> orderByComparator);
 
     /**
-     * Get InfrastructureEntityProject by organizationId
+     * Get list of InfrastructureEntityProject by organizationId.
      *
      * @param organizationId id of organization
-     * @return InfrastructureEntityProject
+     * @return InfrastructureEntityProject list
      */
-    public List<InfrastructureEntityProject> findByOrganizationId(
-            long organizationId);
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<InfrastructureEntityProject> get(long organizationId);
 
     /**
      * Returns a range of all the infrastructure entity projects.
@@ -235,12 +235,14 @@ public interface InfrastructureEntityProjectLocalService
      * @param infrastructureEntityProject the infrastructure entity project
      * @return the infrastructure entity project that was updated
      */
-    @Indexable(type = IndexableType.REINDEX)
+	@Indexable(type = IndexableType.REINDEX)
     public InfrastructureEntityProject updateInfrastructureEntityProject(
             InfrastructureEntityProject infrastructureEntityProject);
 
 	/**
 	* Add all InfrastructureEntityProjects from ProjectDto.
 	*/
-	public void saveAllInfrastructureEntityProjects(ProjectDto projectDto);
+    public void addAll(
+		Map<java.lang.String, java.lang.String> infrastructureEntityProjectIdMap,
+		long organizationId);
 }

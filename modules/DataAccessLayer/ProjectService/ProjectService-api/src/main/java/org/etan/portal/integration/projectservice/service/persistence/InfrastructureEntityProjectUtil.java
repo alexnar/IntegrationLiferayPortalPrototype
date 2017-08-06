@@ -19,7 +19,6 @@ import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -198,7 +197,7 @@ public class InfrastructureEntityProjectUtil {
     public static InfrastructureEntityProject findByOrganizationId_First(
             long organizationId,
             OrderByComparator<InfrastructureEntityProject> orderByComparator)
-            throws NoSuchInfrastructureEntityProjectException {
+            throws org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException {
         return getPersistence()
                 .findByOrganizationId_First(organizationId, orderByComparator);
     }
@@ -229,7 +228,7 @@ public class InfrastructureEntityProjectUtil {
     public static InfrastructureEntityProject findByOrganizationId_Last(
             long organizationId,
             OrderByComparator<InfrastructureEntityProject> orderByComparator)
-            throws NoSuchInfrastructureEntityProjectException {
+            throws org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException {
         return getPersistence()
                 .findByOrganizationId_Last(organizationId, orderByComparator);
     }
@@ -260,7 +259,7 @@ public class InfrastructureEntityProjectUtil {
     public static InfrastructureEntityProject[] findByOrganizationId_PrevAndNext(
             long infrastructureEntityProjectPKId, long organizationId,
             OrderByComparator<InfrastructureEntityProject> orderByComparator)
-            throws NoSuchInfrastructureEntityProjectException {
+            throws org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException {
         return getPersistence()
                 .findByOrganizationId_PrevAndNext(infrastructureEntityProjectPKId,
                         organizationId, orderByComparator);
@@ -325,7 +324,7 @@ public class InfrastructureEntityProjectUtil {
      */
     public static InfrastructureEntityProject remove(
             long infrastructureEntityProjectPKId)
-            throws NoSuchInfrastructureEntityProjectException {
+            throws org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException {
         return getPersistence().remove(infrastructureEntityProjectPKId);
     }
 
@@ -343,7 +342,7 @@ public class InfrastructureEntityProjectUtil {
      */
     public static InfrastructureEntityProject findByPrimaryKey(
             long infrastructureEntityProjectPKId)
-            throws NoSuchInfrastructureEntityProjectException {
+            throws org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException {
         return getPersistence().findByPrimaryKey(infrastructureEntityProjectPKId);
     }
 
@@ -417,13 +416,13 @@ public class InfrastructureEntityProjectUtil {
      * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
      * @param retrieveFromCache whether to retrieve from the finder cache
      * @return the ordered range of infrastructure entity projects
-     */
-    public static List<InfrastructureEntityProject> findAll(int start, int end,
-                                                            OrderByComparator<InfrastructureEntityProject> orderByComparator,
-                                                            boolean retrieveFromCache) {
+	*/
+	public static List<InfrastructureEntityProject> findAll(int start, int end,
+		OrderByComparator<InfrastructureEntityProject> orderByComparator,
+		boolean retrieveFromCache) {
         return getPersistence()
-                .findAll(start, end, orderByComparator, retrieveFromCache);
-    }
+				   .findAll(start, end, orderByComparator, retrieveFromCache);
+	}
 
 	/**
      * Removes all the infrastructure entity projects from the database.

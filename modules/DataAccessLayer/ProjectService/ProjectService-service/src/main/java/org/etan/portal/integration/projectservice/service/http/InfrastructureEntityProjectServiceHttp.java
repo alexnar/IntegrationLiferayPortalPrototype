@@ -15,11 +15,10 @@
 package org.etan.portal.integration.projectservice.service.http;
 
 import aQute.bnd.annotation.ProviderType;
-import org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectServiceUtil;
 
 /**
  * Provides the HTTP utility for the
- * {@link InfrastructureEntityProjectServiceUtil} service utility. The
+ * {@link org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it requires an additional
  * {@link com.liferay.portal.kernel.security.auth.HttpPrincipal} parameter.
@@ -42,7 +41,7 @@ import org.etan.portal.integration.projectservice.service.InfrastructureEntityPr
  * @author Brian Wing Shun Chan
  * @see InfrastructureEntityProjectServiceSoap
  * @see com.liferay.portal.kernel.security.auth.HttpPrincipal
- * @see InfrastructureEntityProjectServiceUtil
+ * @see org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectServiceUtil
  * @generated
  */
 @ProviderType

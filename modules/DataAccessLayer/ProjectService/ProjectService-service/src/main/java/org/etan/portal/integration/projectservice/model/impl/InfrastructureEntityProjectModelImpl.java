@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.StringPool;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProjectModel;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProjectSoap;
-import org.etan.portal.integration.projectservice.service.util.ServiceProps;
 
 import java.io.Serializable;
 import java.sql.Types;
@@ -54,20 +53,20 @@ import java.util.Map;
 @JSON(strict = true)
 @ProviderType
 public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<InfrastructureEntityProject>
-		implements InfrastructureEntityProjectModel {
-	/*
+        implements InfrastructureEntityProjectModel {
+    /*
 	 * NOTE FOR DEVELOPERS:
 	 *
 	 * Never modify or reference this class directly. All methods that expect a infrastructure entity project model instance should use the {@link InfrastructureEntityProject} interface instead.
 	 */
 	public static final String TABLE_NAME = "ProjectService_InfrastructureEntityProject";
 	public static final Object[][] TABLE_COLUMNS = {
-			{"infrastructureEntityProjectPKId", Types.BIGINT},
-			{"organizationId", Types.BIGINT},
-			{"infrastructureEntityName", Types.VARCHAR},
-			{"infrastructureEntityProjectId", Types.VARCHAR}
-	};
-	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
+            {"infrastructureEntityProjectPKId", Types.BIGINT},
+            {"organizationId", Types.BIGINT},
+            {"infrastructureEntityName", Types.VARCHAR},
+            {"infrastructureEntityProjectId", Types.VARCHAR}
+    };
+    public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 	public static final String TABLE_SQL_CREATE = "create table ProjectService_InfrastructureEntityProject (infrastructureEntityProjectPKId LONG not null primary key,organizationId LONG,infrastructureEntityName VARCHAR(75) null,infrastructureEntityProjectId VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table ProjectService_InfrastructureEntityProject";
 	public static final String ORDER_BY_JPQL = " ORDER BY infrastructureEntityProject.organizationId ASC";
@@ -75,22 +74,22 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	public static final String DATA_SOURCE = "liferayDataSource";
 	public static final String SESSION_FACTORY = "liferaySessionFactory";
 	public static final String TX_MANAGER = "liferayTransactionManager";
-	public static final boolean ENTITY_CACHE_ENABLED = GetterUtil.getBoolean(ServiceProps.get(
-			"value.object.entity.cache.enabled.InfrastructureEntityProject"),
-			true);
-	public static final boolean FINDER_CACHE_ENABLED = GetterUtil.getBoolean(ServiceProps.get(
-			"value.object.finder.cache.enabled.InfrastructureEntityProject"),
-			true);
-	public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(ServiceProps.get(
-			"value.object.column.bitmask.enabled.InfrastructureEntityProject"),
-			true);
+    public static final boolean ENTITY_CACHE_ENABLED = GetterUtil.getBoolean(org.etan.portal.integration.projectservice.service.util.ServiceProps.get(
+            "value.object.entity.cache.enabled.org.etan.portal.integration.projectservice.model.InfrastructureEntityProject"),
+            true);
+    public static final boolean FINDER_CACHE_ENABLED = GetterUtil.getBoolean(org.etan.portal.integration.projectservice.service.util.ServiceProps.get(
+            "value.object.finder.cache.enabled.org.etan.portal.integration.projectservice.model.InfrastructureEntityProject"),
+            true);
+    public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.etan.portal.integration.projectservice.service.util.ServiceProps.get(
+            "value.object.column.bitmask.enabled.org.etan.portal.integration.projectservice.model.InfrastructureEntityProject"),
+            true);
 	public static final long ORGANIZATIONID_COLUMN_BITMASK = 1L;
-	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(ServiceProps.get(
-			"lock.expiration.time.InfrastructureEntityProject"));
-	private static final ClassLoader _classLoader = InfrastructureEntityProject.class.getClassLoader();
-	private static final Class<?>[] _escapedModelInterfaces = new Class[]{
-			InfrastructureEntityProject.class
-	};
+    public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.etan.portal.integration.projectservice.service.util.ServiceProps.get(
+            "lock.expiration.time.org.etan.portal.integration.projectservice.model.InfrastructureEntityProject"));
+    private static final ClassLoader _classLoader = InfrastructureEntityProject.class.getClassLoader();
+    private static final Class<?>[] _escapedModelInterfaces = new Class[]{
+            InfrastructureEntityProject.class
+    };
 
 	static {
 		TABLE_COLUMNS_MAP.put("infrastructureEntityProjectPKId", Types.BIGINT);
@@ -118,8 +117,8 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	 * @return the normal model instance
 	 */
 	public static InfrastructureEntityProject toModel(
-			InfrastructureEntityProjectSoap soapModel) {
-		if (soapModel == null) {
+            InfrastructureEntityProjectSoap soapModel) {
+        if (soapModel == null) {
 			return null;
 		}
 
@@ -140,8 +139,8 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	 * @return the normal model instances
 	 */
 	public static List<InfrastructureEntityProject> toModels(
-			InfrastructureEntityProjectSoap[] soapModels) {
-		if (soapModels == null) {
+            InfrastructureEntityProjectSoap[] soapModels) {
+        if (soapModels == null) {
 			return null;
 		}
 
@@ -171,8 +170,8 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 
 	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
-		setPrimaryKey(((Long) primaryKeyObj).longValue());
-	}
+        setPrimaryKey(((Long) primaryKeyObj).longValue());
+    }
 
 	@Override
 	public Class<?> getModelClass() {
@@ -189,11 +188,11 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("infrastructureEntityProjectPKId",
-				getInfrastructureEntityProjectPKId());
-		attributes.put("organizationId", getOrganizationId());
+                getInfrastructureEntityProjectPKId());
+        attributes.put("organizationId", getOrganizationId());
 		attributes.put("infrastructureEntityName", getInfrastructureEntityName());
 		attributes.put("infrastructureEntityProjectId",
-				getInfrastructureEntityProjectId());
+                getInfrastructureEntityProjectId());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -203,28 +202,28 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 
 	@Override
 	public void setModelAttributes(Map<String, Object> attributes) {
-		Long infrastructureEntityProjectPKId = (Long) attributes.get(
-				"infrastructureEntityProjectPKId");
+        Long infrastructureEntityProjectPKId = (Long) attributes.get(
+                "infrastructureEntityProjectPKId");
 
 		if (infrastructureEntityProjectPKId != null) {
 			setInfrastructureEntityProjectPKId(infrastructureEntityProjectPKId);
 		}
 
-		Long organizationId = (Long) attributes.get("organizationId");
+        Long organizationId = (Long) attributes.get("organizationId");
 
 		if (organizationId != null) {
 			setOrganizationId(organizationId);
 		}
 
-		String infrastructureEntityName = (String) attributes.get(
-				"infrastructureEntityName");
+        String infrastructureEntityName = (String) attributes.get(
+                "infrastructureEntityName");
 
 		if (infrastructureEntityName != null) {
 			setInfrastructureEntityName(infrastructureEntityName);
 		}
 
-		String infrastructureEntityProjectId = (String) attributes.get(
-				"infrastructureEntityProjectId");
+        String infrastructureEntityProjectId = (String) attributes.get(
+                "infrastructureEntityProjectId");
 
 		if (infrastructureEntityProjectId != null) {
 			setInfrastructureEntityProjectId(infrastructureEntityProjectId);
@@ -239,8 +238,8 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 
 	@Override
 	public void setInfrastructureEntityProjectPKId(
-			long infrastructureEntityProjectPKId) {
-		_infrastructureEntityProjectPKId = infrastructureEntityProjectPKId;
+            long infrastructureEntityProjectPKId) {
+        _infrastructureEntityProjectPKId = infrastructureEntityProjectPKId;
 	}
 
 	@JSON
@@ -271,8 +270,8 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	public String getInfrastructureEntityName() {
 		if (_infrastructureEntityName == null) {
 			return StringPool.BLANK;
-		} else {
-			return _infrastructureEntityName;
+        } else {
+            return _infrastructureEntityName;
 		}
 	}
 
@@ -286,15 +285,15 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	public String getInfrastructureEntityProjectId() {
 		if (_infrastructureEntityProjectId == null) {
 			return StringPool.BLANK;
-		} else {
-			return _infrastructureEntityProjectId;
+        } else {
+            return _infrastructureEntityProjectId;
 		}
 	}
 
 	@Override
 	public void setInfrastructureEntityProjectId(
-			String infrastructureEntityProjectId) {
-		_infrastructureEntityProjectId = infrastructureEntityProjectId;
+            String infrastructureEntityProjectId) {
+        _infrastructureEntityProjectId = infrastructureEntityProjectId;
 	}
 
 	public long getColumnBitmask() {
@@ -304,8 +303,8 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return ExpandoBridgeFactoryUtil.getExpandoBridge(0,
-				InfrastructureEntityProject.class.getName(), getPrimaryKey());
-	}
+                InfrastructureEntityProject.class.getName(), getPrimaryKey());
+    }
 
 	@Override
 	public void setExpandoBridgeAttributes(ServiceContext serviceContext) {
@@ -317,8 +316,8 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	@Override
 	public InfrastructureEntityProject toEscapedModel() {
 		if (_escapedModel == null) {
-			_escapedModel = (InfrastructureEntityProject) ProxyUtil.newProxyInstance(_classLoader,
-					_escapedModelInterfaces, new AutoEscapeBeanHandler(this));
+            _escapedModel = (InfrastructureEntityProject) ProxyUtil.newProxyInstance(_classLoader,
+                    _escapedModelInterfaces, new AutoEscapeBeanHandler(this));
 		}
 
 		return _escapedModel;
@@ -340,15 +339,15 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 
 	@Override
 	public int compareTo(
-			InfrastructureEntityProject infrastructureEntityProject) {
-		int value = 0;
+            InfrastructureEntityProject infrastructureEntityProject) {
+        int value = 0;
 
 		if (getOrganizationId() < infrastructureEntityProject.getOrganizationId()) {
 			value = -1;
-		} else if (getOrganizationId() > infrastructureEntityProject.getOrganizationId()) {
-			value = 1;
-		} else {
-			value = 0;
+        } else if (getOrganizationId() > infrastructureEntityProject.getOrganizationId()) {
+            value = 1;
+        } else {
+            value = 0;
 		}
 
 		if (value != 0) {
@@ -368,21 +367,21 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 			return false;
 		}
 
-		InfrastructureEntityProject infrastructureEntityProject = (InfrastructureEntityProject) obj;
+        InfrastructureEntityProject infrastructureEntityProject = (InfrastructureEntityProject) obj;
 
 		long primaryKey = infrastructureEntityProject.getPrimaryKey();
 
 		if (getPrimaryKey() == primaryKey) {
 			return true;
-		} else {
-			return false;
+        } else {
+            return false;
 		}
 	}
 
 	@Override
 	public int hashCode() {
-		return (int) getPrimaryKey();
-	}
+        return (int) getPrimaryKey();
+    }
 
 	@Override
 	public boolean isEntityCacheEnabled() {
@@ -397,7 +396,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	@Override
 	public void resetOriginalValues() {
 		InfrastructureEntityProjectModelImpl infrastructureEntityProjectModelImpl =
-				this;
+                this;
 
 		infrastructureEntityProjectModelImpl._originalOrganizationId = infrastructureEntityProjectModelImpl._organizationId;
 
@@ -409,7 +408,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	@Override
 	public CacheModel<InfrastructureEntityProject> toCacheModel() {
 		InfrastructureEntityProjectCacheModel infrastructureEntityProjectCacheModel =
-				new InfrastructureEntityProjectCacheModel();
+                new InfrastructureEntityProjectCacheModel();
 
 		infrastructureEntityProjectCacheModel.infrastructureEntityProjectPKId = getInfrastructureEntityProjectPKId();
 
@@ -459,24 +458,24 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 
 		sb.append("<model><model-name>");
 		sb.append(
-				"InfrastructureEntityProject");
-		sb.append("</model-name>");
+                "org.etan.portal.integration.projectservice.model.InfrastructureEntityProject");
+        sb.append("</model-name>");
 
 		sb.append(
-				"<column><column-name>infrastructureEntityProjectPKId</column-name><column-value><![CDATA[");
-		sb.append(getInfrastructureEntityProjectPKId());
+                "<column><column-name>infrastructureEntityProjectPKId</column-name><column-value><![CDATA[");
+        sb.append(getInfrastructureEntityProjectPKId());
 		sb.append("]]></column-value></column>");
 		sb.append(
-				"<column><column-name>organizationId</column-name><column-value><![CDATA[");
-		sb.append(getOrganizationId());
+                "<column><column-name>organizationId</column-name><column-value><![CDATA[");
+        sb.append(getOrganizationId());
 		sb.append("]]></column-value></column>");
 		sb.append(
-				"<column><column-name>infrastructureEntityName</column-name><column-value><![CDATA[");
-		sb.append(getInfrastructureEntityName());
+                "<column><column-name>infrastructureEntityName</column-name><column-value><![CDATA[");
+        sb.append(getInfrastructureEntityName());
 		sb.append("]]></column-value></column>");
 		sb.append(
-				"<column><column-name>infrastructureEntityProjectId</column-name><column-value><![CDATA[");
-		sb.append(getInfrastructureEntityProjectId());
+                "<column><column-name>infrastructureEntityProjectId</column-name><column-value><![CDATA[");
+        sb.append(getInfrastructureEntityProjectId());
 		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");

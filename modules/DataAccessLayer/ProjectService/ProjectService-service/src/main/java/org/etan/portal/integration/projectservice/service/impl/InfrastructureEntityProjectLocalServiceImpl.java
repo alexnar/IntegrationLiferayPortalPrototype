@@ -15,13 +15,11 @@
 package org.etan.portal.integration.projectservice.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
-import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 import org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectLocalService;
 import org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectLocalServiceUtil;
 import org.etan.portal.integration.projectservice.service.base.InfrastructureEntityProjectLocalServiceBaseImpl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,39 +48,27 @@ public class InfrastructureEntityProjectLocalServiceImpl
 
 
     /**
-     * Get InfrastructureEntityProject by organizationId
+     * Get list of InfrastructureEntityProject by organizationId.
      *
      * @param organizationId id of organization
-     * @return InfrastructureEntityProject
+     * @return InfrastructureEntityProject list
      */
-    public List<InfrastructureEntityProject> findByOrganizationId(long organizationId) {
-
+    public List<InfrastructureEntityProject> get(long organizationId) {
         return infrastructureEntityProjectPersistence.findByOrganizationId(organizationId);
     }
 
     /**
      * Add all InfrastructureEntityProjects from ProjectDto.
      */
-    public void saveAllInfrastructureEntityProjects(ProjectDto projectDto) {
-        //todo do dodododododo
-        ProjectDto.Builder builder = new ProjectDto.Builder();
-        builder.setProjectId(projectDto.getProjectId());
-
-        Map<String, String> addedFromInfrastructureEntityProjectIdMap = new HashMap<>();
-
-        for (Map.Entry<String, String> entry : projectDto.getInfrastructureEntityProjectIdMap().entrySet()) {
-
+    public void addAll(Map<String, String> infrastructureEntityProjectIdMap, long organizationId) {
+        for (Map.Entry<String, String> entry : infrastructureEntityProjectIdMap.entrySet()) {
             long i = counterLocalService.increment();
 
             InfrastructureEntityProject infrastructureEntityProject = createInfrastructureEntityProject(i);
 
-            infrastructureEntityProject.setOrganizationId(projectDto.getProjectId());
+            infrastructureEntityProject.setOrganizationId(organizationId);
             infrastructureEntityProject.setInfrastructureEntityName(entry.getKey());
             infrastructureEntityProject.setInfrastructureEntityProjectId(entry.getValue());
-
-            addedFromInfrastructureEntityProjectIdMap.put(entry.getKey(), entry.getValue());
         }
-
-
     }
 }

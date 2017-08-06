@@ -16,8 +16,8 @@ package org.etan.portal.integration.projectservice.service.persistence;
 
 import aQute.bnd.annotation.ProviderType;
 import com.liferay.portal.kernel.service.persistence.BasePersistence;
-import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 import org.etan.portal.integration.projectservice.exception.NoSuchInfrastructureEntityProjectException;
+import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 
 /**
  * The persistence interface for the infrastructure entity project service.
@@ -289,10 +289,10 @@ public interface InfrastructureEntityProjectPersistence extends BasePersistence<
      * @param retrieveFromCache whether to retrieve from the finder cache
      * @return the ordered range of infrastructure entity projects
      */
-    public java.util.List<InfrastructureEntityProject> findAll(int start,
-                                                               int end,
-                                                               com.liferay.portal.kernel.util.OrderByComparator<InfrastructureEntityProject> orderByComparator,
-                                                               boolean retrieveFromCache);
+	public java.util.List<InfrastructureEntityProject> findAll(int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<InfrastructureEntityProject> orderByComparator,
+		boolean retrieveFromCache);
 
 	/**
      * Removes all the infrastructure entity projects from the database.

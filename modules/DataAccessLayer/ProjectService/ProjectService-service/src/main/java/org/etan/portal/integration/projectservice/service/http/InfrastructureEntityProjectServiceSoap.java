@@ -15,13 +15,10 @@
 package org.etan.portal.integration.projectservice.service.http;
 
 import aQute.bnd.annotation.ProviderType;
-import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
-import org.etan.portal.integration.projectservice.model.InfrastructureEntityProjectSoap;
-import org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectServiceUtil;
 
 /**
  * Provides the SOAP utility for the
- * {@link InfrastructureEntityProjectServiceUtil} service utility. The
+ * {@link org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it is difficult for SOAP to
  * support certain types.
@@ -29,10 +26,10 @@ import org.etan.portal.integration.projectservice.service.InfrastructureEntityPr
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
  * if the method in the service utility returns a {@link java.util.List}, that
- * is translated to an array of {@link InfrastructureEntityProjectSoap}.
+ * is translated to an array of {@link org.etan.portal.integration.projectservice.model.InfrastructureEntityProjectSoap}.
  * If the method in the service utility returns a
- * {@link InfrastructureEntityProject}, that is translated to a
- * {@link InfrastructureEntityProjectSoap}. Methods that SOAP cannot
+ * {@link org.etan.portal.integration.projectservice.model.InfrastructureEntityProject}, that is translated to a
+ * {@link org.etan.portal.integration.projectservice.model.InfrastructureEntityProjectSoap}. Methods that SOAP cannot
  * safely wire are skipped.
  * </p>
  *
@@ -55,8 +52,8 @@ import org.etan.portal.integration.projectservice.service.InfrastructureEntityPr
  *
  * @author Brian Wing Shun Chan
  * @see InfrastructureEntityProjectServiceHttp
- * @see InfrastructureEntityProjectSoap
- * @see InfrastructureEntityProjectServiceUtil
+ * @see org.etan.portal.integration.projectservice.model.InfrastructureEntityProjectSoap
+ * @see org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectServiceUtil
  * @generated
  */
 @ProviderType

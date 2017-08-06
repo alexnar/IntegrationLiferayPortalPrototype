@@ -336,7 +336,7 @@ public class InfrastructureEntityProjectWrapper
     @Override
     public boolean isFinderCacheEnabled() {
         return _infrastructureEntityProject.isFinderCacheEnabled();
-    }
+	}
 
 	@Override
     public void resetOriginalValues() {

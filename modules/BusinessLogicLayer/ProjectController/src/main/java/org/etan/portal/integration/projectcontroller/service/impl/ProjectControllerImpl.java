@@ -170,7 +170,7 @@ public class ProjectControllerImpl implements ProjectController {
                 .build();
 
         //todo Save - save me now! Save by ProjectService now!
-//        infrastructureEntityProjectLocalService.saveAllInfrastructureEntityProjects();
+//        infrastructureEntityProjectLocalService.add();
 
         return projectDto;
     }
