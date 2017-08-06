@@ -1,0 +1,6 @@
+Bundle-Name: DataGetter
+Bundle-SymbolicName: datagetter
+Bundle-Version: 1.0.0
+Import-Package: *
+Export-Package: org.etan.portal.integration.datagetter.service,\
+                org.etan.portal.integration.datagetter.service.exception

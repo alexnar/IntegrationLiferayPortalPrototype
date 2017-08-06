@@ -1,0 +1,7 @@
+dependencies {
+    compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
+    compileOnly group: "org.osgi", name: "osgi.cmpn", version: "6.0.0"
+    compile group: 'org.apache.httpcomponents', name: 'httpclient-osgi', version: '4.5.3'
+
+
+}
