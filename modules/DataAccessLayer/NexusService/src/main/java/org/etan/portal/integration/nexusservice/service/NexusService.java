@@ -28,7 +28,7 @@ public interface NexusService {
      * @param userId - String id of Nexus user
      * @param repositoryId - String id of Nexus repository
      */
-    void addUserToRepository(String userId, String repositoryId);
+    void assignUserToRepository(String userId, String repositoryId);
 
     /**
      * Delete user from the repository. Do nothing if
@@ -37,7 +37,7 @@ public interface NexusService {
      * @param userId - String id of Nexus user
      * @param repositoryId - String id of Nexus repository
      */
-    void deleteUserFromRepository(String userId, String repositoryId);
+    void unassignUserFromRepository(String userId, String repositoryId);
 
     /**
      * Get last Nexus artifacts

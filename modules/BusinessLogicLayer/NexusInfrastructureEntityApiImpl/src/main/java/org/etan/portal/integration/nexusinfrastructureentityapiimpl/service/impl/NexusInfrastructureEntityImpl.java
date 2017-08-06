@@ -8,9 +8,6 @@ import org.etan.portal.integration.nexusservice.service.NexusService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
@@ -41,7 +38,7 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
         Serializable userNexusIdSerializable = userExpandoBridge.getAttribute(USER_NEXUS_ID_FIELD);
         String userNexusId = (String) userNexusIdSerializable;
-        nexusService.addUserToRepository(userNexusId, infrastructureEntityProjectId);
+        nexusService.assignUserToRepository(userNexusId, infrastructureEntityProjectId);
     }
 
     @Override
@@ -50,7 +47,7 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
         Serializable userNexusIdSerializable = userExpandoBridge.getAttribute(USER_NEXUS_ID_FIELD);
         String userNexusId = (String) userNexusIdSerializable;
-        nexusService.deleteUserFromRepository(userNexusId, infrastructureEntityProjectId);
+        nexusService.unassignUserFromRepository(userNexusId, infrastructureEntityProjectId);
     }
 
     @Override

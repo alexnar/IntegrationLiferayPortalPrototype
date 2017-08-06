@@ -23,12 +23,12 @@ public class NexusServiceImpl implements NexusService {
     }
 
     @Override
-    public void addUserToRepository(String userId, String repositoryId) {
+    public void assignUserToRepository(String userId, String repositoryId) {
 
     }
 
     @Override
-    public void deleteUserFromRepository(String userId, String repositoryId) {
+    public void unassignUserFromRepository(String userId, String repositoryId) {
 
     }
 
