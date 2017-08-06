@@ -1,10 +1,13 @@
 package org.etan.portal.integration.nexusinfrastructureentityapiimpl.service.impl;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import org.etan.portal.integration.infrastructureentityapi.service.InfrastructureEntity;
 import org.etan.portal.integration.infrastructureentityapi.service.exception.InfrastructureEntityException;
 import org.etan.portal.integration.nexusservice.service.NexusService;
+import org.etan.portal.integration.nexusservice.service.exception.NexusException;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -28,7 +31,12 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
 
     @Override
     public String createInfrastructureEntityProject(String projectName) throws InfrastructureEntityException {
-        String repositoryId = nexusService.createRepository(projectName);
+        String repositoryId;
+        try {
+            repositoryId = nexusService.createRepository(projectName);
+        } catch (NexusException e) {
+            throw new InfrastructureEntityException(e.getMessage(), e);
+        }
         return repositoryId;
     }
 
@@ -38,7 +46,11 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
         Serializable userNexusIdSerializable = userExpandoBridge.getAttribute(USER_NEXUS_ID_FIELD);
         String userNexusId = (String) userNexusIdSerializable;
-        nexusService.assignUserToRepository(userNexusId, infrastructureEntityProjectId);
+        try {
+            nexusService.assignUserToRepository(userNexusId, infrastructureEntityProjectId);
+        } catch (NexusException e) {
+            throw new InfrastructureEntityException(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -47,7 +59,11 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
         Serializable userNexusIdSerializable = userExpandoBridge.getAttribute(USER_NEXUS_ID_FIELD);
         String userNexusId = (String) userNexusIdSerializable;
-        nexusService.unassignUserFromRepository(userNexusId, infrastructureEntityProjectId);
+        try {
+            nexusService.unassignUserFromRepository(userNexusId, infrastructureEntityProjectId);
+        } catch (NexusException e) {
+            throw new InfrastructureEntityException(e.getMessage(), e);
+        }
     }
 
     @Override
