@@ -17,13 +17,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.etan.portal.integration.datarequester.service.DataRequesterService;
-import org.etan.portal.integration.datarequester.service.exception.DataHttpGetException;
+import org.etan.portal.integration.datarequester.service.exception.DataRequestException;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.*;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +47,8 @@ public class DataRequesterServiceImpl implements DataRequesterService {
     private static final Log logger = LogFactoryUtil.getLog(DataRequesterServiceImpl.class);
 
 
-
     @Override
-    public StringBuilder getDataFromUrl(String url) throws DataHttpGetException {
+    public StringBuilder getDataFromUrl(String url) throws DataRequestException {
         if (url == null) {
             return new StringBuilder();
         }
@@ -63,20 +61,20 @@ public class DataRequesterServiceImpl implements DataRequesterService {
             httpResponse = getResponseFromHttpEntity(httpEntity);
         } catch (UnknownHostException e) {
             logger.warn(WRONG_URL_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR);
+            throw new DataRequestException(GET_DATA_ERROR);
         } catch (ClientProtocolException e) {
             logger.warn(CONNECTION_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR);
+            throw new DataRequestException(GET_DATA_ERROR);
         } catch (IOException e) {
             logger.warn(READING_PAGE_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR);
+            throw new DataRequestException(GET_DATA_ERROR);
         }
         return httpResponse;
     }
 
     @Override
-    public StringBuilder getDataFromUrlWithAuthorization(
-            String url, UsernamePasswordCredentials usernamePasswordCredentials) throws DataHttpGetException {
+    public StringBuilder getDataFromUrlWithAuthorization(String url, String username,
+                                                         String password) throws DataRequestException {
 
         if (url == null) {
             return new StringBuilder();
@@ -84,6 +82,7 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(url);
         Header authenticate = null;
+        UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(username, password);
         try {
             authenticate = new BasicScheme().authenticate(usernamePasswordCredentials, httpGet, null);
         } catch (AuthenticationException e) {
@@ -102,32 +101,33 @@ public class DataRequesterServiceImpl implements DataRequesterService {
             httpResponse = getResponseFromHttpEntity(httpEntity);
         } catch (UnknownHostException e) {
             logger.warn(WRONG_URL_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         } catch (ClientProtocolException e) {
             logger.warn(CONNECTION_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         } catch (IOException e) {
             logger.warn(READING_PAGE_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         }
         return httpResponse;
     }
 
     @Override
     public StringBuilder postJsonToUrlWithAuthorization(String url,
-                                                        UsernamePasswordCredentials usernamePasswordCredentials,
-                                                        String jsonContent) throws DataHttpGetException {
+                                                        String username, String password,
+                                                        String jsonContent) throws DataRequestException {
         if (url == null) {
             return new StringBuilder();
         }
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         Header authenticate;
+        UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(username, password);
         try {
             authenticate = new BasicScheme().authenticate(usernamePasswordCredentials, httpPost, null);
         } catch (AuthenticationException e) {
             logger.warn(AUTHORIZATION_ERROR, e);
-            throw new DataHttpGetException(AUTHORIZATION_ERROR, e);
+            throw new DataRequestException(AUTHORIZATION_ERROR, e);
         }
         httpPost.addHeader(authenticate);
         StringEntity jsonContentEntity = new StringEntity(jsonContent, ContentType.APPLICATION_JSON);
@@ -141,21 +141,21 @@ public class DataRequesterServiceImpl implements DataRequesterService {
             httpResponse = getResponseFromHttpEntity(httpEntity);
         } catch (UnknownHostException e) {
             logger.warn(WRONG_URL_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         } catch (ClientProtocolException e) {
             logger.warn(CONNECTION_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         } catch (IOException e) {
             logger.warn(READING_PAGE_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         }
         return httpResponse;
     }
 
     @Override
-    public StringBuilder postParametersToUrlWithAuthorization(
-            String url, UsernamePasswordCredentials usernamePasswordCredentials,
-            Map<String, String> parametersMap) throws DataHttpGetException {
+    public StringBuilder postParametersToUrlWithAuthorization(String url, String username, String password,
+                                                              Map<String, String> parametersMap)
+            throws DataRequestException {
 
         if (url == null) {
             return new StringBuilder();
@@ -163,11 +163,12 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         Header authenticate;
+        UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(username, password);
         try {
             authenticate = new BasicScheme().authenticate(usernamePasswordCredentials, httpPost, null);
         } catch (AuthenticationException e) {
             logger.warn(AUTHORIZATION_ERROR, e);
-            throw new DataHttpGetException(AUTHORIZATION_ERROR, e);
+            throw new DataRequestException(AUTHORIZATION_ERROR, e);
         }
         httpPost.addHeader(authenticate);
         List<NameValuePair> parameters = getParametersByMap(parametersMap);
@@ -183,13 +184,13 @@ public class DataRequesterServiceImpl implements DataRequesterService {
             httpResponse = getResponseFromHttpEntity(httpEntity);
         } catch (UnknownHostException e) {
             logger.warn(WRONG_URL_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         } catch (ClientProtocolException e) {
             logger.warn(CONNECTION_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         } catch (IOException e) {
             logger.warn(READING_PAGE_PROBLEM_MESSAGE, e);
-            throw new DataHttpGetException(GET_DATA_ERROR, e);
+            throw new DataRequestException(GET_DATA_ERROR, e);
         }
         return httpResponse;
     }

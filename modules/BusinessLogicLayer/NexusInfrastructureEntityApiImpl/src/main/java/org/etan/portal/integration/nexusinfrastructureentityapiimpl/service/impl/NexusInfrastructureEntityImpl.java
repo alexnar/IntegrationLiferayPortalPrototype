@@ -31,7 +31,7 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
     public String createInfrastructureEntityProject(String projectName) throws InfrastructureEntityException {
         String repositoryId;
         try {
-            repositoryId = nexusService.createMavenRepository(projectName);
+            repositoryId = nexusService.createMavenHostedRepository(projectName);
         } catch (NexusException e) {
             throw new InfrastructureEntityException(e.getMessage(), e);
         }

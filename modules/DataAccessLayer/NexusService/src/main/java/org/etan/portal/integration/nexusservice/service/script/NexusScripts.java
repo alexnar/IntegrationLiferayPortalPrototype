@@ -1,4 +1,4 @@
-package org.etan.portal.integration.nexusservice.service.impl;
+package org.etan.portal.integration.nexusservice.service.script;
 
 import com.google.gson.Gson;
 import org.etan.portal.integration.nexusservice.service.dto.NexusScriptDto;
@@ -42,10 +42,4 @@ public class NexusScripts {
         return null;
     }
 
-    public static void main(String[] args) {
-        NexusScriptDto myRepo1 = new NexusScripts().getCreateMavenRepositoryScript("myRepo1");
-        Gson gson = new Gson();
-        String s = gson.toJson(myRepo1);
-        System.out.println();
-    }
 }

@@ -24,7 +24,7 @@ public interface NexusService {
      * @throws NexusException - if something went wrong while
      *                        communication with Nexus server.
      */
-    String createMavenRepository(String repositoryName) throws NexusException;
+    String createMavenHostedRepository(String repositoryName) throws NexusException;
 
     /**
      * Gives the user access to the repository
