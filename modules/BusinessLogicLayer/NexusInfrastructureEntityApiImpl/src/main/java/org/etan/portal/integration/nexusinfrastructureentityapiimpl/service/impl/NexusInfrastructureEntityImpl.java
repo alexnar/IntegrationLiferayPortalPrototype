@@ -1,8 +1,6 @@
 package org.etan.portal.integration.nexusinfrastructureentityapiimpl.service.impl;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import org.etan.portal.integration.infrastructureentityapi.service.InfrastructureEntity;
 import org.etan.portal.integration.infrastructureentityapi.service.exception.InfrastructureEntityException;
@@ -33,7 +31,7 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
     public String createInfrastructureEntityProject(String projectName) throws InfrastructureEntityException {
         String repositoryId;
         try {
-            repositoryId = nexusService.createRepository(projectName);
+            repositoryId = nexusService.createMavenRepository(projectName);
         } catch (NexusException e) {
             throw new InfrastructureEntityException(e.getMessage(), e);
         }

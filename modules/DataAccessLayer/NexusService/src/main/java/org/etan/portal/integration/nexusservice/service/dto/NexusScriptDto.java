@@ -1,5 +1,8 @@
 package org.etan.portal.integration.nexusservice.service.dto;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Script DTO.
  * Implements Builder pattern.
@@ -7,8 +10,13 @@ package org.etan.portal.integration.nexusservice.service.dto;
  * @author Naryzhny Alex
  */
 public class NexusScriptDto {
+    @SerializedName("name")
     private String scriptName;
+
+    @SerializedName("type")
     private String scriptType;
+
+    @SerializedName("content")
     private String scriptContent;
 
     public String getScriptName() {
@@ -59,5 +67,4 @@ public class NexusScriptDto {
             return new NexusScriptDto(this);
         }
     }
-
 }

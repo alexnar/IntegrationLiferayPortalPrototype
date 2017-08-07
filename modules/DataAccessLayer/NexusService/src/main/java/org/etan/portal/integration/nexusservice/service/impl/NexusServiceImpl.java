@@ -21,8 +21,8 @@ public class NexusServiceImpl implements NexusService {
     private NexusRemoteScriptManager nexusRemoteScriptManager = new NexusRemoteScriptManager();
 
     @Override
-    public String createRepository(String repositoryName) throws NexusException {
-        NexusScriptDto createRepositoryScript = nexusScripts.getCreateRepositoryScript(repositoryName);
+    public String createMavenRepository(String repositoryName) throws NexusException {
+        NexusScriptDto createRepositoryScript = nexusScripts.getCreateMavenRepositoryScript(repositoryName);
         nexusRemoteScriptManager.executeScript(createRepositoryScript);
         return repositoryName;
     }
@@ -49,4 +49,5 @@ public class NexusServiceImpl implements NexusService {
         // TODO: get list of artifact from executionResponse
         return null;
     }
+
 }

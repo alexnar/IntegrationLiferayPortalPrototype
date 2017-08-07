@@ -59,7 +59,7 @@ public class ProjectManageImpl implements ProjectManage {
             project = projectController.
                     createProject(projectName, infrastructureEntityProjectIdMap, serviceContext);
         } catch (PortalException e) {
-            logger.error(e, e);
+            logger.error(e.getMessage(), e);
         }
         return project;
     }
