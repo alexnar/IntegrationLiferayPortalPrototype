@@ -1,5 +1,6 @@
 package org.etan.portal.integration.projectcontroller.service;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
@@ -37,6 +38,14 @@ public interface ProjectController {
     void addUsers(List<User> users, ServiceContext context);
 
     /**
+     * Check ServiceContext. It must have not zero(null) field userId, Group, OrganizationId...
+     *
+     * @param context ServiceContext
+     * @return true, if it is right ServiceContext
+     */
+    boolean checkServiceContext(ServiceContext context);
+
+    /**
      * Creates organization of organization type Project. Also creates site
      * by template Project Template and assign to created organization.
      * Saves in database list of "infrastructure entity project id" with mapping on
@@ -49,7 +58,7 @@ public interface ProjectController {
      */
     //todo mb delete
     ProjectDto createProject(String projectName, Map<String, String> infrastructureEntityProjectIdMap,
-                             ServiceContext context);
+                             ServiceContext context) throws PortalException;
 
     /**
      * Creates organization of organization type Project. Also creates site
@@ -61,7 +70,7 @@ public interface ProjectController {
      * @param context    context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
      */
-    ProjectDto createProject(ProjectDto projectDto, ServiceContext context);
+    ProjectDto createProject(ProjectDto projectDto, ServiceContext context) throws PortalException;
 
     /**
      * Delete user from project organization .

@@ -5,7 +5,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.*;
 import com.liferay.portal.kernel.service.*;
-import org.etan.portal.integration.projectcontroller.service.*;
+import org.etan.portal.integration.projectcontroller.service.IllegalServiceContextException;
+import org.etan.portal.integration.projectcontroller.service.ProjectController;
+import org.etan.portal.integration.projectcontroller.service.SiteTemplateNotFoundException;
 import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
 import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 import org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectLocalService;
@@ -27,17 +29,15 @@ import java.util.*;
 public class ProjectControllerImpl implements ProjectController {
     private static final Log log = LogFactoryUtil.getLog(ProjectControllerImpl.class);
 
+    private static final String ORGANIZATION_COMMENT = "Project organization uses for project's manipulations";
     private static final String ORGANIZATION_TYPE__PROJECT = "Project";
     private static final String ORGANIZATION_TYPE__PROJECTS_CATALOG = "ProjectsCatalog";
-    private static final String ORGANIZATION_COMMENT = "Project organization uses for project's manipulations";
-    private static final String PROJECT_SITE_TEMPLATE_NAME = "Project Template";///todo mb bad
+    private static final String PROJECT_SITE_TEMPLATE_PRIVATE = "Project Template - private";///todo mb bad
 
     @Reference
-    private volatile UserLocalService userLocalService;
-    @Reference
-    private volatile OrganizationLocalService organizationLocalService;
-    @Reference
     private volatile GroupLocalService groupLocalService;
+    @Reference
+    private volatile InfrastructureEntityProjectLocalService infrastructureEntityProjectLocalService;
     @Reference
     private volatile LayoutLocalService layoutLocalService;
     @Reference
@@ -47,9 +47,22 @@ public class ProjectControllerImpl implements ProjectController {
     @Reference
     private volatile LayoutSetLocalService layoutSetLocalService;
     @Reference
+    private volatile OrganizationLocalService organizationLocalService;
+    @Reference
     private volatile com.liferay.sites.kernel.util.Sites sitesUtil;
     @Reference
-    private volatile InfrastructureEntityProjectLocalService infrastructureEntityProjectLocalService;
+    private volatile UserLocalService userLocalService;
+
+
+    /**
+     * Check ServiceContext. It must have not zero(null) field userId, Group, OrganizationId...
+     *
+     * @param context ServiceContext
+     * @return true, if it is right ServiceContext
+     */
+    public boolean checkServiceContext(ServiceContext context) {
+        return true;
+    }
 
     /**
      * Add user to project organization.
@@ -91,52 +104,41 @@ public class ProjectControllerImpl implements ProjectController {
      * @param infrastructureEntityProjectIdMap "infrastructure entity project id" mapped to "infrastructure entity name"
      * @param context                          context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
-     * @throws CouldNotGetUserFromServiceContextRuntimeException if could not get user from context
-     * @throws CouldNotCreateOrganizationRuntimeException        if any problem with organization creation
+     * @throws PortalException                if could not get user from context or any problem with organization creation
+     * @throws IllegalServiceContextException if userId equals 0, or from methods below
      * @see #getProjectsCatalogOrganization(ServiceContext)
      * @see #assignProjectSiteTemplate(Organization)
      */
-    //todo mb delete
     public ProjectDto createProject(String projectName, Map<String, String> infrastructureEntityProjectIdMap,
-                                    ServiceContext context) {
-        ProjectDto projectDto = null;
-        Organization projectsCatalogOrganization = getProjectsCatalogOrganization(context);
-        long ownerUserId = context.getUserId();
+                                    ServiceContext context) throws PortalException {
+        ProjectDto projectDto;
         Organization newProjectOrganization;
         List<User> members = new ArrayList<>();
 
-        try {
-            User owner = userLocalService.getUser(ownerUserId);
-            members.add(owner);
-        } catch (PortalException e) {
-            log.error(e, e);
-            throw new CouldNotGetUserFromServiceContextRuntimeException(ownerUserId, e);
-            //todo discus runtime
+        Organization projectsCatalogOrganization = getProjectsCatalogOrganization(context);
+        long parentOrganizationId = projectsCatalogOrganization.getOrganizationId();
+        long ownerUserId = context.getUserId();
+
+        if (ownerUserId == 0) {
+            throw new IllegalServiceContextException("userId from ServiceContext equals 0");
+            //todo todo discus runtime - this is temporary solution
         }
 
-        try {
-            newProjectOrganization = organizationLocalService.addOrganization(
-                    ownerUserId,
-                    projectsCatalogOrganization.getOrganizationId(),
-                    projectName,
-                    ORGANIZATION_TYPE__PROJECT,
-                    0,
-                    0,
-                    ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
-                    ORGANIZATION_COMMENT,
-                    true,
-                    new ServiceContext()//seems like bad, but worked when test it
-            );
-        } catch (PortalException e) {
-            log.error(e, e);
-            throw new CouldNotCreateOrganizationRuntimeException(
-                    ownerUserId,
-                    projectsCatalogOrganization.getOrganizationId(),
-                    projectName,
-                    true,
-                    e);
-            //todo discus runtime
-        }
+        User owner = userLocalService.getUser(ownerUserId);
+        members.add(owner);
+
+        newProjectOrganization = organizationLocalService.addOrganization(
+                ownerUserId,
+                parentOrganizationId,
+                projectName,
+                ORGANIZATION_TYPE__PROJECT,
+                0,
+                0,
+                ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
+                ORGANIZATION_COMMENT,
+                true,
+                null
+        );
 
         assignProjectSiteTemplate(newProjectOrganization);
 
@@ -169,7 +171,7 @@ public class ProjectControllerImpl implements ProjectController {
      * @return dto of created "project" or null, If there is a problem
      * @see #createProject(String, Map, ServiceContext)
      */
-    public ProjectDto createProject(ProjectDto projectDto, ServiceContext context) {
+    public ProjectDto createProject(ProjectDto projectDto, ServiceContext context) throws PortalException {
         Map<String, String> infrastructureEntityProjectIdMap = projectDto.getInfrastructureEntityProjectIdMap();
         String projectName = projectDto.getProjectName();
         return createProject(projectName, infrastructureEntityProjectIdMap, context);
@@ -254,45 +256,43 @@ public class ProjectControllerImpl implements ProjectController {
 
     /**
      * Assign Project Site Template to site bound new Project organization.
-     * Site of this organization must be empty.(or not important?)
+     * Organization must have site. Site of this organization must be empty.(or not important?)
      *
      * @param newProjectOrganization new Project organization with empty site
+     * @throws SiteTemplateNotFoundException if Project site template not found
      */
-    private void assignProjectSiteTemplate(Organization newProjectOrganization) {
+    private void assignProjectSiteTemplate(Organization newProjectOrganization) throws PortalException {
         LayoutSetPrototype layoutSetPrototype = null;// site template
         LayoutSet layoutSet = null;// site
 
         List<LayoutSetPrototype> layoutSetPrototypes =
                 layoutSetPrototypeLocalService.getLayoutSetPrototypes(newProjectOrganization.getCompanyId());
         for (LayoutSetPrototype prototype : layoutSetPrototypes) {
-            if (prototype.getName(Locale.ENGLISH).equalsIgnoreCase(PROJECT_SITE_TEMPLATE_NAME)) {
+            if (prototype.getName(Locale.ENGLISH).equalsIgnoreCase(PROJECT_SITE_TEMPLATE_PRIVATE)) {
                 layoutSetPrototype = prototype;
                 break;
             }
         }
 
         if (layoutSetPrototype == null) {
-            throw new SiteTemplateNotFoundRuntimeException(PROJECT_SITE_TEMPLATE_NAME);
-            //todo discus runtime
+            throw new SiteTemplateNotFoundException(PROJECT_SITE_TEMPLATE_PRIVATE);
+            //todo todo discus runtime - this is temporary solution
             //todo nm that not runtime...
         }
 
+        layoutSet = layoutSetLocalService.getLayoutSet(newProjectOrganization.getGroupId(), true);
+
+        layoutSet.setLayoutSetPrototypeLinkEnabled(true);
+        layoutSet.setLayoutSetPrototypeUuid(layoutSetPrototype.getUuid());
+        layoutSetLocalService.updateLayoutSet(layoutSet);
+
         try {
-            layoutSet = layoutSetLocalService.getLayoutSet(newProjectOrganization.getGroupId(), true);
-
-            layoutSet.setLayoutSetPrototypeLinkEnabled(true);
-            layoutSet.setLayoutSetPrototypeUuid(layoutSetPrototype.getUuid());
-            layoutSetLocalService.updateLayoutSet(layoutSet);
-
-            sitesUtil.mergeLayoutSetPrototypeLayouts(newProjectOrganization.getGroup(), layoutSet);//throws Exception
-        } catch (PortalException e) {
-            log.error(e, e);
-            throw new CouldNotGetOrganizationSiteRuntimeException(newProjectOrganization, e);
-            //todo discus runtime
+            sitesUtil.mergeLayoutSetPrototypeLayouts(newProjectOrganization.getGroup(), layoutSet);
         } catch (Exception e) {
-            log.error(e, e);
-            throw new SetSiteTemplateRuntimeException(newProjectOrganization.getGroup(), PROJECT_SITE_TEMPLATE_NAME, e);
-            //todo discus runtime
+            throw new PortalException(
+                    "While bind " + PROJECT_SITE_TEMPLATE_PRIVATE + " to " + newProjectOrganization.getGroup(),
+                    e
+            );
         }
     }
 
@@ -322,9 +322,8 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param context context of action
      * @return current for context organization
-     * @throws IsNotOrganizationRuntimeException                         if site not bound to organization
-     * @throws CouldNotGetOrganizationFromServiceContextRuntimeException if other problem
-     *                                                                   with get organization from context occurs
+     * @throws IllegalServiceContextException if site not bound to organization or other problem
+     *                                        with get organization from ServiceContext occurs
      */
     private Organization getOrganization(ServiceContext context) {
         Organization organization;
@@ -333,16 +332,18 @@ public class ProjectControllerImpl implements ProjectController {
             Group group = context.getScopeGroup();//here PortalException
 
             if (!group.isOrganization()) {
-                throw new IsNotOrganizationRuntimeException(group);
-                //todo discus runtime
+                throw new IllegalServiceContextException(
+                        "Site with name: " + group.getName() + "is not assign to organization");
+                //todo todo discus runtime - this is temporary solution
             }
             long organizationId = group.getOrganizationId();
 
             /* Not achievable PortalException below, I think */
             organization = organizationLocalService.getOrganization(organizationId);
         } catch (PortalException e) {
-            throw new CouldNotGetOrganizationFromServiceContextRuntimeException(e);
-            //todo discus runtime
+            throw new IllegalServiceContextException(
+                    "Could not get organization from ServiceContext", e);
+            //todo todo discus runtime - this is temporary solution
         }
         return organization;
     }
@@ -354,7 +355,6 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param projectOrganization need to get project fields: id, name, members
      * @return ProjectsCatalog organization
-     * @throws OrganizationTypeRuntimeException if organization type name not equals "ProjectsCatalog"
      * @see #getInfrastructureEntityProjectIdMap(long)
      * @see InfrastructureEntityProjectLocalService
      */
@@ -381,15 +381,17 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param context need to get organization from context
      * @return ProjectsCatalog organization
-     * @throws OrganizationTypeRuntimeException if organization type name not equals "ProjectsCatalog"
+     * @throws IllegalServiceContextException if organization type name not equals "ProjectsCatalog"
      * @see #getOrganization(ServiceContext)
      */
     private Organization getProjectsCatalogOrganization(ServiceContext context) {
         Organization organization = getOrganization(context);
 
         if (!organization.getType().equals(ORGANIZATION_TYPE__PROJECTS_CATALOG)) {
-            throw new OrganizationTypeRuntimeException(organization.getType(), ORGANIZATION_TYPE__PROJECTS_CATALOG);
-            //todo discus runtime
+            throw new IllegalServiceContextException(
+                    "invalid organization type, found: " + organization.getType()
+                            + ", expected: " + ORGANIZATION_TYPE__PROJECTS_CATALOG);
+            //todo todo discus runtime - this is temporary solution
         }
         return organization;
     }
@@ -399,15 +401,17 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param context need to get organization from context
      * @return Project organization
-     * @throws OrganizationTypeRuntimeException if organization type name not equals "Project"
+     * @throws IllegalServiceContextException if organization type name not equals "Project"
      * @see #getOrganization(ServiceContext)
      */
     private Organization getProjectOrganization(ServiceContext context) {
         Organization organization = getOrganization(context);
 
         if (!organization.getType().equals(ORGANIZATION_TYPE__PROJECT)) {
-            throw new OrganizationTypeRuntimeException(organization.getType(), ORGANIZATION_TYPE__PROJECT);
-            //todo discus runtime
+            throw new IllegalServiceContextException(
+                    "invalid organization type, found: " + organization.getType()
+                            + ", expected: " + ORGANIZATION_TYPE__PROJECT);
+            //todo todo discus runtime - this is temporary solution
         }
         return organization;
     }
