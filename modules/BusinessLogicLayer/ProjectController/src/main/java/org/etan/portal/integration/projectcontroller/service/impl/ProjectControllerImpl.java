@@ -5,8 +5,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.*;
 import com.liferay.portal.kernel.service.*;
-import org.etan.portal.integration.projectcontroller.service.ProjectController;
+import org.etan.portal.integration.projectcontroller.service.*;
 import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
+import org.etan.portal.integration.projectservice.model.InfrastructureEntityProject;
 import org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectLocalService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -28,7 +29,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     private static final String ORGANIZATION_TYPE__PROJECT = "Project";
     private static final String ORGANIZATION_TYPE__PROJECTS_CATALOG = "ProjectsCatalog";
-    private static final String PROJECT_SITE_TEMPLATE = "Project Template";///todo mb bad
+    private static final String PROJECT_SITE_TEMPLATE_NAME = "Project Template";///todo mb bad
 
     @Reference
     private volatile UserLocalService userLocalService;
@@ -49,57 +50,18 @@ public class ProjectControllerImpl implements ProjectController {
     @Reference
     private volatile InfrastructureEntityProjectLocalService infrastructureEntityProjectLocalService;
 
-    private Organization getOrganization(ServiceContext context) {
-        Group group;
-        long organizationId;
-        Organization organization;
-
-        try {
-            group = context.getScopeGroup();//here PortalException
-            if (!group.isOrganization()) {
-                throw new RuntimeException("is not organization");//todo my own
-                //todo discus
-            }
-            organizationId = group.getOrganizationId();
-            organization = organizationLocalService.getOrganization(organizationId);//here PortalException
-        } catch (PortalException e) {
-            log.error(e, e);//todo some hero method or etc. or not
-            throw new RuntimeException("Can not get Organization from ServiceContext", e);//todo my own
-            //todo discus
-        }
-        return organization;
-    }
-
-    private Organization getProjectOrganization(ServiceContext context) {
-        Organization organization = getOrganization(context);
-
-        if (!organization.getType().equals(ORGANIZATION_TYPE__PROJECT)) {
-            throw new RuntimeException("organization type must be " + ORGANIZATION_TYPE__PROJECT);//todo my own
-            //todo discus
-        }
-        return organization;
-    }
-
-    private Organization getProjectsCatalogOrganization(ServiceContext context) {
-        Organization organization = getOrganization(context);
-
-        if (!organization.getType().equals(ORGANIZATION_TYPE__PROJECTS_CATALOG)) {
-            throw new RuntimeException("organization type must be " + ORGANIZATION_TYPE__PROJECTS_CATALOG);//todo my own
-            //todo discus
-        }
-        return organization;
-    }
-
     /**
      * Add user to project organization.
      * Do nothing, if user is already in.
      *
      * @param user    was added to project organization
      * @param context context of action, uses for get owner userId, organizationId
+     * @see #getProjectOrganization(ServiceContext)
      */
     public void addUser(User user, ServiceContext context) {
         Organization projectOrganization = getProjectOrganization(context);
-        organizationLocalService.addUserOrganization(user.getUserId(), projectOrganization);//todo reindex if problem occurs
+        organizationLocalService.addUserOrganization(user.getUserId(), projectOrganization);
+        //todo reindex if problem occurs
     }
 
     /**
@@ -108,11 +70,13 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param users   who was added to project organization
      * @param context context of action, uses for get owner userId, organizationId
+     * @see #getProjectOrganization(ServiceContext)
      */
     public void addUsers(List<User> users, ServiceContext context) {
         Organization projectOrganization = getProjectOrganization(context);
         for (User user : users) {
-            organizationLocalService.addUserOrganization(user.getUserId(), projectOrganization);//todo reindex if problem occurs
+            organizationLocalService.addUserOrganization(user.getUserId(), projectOrganization);
+            //todo reindex if problem occurs
         }
     }
 
@@ -126,6 +90,10 @@ public class ProjectControllerImpl implements ProjectController {
      * @param infrastructureEntityProjectIdMap "infrastructure entity project id" mapped to "infrastructure entity name"
      * @param context                          context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
+     * @throws CouldNotGetUserFromServiceContextRuntimeException if could not get user from context
+     * @throws CouldNotCreateOrganizationRuntimeException        if any problem with organization creation
+     * @see #getProjectsCatalogOrganization(ServiceContext)
+     * @see #assignProjectSiteTemplate(Organization)
      */
     //todo mb delete
     public ProjectDto createProject(String projectName, Map<String, String> infrastructureEntityProjectIdMap,
@@ -141,8 +109,8 @@ public class ProjectControllerImpl implements ProjectController {
             members.add(owner);
         } catch (PortalException e) {
             log.error(e, e);
-            throw new RuntimeException("can not find User owner of new project: : " + projectName, e);//todo my own
-            // Should not happen
+            throw new CouldNotGetUserFromServiceContextRuntimeException(ownerUserId, e);
+            //todo discus runtime
         }
 
         try {
@@ -154,13 +122,19 @@ public class ProjectControllerImpl implements ProjectController {
             );
         } catch (PortalException e) {
             log.error(e, e);
-            throw new RuntimeException("can not create new organization for project: " + projectName, e);//todo my own
-            //todo discus
+            throw new CouldNotCreateOrganizationRuntimeException(
+                    ownerUserId,
+                    projectsCatalogOrganization.getOrganizationId(),
+                    projectName,
+                    true,
+                    e);
+            //todo discus runtime
         }
 
         assignProjectSiteTemplate(newProjectOrganization);
 
-        organizationLocalService.addUserOrganization(ownerUserId, newProjectOrganization);//todo reindex if problem occurs
+        organizationLocalService.addUserOrganization(ownerUserId, newProjectOrganization);
+        //todo reindex if problem occurs
 
         projectDto = new ProjectDto.Builder()
                 .setProjectName(projectName)
@@ -169,53 +143,12 @@ public class ProjectControllerImpl implements ProjectController {
                 .setMembers(members)
                 .build();
 
-        //todo Save - save me now! Save by ProjectService now!
-//        infrastructureEntityProjectLocalService.add();
+        infrastructureEntityProjectLocalService.addAll(
+                projectDto.getInfrastructureEntityProjectIdMap(),
+                newProjectOrganization.getOrganizationId()
+        );
 
         return projectDto;
-    }
-
-    private void assignProjectSiteTemplate(Organization newProjectOrganization) {
-        LayoutSetPrototype layoutSetPrototype = null;// site template
-        LayoutSet layoutSet = null;// site
-
-        List<LayoutSetPrototype> layoutSetPrototypes =
-                layoutSetPrototypeLocalService.getLayoutSetPrototypes(newProjectOrganization.getCompanyId());
-        for (LayoutSetPrototype prototype : layoutSetPrototypes) {
-            if (prototype.getName(Locale.ENGLISH).equalsIgnoreCase(PROJECT_SITE_TEMPLATE)) {
-                layoutSetPrototype = prototype;
-                break;
-            }
-        }
-
-        if (layoutSetPrototype == null) {
-            throw new RuntimeException("can not find : " + PROJECT_SITE_TEMPLATE);//todo my own
-            //todo discus
-        }
-
-        try {
-            layoutSet = layoutSetLocalService.getLayoutSet(newProjectOrganization.getGroupId(), true);
-
-            layoutSet.setLayoutSetPrototypeLinkEnabled(true);
-            layoutSet.setLayoutSetPrototypeUuid(layoutSetPrototype.getUuid());
-            layoutSetLocalService.updateLayoutSet(layoutSet);
-
-            sitesUtil.mergeLayoutSetPrototypeLayouts(newProjectOrganization.getGroup(), layoutSet);//throws Exception
-        } catch (PortalException e) {
-            log.error(e, e);
-            throw new RuntimeException(
-                    "can not get site of new organization of project: "
-                            + newProjectOrganization.getName(),
-                    e);//todo my own
-            //todo discus
-        } catch (Exception e) {
-            log.error(e, e);
-            throw new RuntimeException(
-                    "can not set site template to site of new organization of project: "
-                            + newProjectOrganization.getName(),
-                    e);//todo my own
-            //todo discus
-        }
     }
 
     /**
@@ -227,6 +160,7 @@ public class ProjectControllerImpl implements ProjectController {
      * @param projectDto only projectName and infrastructureEntityProjectIdMap uses
      * @param context    context of action, used for get owner userId
      * @return dto of created "project" or null, If there is a problem
+     * @see #createProject(String, Map, ServiceContext)
      */
     public ProjectDto createProject(ProjectDto projectDto, ServiceContext context) {
         Map<String, String> infrastructureEntityProjectIdMap = projectDto.getInfrastructureEntityProjectIdMap();
@@ -240,11 +174,13 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param user    who was deleted from project organization
      * @param context context of action, used for get owner userId, organizationId
+     * @see #getProjectOrganization(ServiceContext)
      */
 
     public void deleteUser(User user, ServiceContext context) {
         Organization projectOrganization = getProjectOrganization(context);
-        organizationLocalService.deleteUserOrganization(user.getUserId(), projectOrganization);//todo reindex if problem occurs
+        organizationLocalService.deleteUserOrganization(user.getUserId(), projectOrganization);
+        //todo reindex if problem occurs
 
     }
 
@@ -254,42 +190,27 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param users   who was deleted from project organization
      * @param context context of action, used for get owner userId, organizationId
+     * @see #getProjectOrganization(ServiceContext)
      */
     public void deleteUsers(List<User> users, ServiceContext context) {
         Organization projectOrganization = getProjectOrganization(context);
         for (User user : users) {
-            organizationLocalService.deleteUserOrganization(user.getUserId(), projectOrganization);//todo reindex if problem occurs
+            organizationLocalService.deleteUserOrganization(user.getUserId(), projectOrganization);
+            //todo reindex if problem occurs
         }
     }
 
     /**
      * Get a project related to the current Project organization
      *
-     * @param context - context of action, used for get current organizationId
+     * @param context - context of action, used for get current organization
      * @return - ProjectDto
+     * @see #getProjectOrganization(ServiceContext)
+     * @see #getProject(Organization)
      */
-    //todo mb runtime, when invoked not in Project organization or etc.
     public ProjectDto getProject(ServiceContext context) {
         Organization projectOrganization = getProjectOrganization(context);
         return getProject(projectOrganization);
-    }
-
-    private ProjectDto getProject(Organization projectOrganization) {
-        ProjectDto projectDto;
-
-        long id = projectOrganization.getOrganizationId();
-        String name = projectOrganization.getName();
-        List<User> members = userLocalService.getOrganizationUsers(projectOrganization.getOrganizationId());
-        Map<String, String> infrastructureEntityProjectIdMap = new HashMap<>();//todo get from ProjectService
-
-        projectDto = new ProjectDto.Builder()
-                .setProjectId(id)
-                .setProjectName(name)
-                .setMembers(members)
-                .setInfrastructureEntityProjectIdMap(infrastructureEntityProjectIdMap)
-                .build();
-
-        return projectDto;
     }
 
     /**
@@ -297,24 +218,20 @@ public class ProjectControllerImpl implements ProjectController {
      *
      * @param context context of action, used for get owner userId, organizationId
      * @return list of available for projects or empty list, if no projects found
+     * @see #getProjectsCatalogOrganization(ServiceContext)
      */
-    //todo mb runtime, when invoked not in ProjectsCatalog organization or etc.
     public List<ProjectDto> getProjects(ServiceContext context) {
         List<ProjectDto> projectDtoList = new ArrayList<>();
         long userId = context.getUserId();
-        User user;
-        List<Organization> userOrganizations;
-        try {
-            user = userLocalService.getUser(userId);
-        } catch (PortalException e) {
-            log.error(e, e);
-            throw new RuntimeException("can not get User, which try to get his projects list", e);//todo my own
-            //todo discus
+
+        if (userId == 0) {
+            log.warn("try to get ProjectDto list for ServiceContext where userId == 0");
+            return projectDtoList;
         }
 
         Organization projectsCatalogOrganization = getProjectsCatalogOrganization(context);
         List<Organization> projectsCatalogOrganizationSuborganizations = projectsCatalogOrganization.getSuborganizations();
-        userOrganizations = organizationLocalService.getUserOrganizations(user.getUserId());
+        List<Organization> userOrganizations = organizationLocalService.getUserOrganizations(userId);
 
         userOrganizations.retainAll(projectsCatalogOrganizationSuborganizations);
 
@@ -326,5 +243,165 @@ public class ProjectControllerImpl implements ProjectController {
         }
 
         return projectDtoList;
+    }
+
+    /**
+     * Assign Project Site Template to site bound new Project organization.
+     * Site of this organization must be empty.(or not important?)
+     *
+     * @param newProjectOrganization new Project organization with empty site
+     */
+    private void assignProjectSiteTemplate(Organization newProjectOrganization) {
+        LayoutSetPrototype layoutSetPrototype = null;// site template
+        LayoutSet layoutSet = null;// site
+
+        List<LayoutSetPrototype> layoutSetPrototypes =
+                layoutSetPrototypeLocalService.getLayoutSetPrototypes(newProjectOrganization.getCompanyId());
+        for (LayoutSetPrototype prototype : layoutSetPrototypes) {
+            if (prototype.getName(Locale.ENGLISH).equalsIgnoreCase(PROJECT_SITE_TEMPLATE_NAME)) {
+                layoutSetPrototype = prototype;
+                break;
+            }
+        }
+
+        if (layoutSetPrototype == null) {
+            throw new SiteTemplateNotFoundRuntimeException(PROJECT_SITE_TEMPLATE_NAME);
+            //todo discus runtime
+            //todo nm that not runtime...
+        }
+
+        try {
+            layoutSet = layoutSetLocalService.getLayoutSet(newProjectOrganization.getGroupId(), true);
+
+            layoutSet.setLayoutSetPrototypeLinkEnabled(true);
+            layoutSet.setLayoutSetPrototypeUuid(layoutSetPrototype.getUuid());
+            layoutSetLocalService.updateLayoutSet(layoutSet);
+
+            sitesUtil.mergeLayoutSetPrototypeLayouts(newProjectOrganization.getGroup(), layoutSet);//throws Exception
+        } catch (PortalException e) {
+            log.error(e, e);
+            throw new CouldNotGetOrganizationSiteRuntimeException(newProjectOrganization, e);
+            //todo discus runtime
+        } catch (Exception e) {
+            log.error(e, e);
+            throw new SetSiteTemplateRuntimeException(newProjectOrganization.getGroup(), PROJECT_SITE_TEMPLATE_NAME, e);
+            //todo discus runtime
+        }
+    }
+
+    /**
+     * Get map of infrastructure entity project id, that bound to organization, where
+     * key = infrastructure entity name,
+     * value = infrastructure entity project id.
+     *
+     * @param organizationId id of organization
+     * @return map of infrastructure entity project id
+     */
+    private Map<String, String> getInfrastructureEntityProjectIdMap(long organizationId) {
+        Map<String, String> infrastructureEntityProjectIdMap = new HashMap<>();
+        List<InfrastructureEntityProject> infrastructureEntityProjects =
+                infrastructureEntityProjectLocalService.get(organizationId);
+        for (InfrastructureEntityProject infrastructureEntityProject : infrastructureEntityProjects) {
+            String infrastructureEntityName = infrastructureEntityProject.getInfrastructureEntityName();
+            String infrastructureEntityProjectId = infrastructureEntityProject.getInfrastructureEntityProjectId();
+            infrastructureEntityProjectIdMap.put(infrastructureEntityName, infrastructureEntityProjectId);
+        }
+
+        return infrastructureEntityProjectIdMap;
+    }
+
+    /**
+     * Get organization from ServiceContext.
+     *
+     * @param context context of action
+     * @return current for context organization
+     * @throws IsNotOrganizationRuntimeException                         if site not bound to organization
+     * @throws CouldNotGetOrganizationFromServiceContextRuntimeException if other problem
+     *                                                                   with get organization from context occurs
+     */
+    private Organization getOrganization(ServiceContext context) {
+        Organization organization;
+
+        try {
+            Group group = context.getScopeGroup();//here PortalException
+
+            if (!group.isOrganization()) {
+                throw new IsNotOrganizationRuntimeException(group);
+                //todo discus runtime
+            }
+            long organizationId = group.getOrganizationId();
+
+            /* Not achievable PortalException below, I think */
+            organization = organizationLocalService.getOrganization(organizationId);
+        } catch (PortalException e) {
+            throw new CouldNotGetOrganizationFromServiceContextRuntimeException(e);
+            //todo discus runtime
+        }
+        return organization;
+    }
+
+    /**
+     * Get ProjectDto bound to projectOrganization.</br>
+     * ProjectDto fields: id, name, members - gets from projectOrganization;
+     * infrastructureEntityProjectIdMap field got from InfrastructureEntityProjectLocalService
+     *
+     * @param projectOrganization need to get project fields: id, name, members
+     * @return ProjectsCatalog organization
+     * @throws OrganizationTypeRuntimeException if organization type name not equals "ProjectsCatalog"
+     * @see #getInfrastructureEntityProjectIdMap(long)
+     * @see InfrastructureEntityProjectLocalService
+     */
+    private ProjectDto getProject(Organization projectOrganization) {
+        ProjectDto projectDto;
+
+        long organizationId = projectOrganization.getOrganizationId();
+        String projectOrganizationName = projectOrganization.getName();
+        List<User> members = userLocalService.getOrganizationUsers(projectOrganization.getOrganizationId());
+        Map<String, String> infrastructureEntityProjectIdMap = getInfrastructureEntityProjectIdMap(organizationId);
+
+        projectDto = new ProjectDto.Builder()
+                .setProjectId(organizationId)
+                .setProjectName(projectOrganizationName)
+                .setMembers(members)
+                .setInfrastructureEntityProjectIdMap(infrastructureEntityProjectIdMap)
+                .build();
+
+        return projectDto;
+    }
+
+    /**
+     * Get ProjectsCatalog organization
+     *
+     * @param context need to get organization from context
+     * @return ProjectsCatalog organization
+     * @throws OrganizationTypeRuntimeException if organization type name not equals "ProjectsCatalog"
+     * @see #getOrganization(ServiceContext)
+     */
+    private Organization getProjectsCatalogOrganization(ServiceContext context) {
+        Organization organization = getOrganization(context);
+
+        if (!organization.getType().equals(ORGANIZATION_TYPE__PROJECTS_CATALOG)) {
+            throw new OrganizationTypeRuntimeException(organization.getType(), ORGANIZATION_TYPE__PROJECTS_CATALOG);
+            //todo discus runtime
+        }
+        return organization;
+    }
+
+    /**
+     * Get Project organization
+     *
+     * @param context need to get organization from context
+     * @return Project organization
+     * @throws OrganizationTypeRuntimeException if organization type name not equals "Project"
+     * @see #getOrganization(ServiceContext)
+     */
+    private Organization getProjectOrganization(ServiceContext context) {
+        Organization organization = getOrganization(context);
+
+        if (!organization.getType().equals(ORGANIZATION_TYPE__PROJECT)) {
+            throw new OrganizationTypeRuntimeException(organization.getType(), ORGANIZATION_TYPE__PROJECT);
+            //todo discus runtime
+        }
+        return organization;
     }
 }
