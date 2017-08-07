@@ -1,0 +1,3 @@
+Bundle-Name: GitLabInfrastructureEntityApiImpl
+Bundle-SymbolicName: org.etan.portal.integration.infrastructureentityapi.GitLabInfrastructureEntityApiImpl
+Bundle-Version: 1.0.0

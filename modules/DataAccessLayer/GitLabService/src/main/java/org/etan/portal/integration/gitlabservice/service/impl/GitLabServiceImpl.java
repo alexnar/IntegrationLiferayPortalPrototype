@@ -1,6 +1,7 @@
 package org.etan.portal.integration.gitlabservice.service.impl;
 
 import org.etan.portal.integration.gitlabservice.service.GitLabService;
+import org.etan.portal.integration.gitlabservice.service.GitLabServiceException;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -19,8 +20,9 @@ public class GitLabServiceImpl implements GitLabService {
 
     // TODO enter realization of methods
 
+
     @Override
-    public long createRepository() {
+    public long createRepository(String repositoryName) throws GitLabServiceException {
         return 0;
     }
 

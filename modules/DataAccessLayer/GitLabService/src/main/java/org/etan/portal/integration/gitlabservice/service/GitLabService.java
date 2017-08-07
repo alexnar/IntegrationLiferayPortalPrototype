@@ -11,17 +11,20 @@ public interface GitLabService {
     /**
      * Creates repository and return its id
      *
+     * @param repositoryName name of new repository
      * @return id of created repository
+     * @throws GitLabServiceException if any problems occurs
      */
-    long createRepository();
+    long createRepository(String repositoryName) throws GitLabServiceException;
 
     /**
      * Gives the user access to the repository
      *
      * @param userId       id of gitLab user
      * @param repositoryId id of gitLab repository
+     * @throws GitLabServiceException if any problems occurs
      */
-    void addUserToRepository(long userId, long repositoryId);
+    void addUserToRepository(long userId, long repositoryId) throws GitLabServiceException;
 
     /**
      * Takes the user from the repository. Does not do anything
@@ -29,6 +32,7 @@ public interface GitLabService {
      *
      * @param userId       id of gitLab user
      * @param repositoryId id of gitLab repository
+     * @throws GitLabServiceException if any problems occurs
      */
-    void deleteUserFromRepository(long userId, long repositoryId);
+    void deleteUserFromRepository(long userId, long repositoryId) throws GitLabServiceException;
 }
