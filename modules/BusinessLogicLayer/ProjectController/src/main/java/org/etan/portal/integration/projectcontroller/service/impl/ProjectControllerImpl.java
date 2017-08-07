@@ -29,6 +29,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     private static final String ORGANIZATION_TYPE__PROJECT = "Project";
     private static final String ORGANIZATION_TYPE__PROJECTS_CATALOG = "ProjectsCatalog";
+    private static final String ORGANIZATION_COMMENT = "Project organization uses for project's manipulations";
     private static final String PROJECT_SITE_TEMPLATE_NAME = "Project Template";///todo mb bad
 
     @Reference
@@ -118,7 +119,13 @@ public class ProjectControllerImpl implements ProjectController {
                     ownerUserId,
                     projectsCatalogOrganization.getOrganizationId(),
                     projectName,
-                    true
+                    ORGANIZATION_TYPE__PROJECT,
+                    0,
+                    0,
+                    ListTypeConstants.ORGANIZATION_STATUS_DEFAULT,
+                    ORGANIZATION_COMMENT,
+                    true,
+                    new ServiceContext()//seems like bad, but worked when test it
             );
         } catch (PortalException e) {
             log.error(e, e);
