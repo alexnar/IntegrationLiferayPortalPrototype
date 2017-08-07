@@ -1,5 +1,6 @@
 package org.etan.portal.integration.projectmanage.service.impl;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -53,8 +54,13 @@ public class ProjectManageImpl implements ProjectManage {
                 // TODO: Rollback changes. DISCUSS IT! (Delete project can also be failed)
             }
         }
-        ProjectDto project = projectController.
-                createProject(projectName, infrastructureEntityProjectIdMap, serviceContext);
+        ProjectDto project = null;
+        try {
+            project = projectController.
+                    createProject(projectName, infrastructureEntityProjectIdMap, serviceContext);
+        } catch (PortalException e) {
+            logger.error(e, e);
+        }
         return project;
     }
 

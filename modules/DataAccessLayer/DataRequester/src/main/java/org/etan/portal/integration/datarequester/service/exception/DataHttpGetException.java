@@ -1,4 +1,4 @@
-package org.etan.portal.integration.datagetter.service.exception;
+package org.etan.portal.integration.datarequester.service.exception;
 
 /**
  * Signals that while getting data by http protocol

@@ -1,21 +1,20 @@
-package org.etan.portal.integration.datagetter.service.impl;
+package org.etan.portal.integration.datarequester.service.impl;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.auth.BasicScheme;
-import org.etan.portal.integration.datagetter.service.exception.DataHttpGetException;
-import org.etan.portal.integration.datagetter.service.DataGetterService;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.etan.portal.integration.datarequester.service.DataRequesterService;
+import org.etan.portal.integration.datarequester.service.exception.DataHttpGetException;
 import org.osgi.service.component.annotations.Component;
-
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,14 +23,14 @@ import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 
 /**
- * DataGetterService implementation.
+ * DataRequesterService implementation.
  */
 @Component(
-        name = "DataGetterServiceImpl",
+        name = "DataRequesterServiceImpl",
         immediate = true,
-        service = DataGetterService.class
+        service = DataRequesterService.class
 )
-public class DataGetterServiceImpl implements DataGetterService {
+public class DataRequesterServiceImpl implements DataRequesterService {
 
     private static final String WRONG_URL_MESSAGE = "Probably you specify wrong URL";
     private static final String CONNECTION_PROBLEM_MESSAGE = "Probably you have problems with your connection";
@@ -40,7 +39,7 @@ public class DataGetterServiceImpl implements DataGetterService {
     private static final String AUTHORIZATION_ERROR = "Authorization failed";
 
 
-    private static final Log logger = LogFactoryUtil.getLog(DataGetterServiceImpl.class);
+    private static final Log logger = LogFactoryUtil.getLog(DataRequesterServiceImpl.class);
 
 
     @Override

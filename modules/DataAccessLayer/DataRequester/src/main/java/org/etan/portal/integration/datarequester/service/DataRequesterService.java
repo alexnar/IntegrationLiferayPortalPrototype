@@ -1,14 +1,14 @@
-package org.etan.portal.integration.datagetter.service;
+package org.etan.portal.integration.datarequester.service;
 
 
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.etan.portal.integration.datagetter.service.exception.DataHttpGetException;
+import org.etan.portal.integration.datarequester.service.exception.DataHttpGetException;
 
 /**
- * DataGetterService interface provides methods
+ * DataRequesterService interface provides methods
  * for getting data, from different sources
  */
-public interface DataGetterService {
+public interface DataRequesterService {
     /**
      * Get data from specified url. If process
      * gone wrong throws DataHttpGetException.

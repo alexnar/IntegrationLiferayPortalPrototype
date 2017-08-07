@@ -1,0 +1,6 @@
+Bundle-Name: DataRequester
+Bundle-SymbolicName: datagetter
+Bundle-Version: 1.0.0
+Import-Package: *
+Export-Package: org.etan.portal.integration.datarequester.service,\
+                org.etan.portal.integration.datarequester.service.exception
