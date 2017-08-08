@@ -1,6 +1,6 @@
 package org.etan.portal.integration.nexusservice.service.script;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import jdk.nashorn.internal.ir.annotations.Reference;
@@ -73,22 +73,18 @@ public class NexusRemoteScriptManager {
      * script server.
      *
      * @param nexusScriptDto - DTO of script to add
-     * @return - response of script execution
      * @throws NexusException - if something went wrong while
      *                        communication with Nexus server.
      */
-    private String addScript(NexusScriptDto nexusScriptDto, NexusScriptAction action) throws NexusException {
-        StringBuilder response;
+    private void addScript(NexusScriptDto nexusScriptDto, NexusScriptAction action) throws NexusException {
         Gson gson = new Gson();
         String scriptJson = gson.toJson(nexusScriptDto);
         String runScriptUrl = SCRIPT_URL + action.getAction() + SCRIPT_URL_EXECUTION_POSTFIX;
         try {
-            response = dataRequesterService.postJsonToUrlWithAuthorization(
-                    runScriptUrl, USERNAME, PASSWORD, scriptJson);
+            dataRequesterService.postJsonToUrlWithAuthorization(runScriptUrl, USERNAME, PASSWORD, scriptJson);
         } catch (DataRequestException e) {
             throw new NexusException(e.getMessage(), e);
         }
-        return response.toString();
     }
 
 
@@ -129,6 +125,28 @@ public class NexusRemoteScriptManager {
      *                        communication with Nexus server.
      */
     private boolean checkIfScriptExists(String scriptName) throws NexusException {
-        return true;
+        StringBuilder jsonStringBuilder;
+        try {
+            jsonStringBuilder =
+                    dataRequesterService.getDataFromUrlWithAuthorization(SCRIPT_URL, USERNAME, PASSWORD);
+        } catch (DataRequestException e) {
+            throw new NexusException(e.getMessage(), e);
+        }
+        String json = jsonStringBuilder.toString();
+        JsonParser jsonParser = new JsonParser();
+        JsonArray jsonArray = jsonParser.parse(json).getAsJsonArray();
+        for (JsonElement jsonElement : jsonArray) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonElement scriptNameOnServer = jsonObject.get("name");
+            if (scriptNameOnServer == null) {
+                continue;
+            }
+            String scriptNameOnServerValue = scriptNameOnServer.getAsString();
+            if (scriptNameOnServerValue.equals(scriptName)) {
+                return true;
+            }
+        }
+        return false;
     }
+
 }

@@ -20,4 +20,4 @@ public enum NexusScriptAction {
     public String getAction() {
         return action;
     }
-    }
+}
