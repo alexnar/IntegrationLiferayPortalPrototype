@@ -1,4 +1,4 @@
-package org.etan.portal.integration.nexusinfrastructureentityapiimpl.service.impl;
+package org.etan.portal.integration.infrastructureentityapi.service.impl;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.portal.kernel.model.User;

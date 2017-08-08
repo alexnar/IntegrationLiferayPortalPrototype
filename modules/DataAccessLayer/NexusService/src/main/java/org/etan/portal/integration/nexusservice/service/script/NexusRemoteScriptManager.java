@@ -3,12 +3,11 @@ package org.etan.portal.integration.nexusservice.service.script;
 import com.google.gson.*;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import jdk.nashorn.internal.ir.annotations.Reference;
 import org.etan.portal.integration.datarequester.service.DataRequesterService;
 import org.etan.portal.integration.datarequester.service.exception.DataRequestException;
-import org.etan.portal.integration.datarequester.service.impl.DataRequesterServiceImpl;
 import org.etan.portal.integration.nexusservice.service.dto.NexusScriptDto;
 import org.etan.portal.integration.nexusservice.service.exception.NexusException;
+import org.osgi.service.component.annotations.Reference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class NexusRemoteScriptManager {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin123";
 
-    private static final Log logger = LogFactoryUtil.getLog(DataRequesterServiceImpl.class);
+    private static final Log logger = LogFactoryUtil.getLog(NexusRemoteScriptManager.class);
 
     @Reference
     private DataRequesterService dataRequesterService;

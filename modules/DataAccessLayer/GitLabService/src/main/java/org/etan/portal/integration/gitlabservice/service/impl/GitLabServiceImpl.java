@@ -1,10 +1,10 @@
 package org.etan.portal.integration.gitlabservice.service.impl;
 
-import jdk.nashorn.internal.ir.annotations.Reference;
 import org.etan.portal.integration.datarequester.service.DataRequesterService;
 import org.etan.portal.integration.gitlabservice.service.GitLabService;
 import org.etan.portal.integration.gitlabservice.service.GitLabServiceException;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Service used for get aces to some methods of GitLab server
