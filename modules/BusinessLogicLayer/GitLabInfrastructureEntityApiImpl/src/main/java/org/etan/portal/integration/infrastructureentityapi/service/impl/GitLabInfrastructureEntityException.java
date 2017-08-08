@@ -3,6 +3,8 @@ package org.etan.portal.integration.infrastructureentityapi.service.impl;
 import org.etan.portal.integration.infrastructureentityapi.service.exception.InfrastructureEntityException;
 
 /**
+ * If there are problems when interacting with GitLabService
+ *
  * @author Efimov Timur
  * @version 1.0.1
  */

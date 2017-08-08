@@ -29,7 +29,8 @@ import java.io.Serializable;
 )
 public class GitLabInfrastructureEntity implements InfrastructureEntity {
 
-    private static final Log log = LogFactoryUtil.getLog(GitLabInfrastructureEntity.class);
+    private static final Log log =
+            LogFactoryUtil.getLog(GitLabInfrastructureEntity.class);
 
     private static final String GITLAB_USER_ID_FIELD = "gitlabUserId";
     private static final String INFRASTRUCTURE_ENTITY_NAME = "GITLAB";
@@ -42,10 +43,11 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
      *
      * @param projectName - name of project to create.
      * @return - String Id of project in GitLab.
-     * @throws GitLabInfrastructureEntityException - throws if some exception happened while
-     *                                             creating project
+     * @throws GitLabInfrastructureEntityException - throws if some exception
+     *                                             happened while creating project
      */
-    public String createInfrastructureEntityProject(String projectName) throws GitLabInfrastructureEntityException {
+    public String createInfrastructureEntityProject(
+            String projectName) throws GitLabInfrastructureEntityException {
         String projectIdString;
         try {
             long projectId = gitLabService.createRepository(projectName);
@@ -64,10 +66,12 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
      * @param user                          -  user to assign
      * @param infrastructureEntityProjectId - String id of GitLab project
      *                                      where user would be assigned.
-     * @throws GitLabInfrastructureEntityException - throws if some exception happened while
-     *                                             assign user
+     * @throws GitLabInfrastructureEntityException - throws if some exception
+     *                                             happened while assign user
      */
-    public void assignUser(User user, String infrastructureEntityProjectId) throws GitLabInfrastructureEntityException {
+    public void assignUser(User user, String infrastructureEntityProjectId)
+            throws GitLabInfrastructureEntityException {
+
         long gitlabUserId = getGitlabUserId(user);
         long gitlabProjectId = getGitlabProjectId(infrastructureEntityProjectId);
 
@@ -75,7 +79,10 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
             gitLabService.addUserToRepository(gitlabUserId, gitlabProjectId);
         } catch (GitLabServiceException e) {
             String msg = "Could not assign user to project. "
-                    + "{gitlabUserId: " + gitlabUserId + "; gitlabProjectId" + gitlabProjectId + ";}";
+                    + "{ "
+                    + "gitlabUserId: " + gitlabUserId + ", "
+                    + "gitlabProjectId" + gitlabProjectId
+                    + " }";
             log.error(msg, e);
             throw new GitLabInfrastructureEntityException(msg, e);
         }
@@ -87,10 +94,12 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
      * @param user                          - user to unassign
      * @param infrastructureEntityProjectId - String id of GitLab project
      *                                      where user would be unassigned.
-     * @throws GitLabInfrastructureEntityException - throws if some exception happened while
-     *                                             unassign user
+     * @throws GitLabInfrastructureEntityException - throws if some exception
+     *                                             happened while unassign user
      */
-    public void unassignUser(User user, String infrastructureEntityProjectId) throws GitLabInfrastructureEntityException {
+    public void unassignUser(User user, String infrastructureEntityProjectId)
+            throws GitLabInfrastructureEntityException {
+
         long gitlabUserId = getGitlabUserId(user);
         long gitlabProjectId = getGitlabProjectId(infrastructureEntityProjectId);
 
@@ -98,7 +107,10 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
             gitLabService.deleteUserFromRepository(gitlabUserId, gitlabProjectId);
         } catch (GitLabServiceException e) {
             String msg = "Could not unassign user from project. "
-                    + "{gitlabUserId: " + gitlabUserId + "; gitlabProjectId" + gitlabProjectId + ";}";
+                    + "{"
+                    + "gitlabUserId: " + gitlabUserId + ", "
+                    + "gitlabProjectId" + gitlabProjectId
+                    + " }";
             log.error(msg, e);
             throw new GitLabInfrastructureEntityException(msg, e);
         }
@@ -113,7 +125,9 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
         return INFRASTRUCTURE_ENTITY_NAME;
     }
 
-    private long getGitlabProjectId(String infrastructureEntityProjectId) throws GitLabInfrastructureEntityException {
+    private long getGitlabProjectId(String infrastructureEntityProjectId)
+            throws GitLabInfrastructureEntityException {
+
         long gitlabProjectId = -1;
 
         if (!isLong(infrastructureEntityProjectId)) {
@@ -131,10 +145,12 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
         long gitlabUserId = -1;
 
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
-        Serializable userGitlabIdSerializable = userExpandoBridge.getAttribute(GITLAB_USER_ID_FIELD);
+        Serializable userGitlabIdSerializable =
+                userExpandoBridge.getAttribute(GITLAB_USER_ID_FIELD);
 
         if (!(userGitlabIdSerializable instanceof String)) {
-            throw new GitLabInfrastructureEntityException("custom user id: gitlabUserId - is not a string");
+            throw new GitLabInfrastructureEntityException(
+                    "custom user id: gitlabUserId - is not a string");
         }
 
         String userGitlabIdString = (String) userGitlabIdSerializable;

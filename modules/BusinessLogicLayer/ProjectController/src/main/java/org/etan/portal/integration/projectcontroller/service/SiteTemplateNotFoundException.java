@@ -1,6 +1,8 @@
 package org.etan.portal.integration.projectcontroller.service;
 
 /**
+ * If site template with some name not found.
+ *
  * @author Efimov Timur
  * @version 1.0.1
  */

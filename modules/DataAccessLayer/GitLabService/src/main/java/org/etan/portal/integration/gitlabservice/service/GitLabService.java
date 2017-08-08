@@ -24,7 +24,8 @@ public interface GitLabService {
      * @param repositoryId id of gitLab repository
      * @throws GitLabServiceException if any problems occurs
      */
-    void addUserToRepository(long userId, long repositoryId) throws GitLabServiceException;
+    void addUserToRepository(long userId, long repositoryId)
+            throws GitLabServiceException;
 
     /**
      * Takes the user from the repository. Does not do anything
@@ -34,5 +35,6 @@ public interface GitLabService {
      * @param repositoryId id of gitLab repository
      * @throws GitLabServiceException if any problems occurs
      */
-    void deleteUserFromRepository(long userId, long repositoryId) throws GitLabServiceException;
+    void deleteUserFromRepository(long userId, long repositoryId)
+            throws GitLabServiceException;
 }

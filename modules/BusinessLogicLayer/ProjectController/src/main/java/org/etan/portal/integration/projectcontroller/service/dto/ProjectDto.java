@@ -77,10 +77,13 @@ public class ProjectDto {
          * key = infrastructure entity name,
          * value = infrastructure entity project id
          *
-         * @param infrastructureEntityProjectIdMap map of infrastructure entity project id
+         * @param infrastructureEntityProjectIdMap infrastructure entity
+         *                                         project id map
          */
-        public Builder setInfrastructureEntityProjectIdMap(Map<String, String> infrastructureEntityProjectIdMap) {
-            this.infrastructureEntityProjectIdMap = infrastructureEntityProjectIdMap;
+        public Builder setInfrastructureEntityProjectIdMap(
+                Map<String, String> infrastructureEntityProjectIdMap) {
+            this.infrastructureEntityProjectIdMap =
+                    infrastructureEntityProjectIdMap;
             return this;
         }
 
