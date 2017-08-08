@@ -26,6 +26,7 @@ public class NexusServiceImpl implements NexusService {
     private static final String USER_ID_FIELD = "userId";
     private static final String PRIVILEGE_NAME_FIELD = "privilegeName";
     private static final String ROLE_NAME_FIELD = "roleName";
+    private static final String ROLE_ID_POSTFIX = "-user-privileges-role";
 
     private NexusScripts nexusScripts = new NexusScripts();
     private NexusRemoteScriptManager nexusRemoteScriptManager = new NexusRemoteScriptManager();
@@ -47,7 +48,7 @@ public class NexusServiceImpl implements NexusService {
         Map<String, String> parameters = new HashMap<>();
         //TODO: repository could be not only maven
         String privileges = "nx-repository-view-maven2-" + repositoryId + "-*";
-        String roleName = repositoryId + "-user-privileges-role";
+        String roleName = repositoryId + ROLE_ID_POSTFIX;
         parameters.put(USER_ID_FIELD, userId);
         parameters.put(PRIVILEGE_NAME_FIELD, privileges);
         parameters.put(ROLE_NAME_FIELD, roleName);
@@ -58,7 +59,12 @@ public class NexusServiceImpl implements NexusService {
     public void unassignUserFromRepository(String userId, String repositoryId) throws NexusException {
         NexusScriptDto unassignUserFromRepositoryScript =
                 nexusScripts.getUnassignUserToRepositoryScript(userId, repositoryId);
-        nexusRemoteScriptManager.executeScript(unassignUserFromRepositoryScript, NexusScriptAction.UNASSIGN_USER, null);
+        Map<String, String> parameters = new HashMap<>();
+        String roleName = repositoryId + ROLE_ID_POSTFIX;
+        parameters.put(USER_ID_FIELD, userId);
+        parameters.put(ROLE_NAME_FIELD, roleName);
+        nexusRemoteScriptManager.executeScript(unassignUserFromRepositoryScript, NexusScriptAction.UNASSIGN_USER,
+                parameters);
     }
 
     @Override

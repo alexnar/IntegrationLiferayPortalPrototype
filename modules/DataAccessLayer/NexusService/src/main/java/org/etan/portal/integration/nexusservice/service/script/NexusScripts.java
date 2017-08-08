@@ -4,12 +4,21 @@ import com.google.gson.Gson;
 import org.etan.portal.integration.nexusservice.service.dto.NexusScriptDto;
 
 /**
+ * Contains methods which return
+ * nexus api scripts for doing some
+ * action in Nexus Repository
  * @author Naryzhny Alex
  */
 public class NexusScripts {
     private static final String SCRIPT_TYPE = "groovy";
 
-    public NexusScriptDto getCreateMavenRepositoryScript(String repositoryName) {
+    /**
+     * Script for creation Maven hosted repository.
+     *
+     * @param repositoryId - name of repository to create
+     * @return - script DTO
+     */
+    public NexusScriptDto getCreateMavenRepositoryScript(String repositoryId) {
         String script = "" +
                 "import org.sonatype.nexus.blobstore.api.BlobStoreManager;\n" +
                 "import org.sonatype.nexus.repository.storage.WritePolicy;\n" +
@@ -31,6 +40,13 @@ public class NexusScripts {
         return nexusScriptDto;
     }
 
+    /**
+     * Script for assign user to repository.
+     *
+     * @param userId - user to assign id
+     * @param repositoryId - repository to assign id
+     * @return - script DTO
+     */
     public NexusScriptDto getAssignUserToRepositoryScript(String userId, String repositoryId) {
         String script = "" +
                 "import org.sonatype.nexus.security.user.UserManager;\n" +
@@ -73,21 +89,41 @@ public class NexusScripts {
         return nexusScriptDto;
     }
 
+    /**
+     * Script for unassign user to repository.
+     *
+     * @param userId - user to unassign id
+     * @param repositoryId - repository to unassign id
+     * @return - script DTO
+     */
     public NexusScriptDto getUnassignUserToRepositoryScript(String userId, String repositoryId) {
-        return null;
+        String script = "" +
+                "def argsMap = args.split('&').inject([:]) { map, token ->\n" +
+                "    token.split('=').with { map[it[0]] = it[1] }\n" +
+                "    map\n" +
+                "};\n" +
+                "\n" +
+                "def roleName = argsMap.getAt(\"roleName\").toString();\n" +
+                "def userId = argsMap.getAt(\"userId\").toString();\n" +
+                "def user = security.securitySystem.getUser(userId);\n" +
+                "\n" +
+                "List<String> roles = new ArrayList<>();\n" +
+                "user.getRoles().each {\n" +
+                "    if (it.getRoleId() != roleName) {\n" +
+                "        roles.add(it.getRoleId());\n" +
+                "    }\n" +
+                "};\n" +
+                "user = security.setUserRoles(userId, roles);\n" +
+                "return user;";
+        String scriptName = NexusScriptAction.UNASSIGN_USER.getAction();
+        NexusScriptDto nexusScriptDto = new NexusScriptDto.Builder().setScriptName(scriptName).
+                setScriptType(SCRIPT_TYPE).setScriptContent(script).build();
+        return nexusScriptDto;
     }
 
     public NexusScriptDto getLastArtifactsScript(String repositoryId, int artifactsCount) {
         return null;
     }
 
-
-    public static void main(String[] args) {
-        Gson gson = new Gson();
-        NexusScriptDto assignUserToRepositoryScript = new NexusScripts().getAssignUserToRepositoryScript(null, null);
-        String s = gson.toJson(assignUserToRepositoryScript);
-        System.out.println();
-
-    }
 
 }
