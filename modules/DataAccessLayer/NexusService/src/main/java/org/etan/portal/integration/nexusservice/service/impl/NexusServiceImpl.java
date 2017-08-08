@@ -23,6 +23,9 @@ import java.util.Map;
 public class NexusServiceImpl implements NexusService {
 
     private static final String REPOSITORY_NAME_FIELD = "repositoryName";
+    private static final String USER_ID_FIELD = "userId";
+    private static final String PRIVILEGE_NAME_FIELD = "privilegeName";
+    private static final String ROLE_NAME_FIELD = "roleName";
 
     private NexusScripts nexusScripts = new NexusScripts();
     private NexusRemoteScriptManager nexusRemoteScriptManager = new NexusRemoteScriptManager();
@@ -41,7 +44,14 @@ public class NexusServiceImpl implements NexusService {
     public void assignUserToRepository(String userId, String repositoryId) throws NexusException {
         NexusScriptDto assignUserToRepositoryScript =
                 nexusScripts.getAssignUserToRepositoryScript(userId, repositoryId);
-        nexusRemoteScriptManager.executeScript(assignUserToRepositoryScript, NexusScriptAction.ASSIGN_USER, null);
+        Map<String, String> parameters = new HashMap<>();
+        //TODO: repository could be not only maven
+        String privileges = "nx-repository-view-maven2-" + repositoryId + "-*";
+        String roleName = repositoryId + "-user-privileges-role";
+        parameters.put(USER_ID_FIELD, userId);
+        parameters.put(PRIVILEGE_NAME_FIELD, privileges);
+        parameters.put(ROLE_NAME_FIELD, roleName);
+        nexusRemoteScriptManager.executeScript(assignUserToRepositoryScript, NexusScriptAction.ASSIGN_USER, parameters);
     }
 
     @Override
