@@ -57,6 +57,8 @@ public class DataRequesterServiceImpl implements DataRequesterService {
     private static final String GET_DATA_ERROR = "Error getting page html";
     private static final String AUTHORIZATION_ERROR = "Authorization failed";
     private static final String CANNOT_ENCODE_PARAMETERS_ERROR = "Cannot encode parameters";
+    private static final String BAD_RESPONSE = "Bad response from server";
+    private static final int OK_STATUS_CODE = 200;
 
 
     private static final Log logger = LogFactoryUtil.getLog(DataRequesterServiceImpl.class);
@@ -149,6 +151,9 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         httpPost.setEntity(jsonContentEntity);
         StringBuilder httpResponse;
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+            if (getStatusCode(response) != OK_STATUS_CODE) {
+                throw new DataRequestException(BAD_RESPONSE);
+            }
             HttpEntity httpEntity = response.getEntity();
             if (httpEntity == null) {
                 return new StringBuilder();
@@ -192,6 +197,9 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
         StringBuilder httpResponse;
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+            if (getStatusCode(response) != OK_STATUS_CODE) {
+                throw new DataRequestException(BAD_RESPONSE);
+            }
             HttpEntity httpEntity = response.getEntity();
             if (httpEntity == null) {
                 return new StringBuilder();
@@ -310,6 +318,7 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         }
     }
 
+
     /**
      * Create HttpClient, that can visit that can visit danger sites,
      * as GitLab on local server on https :)
@@ -343,4 +352,9 @@ public class DataRequesterServiceImpl implements DataRequesterService {
                 .build();
     }
 
+    private int getStatusCode(CloseableHttpResponse response) {
+        StatusLine statusLine = response.getStatusLine();
+        int statusCode = statusLine.getStatusCode();
+        return statusCode;
+    }
 }

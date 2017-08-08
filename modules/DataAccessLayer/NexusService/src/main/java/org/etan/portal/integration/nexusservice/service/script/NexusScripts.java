@@ -30,10 +30,14 @@ public class NexusScripts {
                 "    map\n" +
                 "}\n" +
                 "\n" +
-                "def repositoryName = argsMap.getAt(\"repositoryName\")\n" +
-                "\n" +
-                "repository.createMavenHosted(repositoryName, BlobStoreManager.DEFAULT_BLOBSTORE_NAME, true,\n" +
-                "        VersionPolicy.MIXED, WritePolicy.ALLOW, LayoutPolicy.STRICT)";
+                "def repositoryName = argsMap.getAt(\"repositoryName\").toString();\n" +
+                "def repo = repository.repositoryManager.get(repositoryName);\n" +
+                "if (repo != null) {\n" +
+                "    return \"REPOSITORY_EXISTS\";\n" +
+                "}\n" +
+                "repo = repository.createMavenHosted(repositoryName, BlobStoreManager.DEFAULT_BLOBSTORE_NAME, true,\n" +
+                "        VersionPolicy.MIXED, WritePolicy.ALLOW, LayoutPolicy.STRICT)\n" +
+                "return repo;";
         String scriptName = NexusScriptAction.CREATE_MAVEN_HOSTED.getAction();
         NexusScriptDto nexusScriptDto = new NexusScriptDto.Builder().setScriptName(scriptName).
                 setScriptType(SCRIPT_TYPE).setScriptContent(script).build();
