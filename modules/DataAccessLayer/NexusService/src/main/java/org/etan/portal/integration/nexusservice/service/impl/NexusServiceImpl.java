@@ -7,6 +7,7 @@ import org.etan.portal.integration.nexusservice.service.script.NexusRemoteScript
 import org.etan.portal.integration.nexusservice.service.script.NexusScriptAction;
 import org.etan.portal.integration.nexusservice.service.script.NexusScripts;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,9 @@ public class NexusServiceImpl implements NexusService {
     private static final String ROLE_ID_POSTFIX = "-user-privileges-role";
 
     private NexusScripts nexusScripts = new NexusScripts();
-    private NexusRemoteScriptManager nexusRemoteScriptManager = new NexusRemoteScriptManager();
+
+    @Reference
+    private NexusRemoteScriptManager nexusRemoteScriptManager;
 
     @Override
     public String createMavenHostedRepository(String repositoryName) throws NexusException {

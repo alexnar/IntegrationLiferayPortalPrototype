@@ -7,6 +7,7 @@ import org.etan.portal.integration.datarequester.service.DataRequesterService;
 import org.etan.portal.integration.datarequester.service.exception.DataRequestException;
 import org.etan.portal.integration.nexusservice.service.dto.NexusScriptDto;
 import org.etan.portal.integration.nexusservice.service.exception.NexusException;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import java.util.HashMap;
@@ -22,6 +23,10 @@ import java.util.Map;
  *
  * @author Naryzhny Alex
  */
+@Component(
+        immediate = true,
+        service = NexusRemoteScriptManager.class
+)
 public class NexusRemoteScriptManager {
 
     // TODO: Make configurable. IMPORTANT: URL must end with "/" !!!
@@ -78,9 +83,8 @@ public class NexusRemoteScriptManager {
     private void addScript(NexusScriptDto nexusScriptDto, NexusScriptAction action) throws NexusException {
         Gson gson = new Gson();
         String scriptJson = gson.toJson(nexusScriptDto);
-        String runScriptUrl = SCRIPT_URL + action.getAction() + SCRIPT_URL_EXECUTION_POSTFIX;
         try {
-            dataRequesterService.postJsonToUrlWithAuthorization(runScriptUrl, USERNAME, PASSWORD, scriptJson);
+            dataRequesterService.postJsonToUrlWithAuthorization(SCRIPT_URL, USERNAME, PASSWORD, scriptJson);
         } catch (DataRequestException e) {
             throw new NexusException(e.getMessage(), e);
         }
@@ -104,9 +108,10 @@ public class NexusRemoteScriptManager {
     private String executeExistingScript(NexusScriptAction action,
                                          Map<String, String> parameters) throws NexusException {
         StringBuilder response;
+        String runScriptUrl = SCRIPT_URL + action.getAction() + SCRIPT_URL_EXECUTION_POSTFIX;
         try {
             response = dataRequesterService.postParametersToUrlWithAuthorization(
-                    SCRIPT_URL, USERNAME, PASSWORD, parameters);
+                    runScriptUrl, USERNAME, PASSWORD, parameters);
         } catch (DataRequestException e) {
             throw new NexusException(e.getMessage(), e);
         }

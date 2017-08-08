@@ -15,7 +15,8 @@ import java.io.Serializable;
 @Component(
         immediate = true,
         property = {
-                // TODO enter required service properties
+                "osgi.command.scope=test",
+                "osgi.command.function=createInfrastructureEntityProject"
         },
         service = InfrastructureEntity.class
 )
