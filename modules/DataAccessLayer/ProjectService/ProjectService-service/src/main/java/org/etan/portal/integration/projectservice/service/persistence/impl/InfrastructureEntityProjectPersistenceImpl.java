@@ -1225,7 +1225,7 @@ public class InfrastructureEntityProjectPersistenceImpl
                 finderCache.removeResult(FINDER_PATH_COUNT_ALL,
                         FINDER_ARGS_EMPTY);
 
-                throw processException(e);
+				throw processException(e);
             } finally {
                 closeSession(session);
             }
@@ -1234,14 +1234,14 @@ public class InfrastructureEntityProjectPersistenceImpl
         return count.intValue();
     }
 
-    @Override
+	@Override
     protected Map<String, Integer> getTableColumnsMap() {
-        return InfrastructureEntityProjectModelImpl.TABLE_COLUMNS_MAP;
-    }
+		return InfrastructureEntityProjectModelImpl.TABLE_COLUMNS_MAP;
+	}
 
-    /**
+	/**
      * Initializes the infrastructure entity project persistence.
-     */
+	 */
 	public void afterPropertiesSet() {
 	}
 

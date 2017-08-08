@@ -63,4 +63,20 @@ public interface DataRequesterService {
     StringBuilder postParametersToUrlWithAuthorization(String url,
                                                        String username, String password,
                                                        Map<String, String> parametersMap) throws DataRequestException;
+
+
+    /**
+     * Simple post request to external service with some parameters in body.
+     * If process gone wrong throws DataRequestException.
+     *
+     * @param url           specified url
+     * @param parametersMap optional (may be null)
+     * @return - String, response body
+     * @throws DataRequestException     - if some problems with connection
+     *                                  or wrong url specified
+     *                                  or problems while data reading
+     * @throws IllegalArgumentException if url is null
+     */
+    String post(String url,
+                Map<String, String> parametersMap) throws DataRequestException;
 }

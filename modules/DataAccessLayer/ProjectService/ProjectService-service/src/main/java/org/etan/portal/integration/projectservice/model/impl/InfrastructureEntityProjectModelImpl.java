@@ -55,10 +55,10 @@ import java.util.Map;
 public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<InfrastructureEntityProject>
         implements InfrastructureEntityProjectModel {
     /*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never modify or reference this class directly. All methods that expect a infrastructure entity project model instance should use the {@link InfrastructureEntityProject} interface instead.
-	 */
+     * NOTE FOR DEVELOPERS:
+     *
+     * Never modify or reference this class directly. All methods that expect a infrastructure entity project model instance should use the {@link InfrastructureEntityProject} interface instead.
+     */
 	public static final String TABLE_NAME = "ProjectService_InfrastructureEntityProject";
 	public static final Object[][] TABLE_COLUMNS = {
             {"infrastructureEntityProjectPKId", Types.BIGINT},
@@ -67,7 +67,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
             {"infrastructureEntityProjectId", Types.VARCHAR}
     };
     public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
-	public static final String TABLE_SQL_CREATE = "create table ProjectService_InfrastructureEntityProject (infrastructureEntityProjectPKId LONG not null primary key,organizationId LONG,infrastructureEntityName VARCHAR(75) null,infrastructureEntityProjectId VARCHAR(75) null)";
+    public static final String TABLE_SQL_CREATE = "create table ProjectService_InfrastructureEntityProject (infrastructureEntityProjectPKId LONG not null primary key,organizationId LONG,infrastructureEntityName VARCHAR(75) null,infrastructureEntityProjectId VARCHAR(75) null)";
 	public static final String TABLE_SQL_DROP = "drop table ProjectService_InfrastructureEntityProject";
 	public static final String ORDER_BY_JPQL = " ORDER BY infrastructureEntityProject.organizationId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY ProjectService_InfrastructureEntityProject.organizationId ASC";
@@ -83,7 +83,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
     public static final boolean COLUMN_BITMASK_ENABLED = GetterUtil.getBoolean(org.etan.portal.integration.projectservice.service.util.ServiceProps.get(
             "value.object.column.bitmask.enabled.org.etan.portal.integration.projectservice.model.InfrastructureEntityProject"),
             true);
-	public static final long ORGANIZATIONID_COLUMN_BITMASK = 1L;
+    public static final long ORGANIZATIONID_COLUMN_BITMASK = 1L;
     public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(org.etan.portal.integration.projectservice.service.util.ServiceProps.get(
             "lock.expiration.time.org.etan.portal.integration.projectservice.model.InfrastructureEntityProject"));
     private static final ClassLoader _classLoader = InfrastructureEntityProject.class.getClassLoader();
@@ -119,7 +119,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	public static InfrastructureEntityProject toModel(
             InfrastructureEntityProjectSoap soapModel) {
         if (soapModel == null) {
-			return null;
+            return null;
 		}
 
 		InfrastructureEntityProject model = new InfrastructureEntityProjectImpl();
@@ -141,7 +141,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	public static List<InfrastructureEntityProject> toModels(
             InfrastructureEntityProjectSoap[] soapModels) {
         if (soapModels == null) {
-			return null;
+            return null;
 		}
 
 		List<InfrastructureEntityProject> models = new ArrayList<InfrastructureEntityProject>(soapModels.length);
@@ -190,7 +190,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 		attributes.put("infrastructureEntityProjectPKId",
                 getInfrastructureEntityProjectPKId());
         attributes.put("organizationId", getOrganizationId());
-		attributes.put("infrastructureEntityName", getInfrastructureEntityName());
+        attributes.put("infrastructureEntityName", getInfrastructureEntityName());
 		attributes.put("infrastructureEntityProjectId",
                 getInfrastructureEntityProjectId());
 
@@ -240,7 +240,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 	public void setInfrastructureEntityProjectPKId(
             long infrastructureEntityProjectPKId) {
         _infrastructureEntityProjectPKId = infrastructureEntityProjectPKId;
-	}
+    }
 
 	@JSON
 	@Override
@@ -272,7 +272,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 			return StringPool.BLANK;
         } else {
             return _infrastructureEntityName;
-		}
+        }
 	}
 
 	@Override
@@ -287,14 +287,14 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 			return StringPool.BLANK;
         } else {
             return _infrastructureEntityProjectId;
-		}
+        }
 	}
 
 	@Override
 	public void setInfrastructureEntityProjectId(
             String infrastructureEntityProjectId) {
         _infrastructureEntityProjectId = infrastructureEntityProjectId;
-	}
+    }
 
 	public long getColumnBitmask() {
 		return _columnBitmask;
@@ -318,7 +318,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 		if (_escapedModel == null) {
             _escapedModel = (InfrastructureEntityProject) ProxyUtil.newProxyInstance(_classLoader,
                     _escapedModelInterfaces, new AutoEscapeBeanHandler(this));
-		}
+        }
 
 		return _escapedModel;
 	}
@@ -348,7 +348,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
             value = 1;
         } else {
             value = 0;
-		}
+        }
 
 		if (value != 0) {
 			return value;
@@ -375,7 +375,7 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 			return true;
         } else {
             return false;
-		}
+        }
 	}
 
 	@Override
@@ -464,19 +464,19 @@ public class InfrastructureEntityProjectModelImpl extends BaseModelImpl<Infrastr
 		sb.append(
                 "<column><column-name>infrastructureEntityProjectPKId</column-name><column-value><![CDATA[");
         sb.append(getInfrastructureEntityProjectPKId());
-		sb.append("]]></column-value></column>");
+        sb.append("]]></column-value></column>");
 		sb.append(
                 "<column><column-name>organizationId</column-name><column-value><![CDATA[");
         sb.append(getOrganizationId());
-		sb.append("]]></column-value></column>");
+        sb.append("]]></column-value></column>");
 		sb.append(
                 "<column><column-name>infrastructureEntityName</column-name><column-value><![CDATA[");
         sb.append(getInfrastructureEntityName());
-		sb.append("]]></column-value></column>");
+        sb.append("]]></column-value></column>");
 		sb.append(
                 "<column><column-name>infrastructureEntityProjectId</column-name><column-value><![CDATA[");
         sb.append(getInfrastructureEntityProjectId());
-		sb.append("]]></column-value></column>");
+        sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 

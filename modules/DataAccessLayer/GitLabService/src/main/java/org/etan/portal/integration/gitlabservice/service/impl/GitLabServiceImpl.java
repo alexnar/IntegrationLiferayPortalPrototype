@@ -1,13 +1,16 @@
 package org.etan.portal.integration.gitlabservice.service.impl;
 
+import jdk.nashorn.internal.ir.annotations.Reference;
+import org.etan.portal.integration.datarequester.service.DataRequesterService;
 import org.etan.portal.integration.gitlabservice.service.GitLabService;
 import org.etan.portal.integration.gitlabservice.service.GitLabServiceException;
 import org.osgi.service.component.annotations.Component;
 
 /**
+ * Service used for get aces to some methods of GitLab server
  *
  * @author Efimov Timur
- * @version 0.0.1
+ * @version 1.0.1
  */
 @Component(
         immediate = true,
@@ -18,21 +21,43 @@ import org.osgi.service.component.annotations.Component;
 )
 public class GitLabServiceImpl implements GitLabService {
 
-    // TODO enter realization of methods
 
+    @Reference
+    private DataRequesterService dataRequesterService;
 
-    @Override
+    /**
+     * Creates repository and return its id
+     *
+     * @param repositoryName name of new repository
+     * @return id of created repository
+     * @throws GitLabServiceException if any problems occurs
+     */
     public long createRepository(String repositoryName) throws GitLabServiceException {
         return 0;
     }
 
-    @Override
-    public void addUserToRepository(long userId, long repositoryId) {
+    /**
+     * Gives the user access to the repository
+     *
+     * @param userId       id of gitLab user
+     * @param repositoryId id of gitLab repository
+     * @throws GitLabServiceException if any problems occurs
+     */
+    public void addUserToRepository(long userId, long repositoryId)
+            throws GitLabServiceException {
 
     }
 
-    @Override
-    public void deleteUserFromRepository(long userId, long repositoryId) {
+    /**
+     * Takes the user from the repository. Does not do anything
+     * if the user does not have access
+     *
+     * @param userId       id of gitLab user
+     * @param repositoryId id of gitLab repository
+     * @throws GitLabServiceException if any problems occurs
+     */
+    public void deleteUserFromRepository(long userId, long repositoryId)
+            throws GitLabServiceException {
 
     }
 

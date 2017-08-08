@@ -285,9 +285,9 @@ public interface InfrastructureEntityProjectPersistence extends BasePersistence<
      *
      * @param start the lower bound of the range of infrastructure entity projects
      * @param end the upper bound of the range of infrastructure entity projects (not inclusive)
-     * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	* @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
      * @param retrieveFromCache whether to retrieve from the finder cache
-     * @return the ordered range of infrastructure entity projects
+	* @return the ordered range of infrastructure entity projects
      */
 	public java.util.List<InfrastructureEntityProject> findAll(int start,
 		int end,

@@ -20,6 +20,7 @@ import org.etan.portal.integration.projectservice.service.InfrastructureEntityPr
 import org.etan.portal.integration.projectservice.service.InfrastructureEntityProjectLocalServiceUtil;
 import org.etan.portal.integration.projectservice.service.base.InfrastructureEntityProjectLocalServiceBaseImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,24 +52,36 @@ public class InfrastructureEntityProjectLocalServiceImpl
      * Get list of InfrastructureEntityProject by organizationId.
      *
      * @param organizationId id of organization
-     * @return InfrastructureEntityProject list
+     * @return InfrastructureEntityProject list, or empty list
      */
     public List<InfrastructureEntityProject> get(long organizationId) {
-        return infrastructureEntityProjectPersistence.findByOrganizationId(organizationId);
+        List<InfrastructureEntityProject> list = infrastructureEntityProjectPersistence
+                .findByOrganizationId(organizationId);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        return list;
     }
 
     /**
      * Add all InfrastructureEntityProjects from ProjectDto.
+     * Do nothing, if map == null or empty.
      */
-    public void addAll(Map<String, String> infrastructureEntityProjectIdMap, long organizationId) {
-        for (Map.Entry<String, String> entry : infrastructureEntityProjectIdMap.entrySet()) {
-            long i = counterLocalService.increment();
+    public void addAll(
+            Map<String, String> infrastructureEntityProjectIdMap, long organizationId) {
+        if (infrastructureEntityProjectIdMap != null) {
+            for (Map.Entry<String, String> entry
+                    : infrastructureEntityProjectIdMap.entrySet()) {
+                long i = counterLocalService.increment();
 
-            InfrastructureEntityProject infrastructureEntityProject = createInfrastructureEntityProject(i);
+                InfrastructureEntityProject infrastructureEntityProject =
+                        createInfrastructureEntityProject(i);
 
-            infrastructureEntityProject.setOrganizationId(organizationId);
-            infrastructureEntityProject.setInfrastructureEntityName(entry.getKey());
-            infrastructureEntityProject.setInfrastructureEntityProjectId(entry.getValue());
+                infrastructureEntityProject.setOrganizationId(organizationId);
+                infrastructureEntityProject.setInfrastructureEntityName(entry.getKey());
+                infrastructureEntityProject
+                        .setInfrastructureEntityProjectId(entry.getValue());
+            }
         }
     }
 }
