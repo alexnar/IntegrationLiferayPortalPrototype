@@ -173,7 +173,7 @@ public class GitLabServiceImpl implements GitLabService {
         return exists;
     }
 
-    @Activate
+    /*@Activate
     protected void activate() throws IOException, GitLabServiceException {
 
         GitlabAPI api = getApiClient();
@@ -194,7 +194,7 @@ public class GitLabServiceImpl implements GitLabService {
 
         api.getProject("rtysdfhj");
         test();
-    }
+    }*/
 
     private GitlabAPI getApiClient() {//todo config here
         GitlabAPI api = GitlabAPI.connect(SERVER_URL, API_KEY);
@@ -207,7 +207,7 @@ public class GitLabServiceImpl implements GitLabService {
         return new GitLabServiceException(createProjectError, e);
     }
 
-    //    @Activate
+    /*//    @Activate
     protected void test() {
         log.info("start of test method");
 
@@ -292,6 +292,6 @@ public class GitLabServiceImpl implements GitLabService {
 //        log.info("project2.getNamespace().getPath()"+project2.getNamespace().getPath());
 
         log.info("end of test method");
-    }
+    }*/
 
 }

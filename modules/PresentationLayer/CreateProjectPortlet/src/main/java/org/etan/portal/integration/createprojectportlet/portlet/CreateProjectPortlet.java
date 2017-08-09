@@ -29,7 +29,8 @@ import java.io.IOException;
                 "javax.portlet.init-param.template-path=/html/",
                 "javax.portlet.init-param.view-template=/html/view.jsp",
                 "javax.portlet.resource-bundle=content.Language",
-                "javax.portlet.security-role-ref=power-user,user"
+                "javax.portlet.security-role-ref=power-user,user",
+                "com.liferay.portlet.footer-portlet-javascript=/js/main.js"
         },
         service = Portlet.class
 )
