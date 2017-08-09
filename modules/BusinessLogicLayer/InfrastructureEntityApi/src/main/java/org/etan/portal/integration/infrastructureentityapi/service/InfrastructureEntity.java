@@ -1,6 +1,7 @@
 package org.etan.portal.integration.infrastructureentityapi.service;
 
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.ServiceContext;
 import org.etan.portal.integration.infrastructureentityapi.service.exception.InfrastructureEntityException;
 
 /**
@@ -51,6 +52,16 @@ public interface InfrastructureEntity {
      *                                       unassign user
      */
     void unassignUser(User user, String infrastructureEntityProjectId) throws InfrastructureEntityException;
+
+    /**
+     * Check opportunity for creating
+     * project in infrastructure entity.
+     *
+     * @param projectName - name of project
+     * @return - true if there is opportunity to create
+     * false -if there is no opportunity to create
+     */
+    boolean checkCreateInfrastructureEntityProjectOpportunity(String projectName);
 
     /**
      * Get name of infrastructure entity.

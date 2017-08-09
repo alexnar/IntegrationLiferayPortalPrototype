@@ -3,6 +3,7 @@ package org.etan.portal.integration.projectmanage.service;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
+import org.etan.portal.integration.projectmanage.service.dto.ManageProjectSummary;
 
 /**
  * Interface provide methods for
@@ -67,4 +68,17 @@ public interface ProjectManage {
      *                       of this method.
      */
     void unassignUser(User user, ServiceContext serviceContext);
+
+    /**
+     * Check opportunity for creating
+     * project.
+     *
+     * @param projectName    - name of project
+     * @param serviceContext - Context which contain information
+     *                       about who and where initiate calling
+     *                       of this method.
+     * @return - ManageProjectSummary, which contain information
+     * about opportunity to create project.
+     */
+    ManageProjectSummary checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext);
 }

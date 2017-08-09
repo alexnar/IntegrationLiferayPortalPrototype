@@ -66,6 +66,11 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
     }
 
     @Override
+    public boolean checkCreateInfrastructureEntityProjectOpportunity(String projectName) {
+        return false;
+    }
+
+    @Override
     public String getName() {
         return NEXUS_REPOSITORY_NAME;
     }

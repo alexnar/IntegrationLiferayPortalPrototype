@@ -10,6 +10,7 @@ import org.etan.portal.integration.infrastructureentityapi.service.exception.Inf
 import org.etan.portal.integration.projectcontroller.service.ProjectController;
 import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
 import org.etan.portal.integration.projectmanage.service.ProjectManage;
+import org.etan.portal.integration.projectmanage.service.dto.ManageProjectSummary;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -95,6 +96,11 @@ public class ProjectManageImpl implements ProjectManage {
                 logger.info(UNASSIGN_USER_ERROR, e);
             }
         }
+    }
+
+    @Override
+    public ManageProjectSummary checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext) {
+        return null;
     }
 
     /**

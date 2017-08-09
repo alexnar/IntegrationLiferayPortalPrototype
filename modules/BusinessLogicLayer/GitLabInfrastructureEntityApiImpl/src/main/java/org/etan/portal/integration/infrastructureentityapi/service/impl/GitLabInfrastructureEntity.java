@@ -116,6 +116,11 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
         }
     }
 
+    @Override
+    public boolean checkCreateInfrastructureEntityProjectOpportunity(String projectName) {
+        return false;
+    }
+
     /**
      * Get GitLab name.
      *
