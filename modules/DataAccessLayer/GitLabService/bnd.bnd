@@ -2,6 +2,10 @@ Bundle-Name: GitLabService
 Bundle-SymbolicName: org.etan.portal.integration.gitlabservice.service.impl
 Bundle-Version: 1.0.0
 Bundle-Description: Provide service that used for get aces to some methods of GitLab system
+Bundle-ClassPath: .,libs/java-gitlab-api-4.0.0-SNAPSHOT.jar
 
 Export-Package:\
     org.etan.portal.integration.gitlabservice.service
+
+Private-Package:\
+    org.gitlab

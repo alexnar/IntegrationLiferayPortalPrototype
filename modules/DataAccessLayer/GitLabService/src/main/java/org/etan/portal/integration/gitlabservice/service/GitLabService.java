@@ -1,7 +1,7 @@
 package org.etan.portal.integration.gitlabservice.service;
 
 /**
- * Service used for get aces to some methods of GitLab server
+ * Service used for get aces to some methods of GitLab server.
  *
  * @author Efimov Timur
  * @version 1.0.1
@@ -15,7 +15,7 @@ public interface GitLabService {
      * @return id of created repository
      * @throws GitLabServiceException if any problems occurs
      */
-    long createRepository(String repositoryName) throws GitLabServiceException;
+    int createRepository(String repositoryName) throws GitLabServiceException;
 
     /**
      * Gives the user access to the repository
@@ -24,7 +24,7 @@ public interface GitLabService {
      * @param repositoryId id of gitLab repository
      * @throws GitLabServiceException if any problems occurs
      */
-    void addUserToRepository(long userId, long repositoryId)
+    void addUserToRepository(int userId, int repositoryId)
             throws GitLabServiceException;
 
     /**
@@ -35,6 +35,6 @@ public interface GitLabService {
      * @param repositoryId id of gitLab repository
      * @throws GitLabServiceException if any problems occurs
      */
-    void deleteUserFromRepository(long userId, long repositoryId)
+    void deleteUserFromRepository(int userId, int repositoryId)
             throws GitLabServiceException;
 }

@@ -16,7 +16,7 @@ import java.io.Serializable;
 /**
  * Infrastructure entity implementation.
  * Delegates all methods to GitLabService.
- * Preliminary translation of 'id' arguments into long primitives.
+ * Preliminary translation of 'id' arguments into int primitives.
  *
  * @author Efimov Timur
  */
@@ -50,7 +50,7 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
             String projectName) throws GitLabInfrastructureEntityException {
         String projectIdString;
         try {
-            long projectId = gitLabService.createRepository(projectName);
+            int projectId = gitLabService.createRepository(projectName);
             projectIdString = String.valueOf(projectId);
         } catch (GitLabServiceException e) {
             String msg = "Could not create project with name: " + projectName;
@@ -72,8 +72,8 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
     public void assignUser(User user, String infrastructureEntityProjectId)
             throws GitLabInfrastructureEntityException {
 
-        long gitlabUserId = getGitlabUserId(user);
-        long gitlabProjectId = getGitlabProjectId(infrastructureEntityProjectId);
+        int gitlabUserId = getGitlabUserId(user);
+        int gitlabProjectId = getGitlabProjectId(infrastructureEntityProjectId);
 
         try {
             gitLabService.addUserToRepository(gitlabUserId, gitlabProjectId);
@@ -100,8 +100,8 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
     public void unassignUser(User user, String infrastructureEntityProjectId)
             throws GitLabInfrastructureEntityException {
 
-        long gitlabUserId = getGitlabUserId(user);
-        long gitlabProjectId = getGitlabProjectId(infrastructureEntityProjectId);
+        int gitlabUserId = getGitlabUserId(user);
+        int gitlabProjectId = getGitlabProjectId(infrastructureEntityProjectId);
 
         try {
             gitLabService.deleteUserFromRepository(gitlabUserId, gitlabProjectId);
@@ -130,13 +130,13 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
         return INFRASTRUCTURE_ENTITY_NAME;
     }
 
-    private long getGitlabProjectId(String infrastructureEntityProjectId)
+    private int getGitlabProjectId(String infrastructureEntityProjectId)
             throws GitLabInfrastructureEntityException {
 
-        long gitlabProjectId = -1;
+        int gitlabProjectId = -1;
 
-        if (!isLong(infrastructureEntityProjectId)) {
-            gitlabProjectId = Long.valueOf(infrastructureEntityProjectId);
+        if (!isInteger(infrastructureEntityProjectId)) {
+            gitlabProjectId = Integer.valueOf(infrastructureEntityProjectId);
         }
 
         if (gitlabProjectId <= 0) {
@@ -146,8 +146,8 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
         return gitlabProjectId;
     }
 
-    private long getGitlabUserId(User user) throws GitLabInfrastructureEntityException {
-        long gitlabUserId = -1;
+    private int getGitlabUserId(User user) throws GitLabInfrastructureEntityException {
+        int gitlabUserId = -1;
 
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
         Serializable userGitlabIdSerializable =
@@ -160,8 +160,8 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
 
         String userGitlabIdString = (String) userGitlabIdSerializable;
 
-        if (!isLong(userGitlabIdString)) {
-            gitlabUserId = Long.valueOf(userGitlabIdString);
+        if (!isInteger(userGitlabIdString)) {
+            gitlabUserId = Integer.valueOf(userGitlabIdString);
         }
 
         if (gitlabUserId <= 0) {
@@ -171,9 +171,9 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
         return gitlabUserId;
     }
 
-    private boolean isLong(String string) {
+    private boolean isInteger(String string) {
         int length = string.length();
-//        long a = 999999999999999999L; // Explanation to figure 18 which is lower
-        return 0 < length && length <= 18 && Validator.isNumber(string);
+//        int a = 999999999; // Explanation to figure 18 which is lower
+        return 0 < length && length <= 9 && Validator.isNumber(string);
     }
 }

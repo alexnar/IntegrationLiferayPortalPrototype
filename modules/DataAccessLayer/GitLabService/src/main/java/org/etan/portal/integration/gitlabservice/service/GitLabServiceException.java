@@ -1,7 +1,7 @@
 package org.etan.portal.integration.gitlabservice.service;
 
 /**
- * If there are problems when interacting with GitLab api by http - json.
+ * If there are problems when interacting with GitLab api.
  *
  * @author Efimov Timur
  * @version 1.0.1
@@ -9,9 +9,13 @@ package org.etan.portal.integration.gitlabservice.service;
 public class GitLabServiceException extends Exception {
 
     public GitLabServiceException(String s) {
-        super();
+        super(s);
     }
 
     public GitLabServiceException() {
+    }
+
+    public GitLabServiceException(String createProjectError, Exception e) {
+        super(createProjectError, e);
     }
 }
