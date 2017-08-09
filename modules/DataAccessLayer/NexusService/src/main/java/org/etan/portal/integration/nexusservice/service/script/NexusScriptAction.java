@@ -9,7 +9,8 @@ public enum NexusScriptAction {
     CREATE_MAVEN_HOSTED("createMavenHosted"),
     ASSIGN_USER("assignUser"),
     UNASSIGN_USER("unassignUser"),
-    LAST_ARTIFACTS("lastArtifacts");
+    LAST_ARTIFACTS("lastArtifacts"),
+    CHECK_CREATE_REPOSITORY_OPPORTUNITY("checkCreateRepositoryOpportunity");
 
     private String action;
 

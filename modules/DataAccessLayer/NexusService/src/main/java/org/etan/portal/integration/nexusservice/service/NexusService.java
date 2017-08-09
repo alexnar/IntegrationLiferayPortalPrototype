@@ -48,6 +48,16 @@ public interface NexusService {
     void unassignUserFromRepository(String userId, String repositoryId) throws NexusException;
 
     /**
+     * Check opportunity for creating
+     * repository.
+     *
+     * @param repositoryName - name of project
+     * @return - true if there is opportunity to create
+     * false -if there is no opportunity to create
+     */
+    public boolean checkCreateRepositoryOpportunity(String repositoryName);
+
+    /**
      * Get last Nexus artifacts
      *
      * @param repositoryId   - String id of Nexus repository

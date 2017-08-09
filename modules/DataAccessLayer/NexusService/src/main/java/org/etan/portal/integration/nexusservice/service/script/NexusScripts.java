@@ -15,10 +15,9 @@ public class NexusScripts {
     /**
      * Script for creation Maven hosted repository.
      *
-     * @param repositoryId - name of repository to create
      * @return - script DTO
      */
-    public NexusScriptDto getCreateMavenRepositoryScript(String repositoryId) {
+    public NexusScriptDto getCreateMavenRepositoryScript() {
         String script = "" +
                 "import org.sonatype.nexus.blobstore.api.BlobStoreManager;\n" +
                 "import org.sonatype.nexus.repository.storage.WritePolicy;\n" +
@@ -43,11 +42,9 @@ public class NexusScripts {
     /**
      * Script for assign user to repository.
      *
-     * @param userId - user to assign id
-     * @param repositoryId - repository to assign id
      * @return - script DTO
      */
-    public NexusScriptDto getAssignUserToRepositoryScript(String userId, String repositoryId) {
+    public NexusScriptDto getAssignUserToRepositoryScript() {
         String script = "" +
                 "import org.sonatype.nexus.security.user.UserManager;\n" +
                 "import org.sonatype.nexus.security.role.NoSuchRoleException;\n" +
@@ -92,11 +89,9 @@ public class NexusScripts {
     /**
      * Script for unassign user to repository.
      *
-     * @param userId - user to unassign id
-     * @param repositoryId - repository to unassign id
      * @return - script DTO
      */
-    public NexusScriptDto getUnassignUserToRepositoryScript(String userId, String repositoryId) {
+    public NexusScriptDto getUnassignUserToRepositoryScript() {
         String script = "" +
                 "def argsMap = args.split('&').inject([:]) { map, token ->\n" +
                 "    token.split('=').with { map[it[0]] = it[1] }\n" +
@@ -121,9 +116,34 @@ public class NexusScripts {
         return nexusScriptDto;
     }
 
-    public NexusScriptDto getLastArtifactsScript(String repositoryId, int artifactsCount) {
-        return null;
+    /**
+     * Script for checking create repository
+     * opportunity.
+     *
+     * @return - script DTO
+     */
+    public NexusScriptDto getCheckCreateRepositoryOpportunityScript() {
+        String script ="" +
+                "def argsMap = args.split('&').inject([:]) { map, token ->\n" +
+                "    token.split('=').with { map[it[0]] = it[1] }\n" +
+                "    map\n" +
+                "}\n" +
+                "\n" +
+                "def repositoryName = argsMap.getAt(\"repositoryName\").toString();\n" +
+                "def repo = repository.repositoryManager.get(repositoryName);\n" +
+                "if (repo != null) {\n" +
+                "    return \"REPOSITORY_EXISTS\";\n" +
+                "} else {\n" +
+                "    return \"REPOSITORY_NOT_EXISTS\"\n" +
+                "}";
+        String scriptName = NexusScriptAction.CHECK_CREATE_REPOSITORY_OPPORTUNITY.getAction();
+        NexusScriptDto nexusScriptDto = new NexusScriptDto.Builder().setScriptName(scriptName).
+                setScriptType(SCRIPT_TYPE).setScriptContent(script).build();
+        return nexusScriptDto;
     }
 
+    public NexusScriptDto getLastArtifactsScript() {
+        return null;
+    }
 
 }

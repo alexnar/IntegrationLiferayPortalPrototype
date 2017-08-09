@@ -3,7 +3,7 @@ package org.etan.portal.integration.projectmanage.service;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
-import org.etan.portal.integration.projectmanage.service.dto.ManageProjectSummary;
+import org.etan.portal.integration.projectmanage.service.dto.ProjectManageSummary;
 
 /**
  * Interface provide methods for
@@ -77,8 +77,8 @@ public interface ProjectManage {
      * @param serviceContext - Context which contain information
      *                       about who and where initiate calling
      *                       of this method.
-     * @return - ManageProjectSummary, which contain information
+     * @return - ProjectManageSummary, which contain information
      * about opportunity to create project.
      */
-    ManageProjectSummary checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext);
+    ProjectManageSummary checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext);
 }

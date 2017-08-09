@@ -1,5 +1,9 @@
 package org.etan.portal.integration.nexusservice.service.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.etan.portal.integration.nexusservice.service.NexusService;
 import org.etan.portal.integration.nexusservice.service.dto.NexusScriptDto;
 import org.etan.portal.integration.nexusservice.service.exception.NexusException;
@@ -28,6 +32,9 @@ public class NexusServiceImpl implements NexusService {
     private static final String PRIVILEGE_NAME_FIELD = "privilegeName";
     private static final String ROLE_NAME_FIELD = "roleName";
     private static final String ROLE_ID_POSTFIX = "-user-privileges-role";
+    private static final String RESPONSE_RESULT_FIELD = "result";
+    private static final String REPOSITORY_EXISTS_RESULT = "REPOSITORY_EXISTS";
+    private static final String REPOSITORY_NOT_EXISTS_RESULT = "REPOSITORY_NOT_EXISTS";
 
     private NexusScripts nexusScripts = new NexusScripts();
 
@@ -36,7 +43,7 @@ public class NexusServiceImpl implements NexusService {
 
     @Override
     public String createMavenHostedRepository(String repositoryName) throws NexusException {
-        NexusScriptDto createRepositoryScript = nexusScripts.getCreateMavenRepositoryScript(repositoryName);
+        NexusScriptDto createRepositoryScript = nexusScripts.getCreateMavenRepositoryScript();
         Map<String, String> parameters = new HashMap<>();
         parameters.put(REPOSITORY_NAME_FIELD, repositoryName);
         nexusRemoteScriptManager.executeScript(
@@ -47,7 +54,7 @@ public class NexusServiceImpl implements NexusService {
     @Override
     public void assignUserToRepository(String userId, String repositoryId) throws NexusException {
         NexusScriptDto assignUserToRepositoryScript =
-                nexusScripts.getAssignUserToRepositoryScript(userId, repositoryId);
+                nexusScripts.getAssignUserToRepositoryScript();
         Map<String, String> parameters = new HashMap<>();
         //TODO: repository could be not only maven
         String privileges = "nx-repository-view-maven2-" + repositoryId + "-*";
@@ -61,7 +68,7 @@ public class NexusServiceImpl implements NexusService {
     @Override
     public void unassignUserFromRepository(String userId, String repositoryId) throws NexusException {
         NexusScriptDto unassignUserFromRepositoryScript =
-                nexusScripts.getUnassignUserToRepositoryScript(userId, repositoryId);
+                nexusScripts.getUnassignUserToRepositoryScript();
         Map<String, String> parameters = new HashMap<>();
         String roleName = repositoryId + ROLE_ID_POSTFIX;
         parameters.put(USER_ID_FIELD, userId);
@@ -71,9 +78,29 @@ public class NexusServiceImpl implements NexusService {
     }
 
     @Override
+    public boolean checkCreateRepositoryOpportunity(String repositoryName) {
+        NexusScriptDto checkCreateRepositoryOpportunityScript =
+                nexusScripts.getCheckCreateRepositoryOpportunityScript();
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(REPOSITORY_NAME_FIELD, repositoryName);
+        String response;
+        try {
+            response = nexusRemoteScriptManager.executeScript(checkCreateRepositoryOpportunityScript,
+                    NexusScriptAction.CHECK_CREATE_REPOSITORY_OPPORTUNITY, parameters);
+        } catch (NexusException e) {
+            return false;
+        }
+        JsonParser jsonParser = new JsonParser();
+        JsonObject responseJson = jsonParser.parse(response).getAsJsonObject();
+        String responseResult = responseJson.get(RESPONSE_RESULT_FIELD).getAsString();
+        boolean hasOpportunity = responseResult.equals(REPOSITORY_EXISTS_RESULT);
+        return hasOpportunity;
+    }
+
+    @Override
     public List<Object> getLastArtifacts(String repositoryId, int artifactsCount) throws NexusException {
         NexusScriptDto lastArtifactsScript =
-                nexusScripts.getLastArtifactsScript(repositoryId, artifactsCount);
+                nexusScripts.getLastArtifactsScript();
         String executionResponse = nexusRemoteScriptManager.executeScript(
                 lastArtifactsScript, NexusScriptAction.LAST_ARTIFACTS, null);
         // TODO: get list of artifact from executionResponse

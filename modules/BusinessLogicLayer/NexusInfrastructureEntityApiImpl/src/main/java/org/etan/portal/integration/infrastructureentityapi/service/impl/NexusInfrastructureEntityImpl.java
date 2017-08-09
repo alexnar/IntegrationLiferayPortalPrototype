@@ -10,13 +10,13 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 
 @Component(
         immediate = true,
         property = {
-                "osgi.command.scope=test",
-                "osgi.command.function=createInfrastructureEntityProject"
+
         },
         service = InfrastructureEntity.class
 )
@@ -67,7 +67,9 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
 
     @Override
     public boolean checkCreateInfrastructureEntityProjectOpportunity(String projectName) {
-        return false;
+
+        boolean hasOpportunity = nexusService.checkCreateRepositoryOpportunity(projectName);
+        return hasOpportunity;
     }
 
     @Override

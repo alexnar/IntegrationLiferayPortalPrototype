@@ -10,7 +10,7 @@ import org.etan.portal.integration.infrastructureentityapi.service.exception.Inf
 import org.etan.portal.integration.projectcontroller.service.ProjectController;
 import org.etan.portal.integration.projectcontroller.service.dto.ProjectDto;
 import org.etan.portal.integration.projectmanage.service.ProjectManage;
-import org.etan.portal.integration.projectmanage.service.dto.ManageProjectSummary;
+import org.etan.portal.integration.projectmanage.service.dto.ProjectManageSummary;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -99,8 +99,17 @@ public class ProjectManageImpl implements ProjectManage {
     }
 
     @Override
-    public ManageProjectSummary checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext) {
-        return null;
+    public ProjectManageSummary checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext) {
+        Map<String, Boolean> summaryMap = new HashMap<>();
+        for (InfrastructureEntity infrastructureEntity : infrastructureEntities) {
+            String infrastructureEntityName = infrastructureEntity.getName();
+            boolean hasOpportunity = infrastructureEntity.
+                    checkCreateInfrastructureEntityProjectOpportunity(projectName);
+            summaryMap.put(infrastructureEntityName, hasOpportunity);
+
+        }
+        ProjectManageSummary projectManageSummary = new ProjectManageSummary(summaryMap);
+        return projectManageSummary;
     }
 
     /**

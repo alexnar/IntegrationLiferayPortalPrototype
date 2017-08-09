@@ -8,9 +8,13 @@ import java.util.Map;
  *
  * @author Naryzhny Alex
  */
-public class ManageProjectSummary {
+public class ProjectManageSummary {
     private Map<String, Boolean> summaryMap;
     private boolean success;
+
+    public ProjectManageSummary(Map<String, Boolean> summaryMap) {
+        this.summaryMap = summaryMap;
+    }
 
     public Map<String, Boolean> getSummaryMap() {
         return summaryMap;
