@@ -51,7 +51,6 @@ public class ProjectManageImpl implements ProjectManage {
                 infrastructureEntityProjectIdMap.put(infrastructureEntityName, infrastructureEntityProjectId);
             } catch (InfrastructureEntityException e) {
                 logger.info(CREATE_PROJECT_ERROR, e);
-                // TODO: Rollback changes. DISCUSS IT! (Delete project can also be failed)
             }
         }
         ProjectDto project = null;
@@ -77,7 +76,6 @@ public class ProjectManageImpl implements ProjectManage {
                 infrastructureEntity.assignUser(user, infrastructureEntityProjectId);
             } catch (InfrastructureEntityException e) {
                 logger.info(ASSIGN_USER_ERROR, e);
-                // TODO: Rollback changes. DISCUSS IT! (Unassign can also be failed)
             }
         }
     }
@@ -94,8 +92,7 @@ public class ProjectManageImpl implements ProjectManage {
             try {
                 infrastructureEntity.unassignUser(user, infrastructureEntityProjectId);
             } catch (InfrastructureEntityException e) {
-                logger.info(ASSIGN_USER_ERROR, e);
-                // TODO: Rollback changes. DISCUSS IT! (Unassign can also be failed)
+                logger.info(UNASSIGN_USER_ERROR, e);
             }
         }
     }

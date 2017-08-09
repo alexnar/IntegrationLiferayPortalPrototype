@@ -25,19 +25,15 @@ public class NexusScripts {
                 "import org.sonatype.nexus.repository.maven.VersionPolicy;\n" +
                 "import org.sonatype.nexus.repository.maven.LayoutPolicy;\n" +
                 "\n" +
+                "// Getting arguments from Post parameters\n" +
                 "def argsMap = args.split('&').inject([:]) { map, token ->\n" +
                 "    token.split('=').with { map[it[0]] = it[1] }\n" +
                 "    map\n" +
                 "}\n" +
                 "\n" +
-                "def repositoryName = argsMap.getAt(\"repositoryName\").toString();\n" +
-                "def repo = repository.repositoryManager.get(repositoryName);\n" +
-                "if (repo != null) {\n" +
-                "    return \"REPOSITORY_EXISTS\";\n" +
-                "}\n" +
-                "repo = repository.createMavenHosted(repositoryName, BlobStoreManager.DEFAULT_BLOBSTORE_NAME, true,\n" +
-                "        VersionPolicy.MIXED, WritePolicy.ALLOW, LayoutPolicy.STRICT)\n" +
-                "return repo;";
+                "def repositoryName = argsMap.getAt(\"repositoryName\").toString()\n" +
+                "repository.createMavenHosted(repositoryName, BlobStoreManager.DEFAULT_BLOBSTORE_NAME, true,\n" +
+                "        VersionPolicy.MIXED, WritePolicy.ALLOW, LayoutPolicy.STRICT)\n";
         String scriptName = NexusScriptAction.CREATE_MAVEN_HOSTED.getAction();
         NexusScriptDto nexusScriptDto = new NexusScriptDto.Builder().setScriptName(scriptName).
                 setScriptType(SCRIPT_TYPE).setScriptContent(script).build();
