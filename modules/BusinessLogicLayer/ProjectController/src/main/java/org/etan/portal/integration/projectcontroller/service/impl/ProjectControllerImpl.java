@@ -1,5 +1,6 @@
 package org.etan.portal.integration.projectcontroller.service.impl;
 
+import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -67,6 +68,31 @@ public class ProjectControllerImpl implements ProjectController {
 
 
     /**
+     * Check opportunity for creating
+     * project in portal.
+     *
+     * @param projectName    - name of project
+     * @param serviceContext context of action, uses for get userId, organizationId
+     * @return true, if there is opportunity to create
+     */
+    public boolean checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext) {
+        boolean hasOpportunity;
+
+        try {
+            Organization o = organizationLocalService.getOrganization(serviceContext.getCompanyId(), projectName);
+            hasOpportunity = (o == null);
+        } catch (PortalException e) {
+            boolean instanceofNoSuchOrganizationException = (e instanceof NoSuchOrganizationException);
+            if (!instanceofNoSuchOrganizationException) {
+                log.error(e, e);
+            }
+            hasOpportunity = false;
+        }
+
+        return hasOpportunity;
+    }
+
+    /**
      * Check ServiceContext.
      * It must have not zero(null) field userId, Group, OrganizationId...
      *
@@ -74,7 +100,20 @@ public class ProjectControllerImpl implements ProjectController {
      * @return true, if it is right ServiceContext
      */
     public boolean checkServiceContext(ServiceContext context) {
-        return true;
+        boolean checkFailed = false;
+
+        try {
+            checkFailed = context == null
+                    || context.getUserId() <= 0
+                    || context.getScopeGroup() == null
+                    || !context.getScopeGroup().isOrganization()
+                    || context.getScopeGroup().getOrganizationId() == 0;
+        } catch (PortalException e) {
+            checkFailed = true;
+            log.warn(e.getMessage());
+        }
+
+        return checkFailed;
     }
 
     /**

@@ -118,7 +118,14 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
 
     @Override
     public boolean checkCreateInfrastructureEntityProjectOpportunity(String projectName) {
-        return false;
+        boolean hasOpportunity;
+        try {
+            hasOpportunity = !gitLabService.checkIfRepositoryWithNameExists(projectName);
+        } catch (GitLabServiceException e) {
+            hasOpportunity = false;
+        }
+
+        return hasOpportunity;
     }
 
     /**

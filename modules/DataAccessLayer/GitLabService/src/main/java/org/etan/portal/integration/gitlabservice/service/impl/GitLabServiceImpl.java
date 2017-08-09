@@ -1,7 +1,11 @@
 package org.etan.portal.integration.gitlabservice.service.impl;
 
+import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import org.etan.portal.integration.gitlabservice.service.GitLabService;
 import org.etan.portal.integration.gitlabservice.service.GitLabServiceException;
 import org.gitlab.api.GitlabAPI;
@@ -10,7 +14,9 @@ import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabProject;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 
@@ -67,7 +73,8 @@ public class GitLabServiceImpl implements GitLabService {
             = "There were problems when adding the user to the project.";
     private static final String DELETE_USER_FROM_PROJECT_ERROR
             = "There were problems when deleting the user from the project.";
-
+    @Reference
+    private volatile OrganizationLocalService organizationLocalService;
 
     /**
      * Creates repository and return its id
@@ -139,17 +146,53 @@ public class GitLabServiceImpl implements GitLabService {
 
     }
 
+    /**
+     * Check if repository with name exists.
+     *
+     * @param repositoryName name of checking repository
+     * @return true, if exists
+     * @throws GitLabServiceException if any problems occurs
+     */
+    public boolean checkIfRepositoryWithNameExists(String repositoryName)
+            throws GitLabServiceException {
+        boolean exists;
+
+        GitlabAPI api = getApiClient();
+        try {
+            GitlabProject project = api.getProject(repositoryName);
+            exists = (project == null);
+        } catch (IOException e) {
+            boolean instanceofFileNotFoundException = (e instanceof FileNotFoundException);
+            if (instanceofFileNotFoundException) {
+                throw handle(e.getMessage(), e);
+            } else {
+                exists = true;
+            }
+        }
+
+        return exists;
+    }
+
     @Activate
     protected void activate() throws IOException, GitLabServiceException {
 
         GitlabAPI api = getApiClient();
 
-        GitlabGroup group = api.createGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
-        log.info("GitlabGroup created: \n" +
-                "group.getId(): " + group.getId() + "; " +
-                "group.getPath(): " + group.getPath() + "; " +
-                "group.getWebUrl(): " + group.getWebUrl() + ". ");
+        try {
+            GitlabGroup group = api.getGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
+        } catch (IOException e) {
+            if (e instanceof FileNotFoundException) {
+                GitlabGroup group = api.createGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
+                log.info("GitlabGroup created: \n" +
+                        "group.getId(): " + group.getId() + "; " +
+                        "group.getPath(): " + group.getPath() + "; " +
+                        "group.getWebUrl(): " + group.getWebUrl() + ". ");
+            } else {
+                throw handle(e.getMessage(), e);
+            }
+        }
 
+        api.getProject("rtysdfhj");
         test();
     }
 
@@ -164,46 +207,91 @@ public class GitLabServiceImpl implements GitLabService {
         return new GitLabServiceException(createProjectError, e);
     }
 
-
     //    @Activate
-    protected void test() throws IOException, GitLabServiceException {
+    protected void test() {
+        log.info("start of test method");
+
+        GitlabAPI api = getApiClient();
+
         Random random = new Random(System.currentTimeMillis());
         int r = random.nextInt(100);
 
         String randName = "EtaProject" + r;
 
-        createRepository(randName);
-//        createRepository(randName);
+        try {
+            createRepository(randName);
+        } catch (GitLabServiceException e) {
+            log.error(randName + " was not created");
+        }
+
+        Long companyId = 20116L;
+
+        Organization o = null;
+
+        try {
+            o = organizationLocalService.getOrganization(companyId, "Timur");
+        } catch (PortalException e) {
+            if (e instanceof NoSuchOrganizationException) {
+                log.info("NoSuchOrganization for name: " + "Timur");
+            } else {
+                log.error(e, e);
+            }
+        }
+
+        if (o == null) {
+            log.info("o == null");
+        } else {
+            log.info(o.getName());
+            log.info(o.getUserName());
+        }
+
+        try {
+            o = organizationLocalService.getOrganization(companyId, "Projects");
+        } catch (PortalException e) {
+            if (e instanceof NoSuchOrganizationException) {
+                log.info("NoSuchOrganization for name: " + "Projects");
+            } else {
+                log.error(e, e);
+            }
+        }
+
+        if (o == null) {
+            log.info("o == null");
+        } else {
+            log.info(o.getName());
+            log.info(o.getUserName());
+        }
 
 //
 //
 //        GitlabAPI api = getApiClient();
 //
 //        GitlabGroup group = api.getGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
-//        System.out.println("group.getId()"+group.getId());
-//        System.out.println("group.getPath()"+group.getPath());
-//        System.out.println("group.getWebUrl()"+group.getWebUrl());
+//        log.info("group.getId()"+group.getId());
+//        log.info("group.getPath()"+group.getPath());
+//        log.info("group.getWebUrl()"+group.getWebUrl());
 //
 //        GitlabProject project = api.getProject(23);
-//        System.out.println("project.getId()"+project.getId());
-//        System.out.println("project.getPath()"+project.getPath());
-//        System.out.println("project.getWebUrl()"+project.getWebUrl());
-//        System.out.println("project.getHttpUrl()"+project.getHttpUrl());
-//        System.out.println("project.getNameWithNamespace()"+project.getNameWithNamespace());
-//        System.out.println("project.getPathWithNamespace()"+project.getPathWithNamespace());
-//        System.out.println("project.getNamespace().getName()"+project.getNamespace().getName());
-//        System.out.println("project.getNamespace().getPath()"+project.getNamespace().getPath());
+//        log.info("project.getId()"+project.getId());
+//        log.info("project.getPath()"+project.getPath());
+//        log.info("project.getWebUrl()"+project.getWebUrl());
+//        log.info("project.getHttpUrl()"+project.getHttpUrl());
+//        log.info("project.getNameWithNamespace()"+project.getNameWithNamespace());
+//        log.info("project.getPathWithNamespace()"+project.getPathWithNamespace());
+//        log.info("project.getNamespace().getName()"+project.getNamespace().getName());
+//        log.info("project.getNamespace().getPath()"+project.getNamespace().getPath());
 //
 //        GitlabProject project2 = api.getProject(group.getPath(),"EtaProject64");
-//        System.out.println("project2.getId()"+project2.getId());
-//        System.out.println("project2.getPath()"+project2.getPath());
-//        System.out.println("project2.getWebUrl()"+project2.getWebUrl());
-//        System.out.println("project2.getHttpUrl()"+project2.getHttpUrl());
-//        System.out.println("project2.getNameWithNamespace()"+project2.getNameWithNamespace());
-//        System.out.println("project2.getPathWithNamespace()"+project2.getPathWithNamespace());
-//        System.out.println("project2.getNamespace().getName()"+project2.getNamespace().getName());
-//        System.out.println("project2.getNamespace().getPath()"+project2.getNamespace().getPath());
+//        log.info("project2.getId()"+project2.getId());
+//        log.info("project2.getPath()"+project2.getPath());
+//        log.info("project2.getWebUrl()"+project2.getWebUrl());
+//        log.info("project2.getHttpUrl()"+project2.getHttpUrl());
+//        log.info("project2.getNameWithNamespace()"+project2.getNameWithNamespace());
+//        log.info("project2.getPathWithNamespace()"+project2.getPathWithNamespace());
+//        log.info("project2.getNamespace().getName()"+project2.getNamespace().getName());
+//        log.info("project2.getNamespace().getPath()"+project2.getNamespace().getPath());
 
+        log.info("end of test method");
     }
 
 }

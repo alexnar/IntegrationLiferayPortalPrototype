@@ -37,4 +37,14 @@ public interface GitLabService {
      */
     void deleteUserFromRepository(int userId, int repositoryId)
             throws GitLabServiceException;
+
+    /**
+     * Check if repository with name exists.
+     *
+     * @param repositoryName name of checking repository
+     * @return true, if exists
+     * @throws GitLabServiceException if any problems occurs
+     */
+    boolean checkIfRepositoryWithNameExists(String repositoryName)
+            throws GitLabServiceException;
 }

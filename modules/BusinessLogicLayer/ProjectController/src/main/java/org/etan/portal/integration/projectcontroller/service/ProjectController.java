@@ -47,6 +47,16 @@ public interface ProjectController {
     void addUsers(List<User> users, ServiceContext context);
 
     /**
+     * Check opportunity for creating
+     * project in portal.
+     *
+     * @param projectName    - name of project
+     * @param serviceContext context of action, uses for get userId, organizationId
+     * @return true, if there is opportunity to create
+     */
+    boolean checkCreateProjectOpportunity(String projectName, ServiceContext serviceContext);
+
+    /**
      * Check ServiceContext.
      * It must have not zero(null) field userId, Group, OrganizationId...
      *
