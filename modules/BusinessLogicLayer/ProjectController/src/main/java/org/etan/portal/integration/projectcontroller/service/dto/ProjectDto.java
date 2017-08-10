@@ -25,7 +25,10 @@ public class ProjectDto {
 
 
     private ProjectDto(Builder builder) {
-
+        projectName = builder.projectName;
+        projectId = builder.projectId;
+        members = builder.members;
+        infrastructureEntityProjectIdMap = builder.infrastructureEntityProjectIdMap;
     }
 
     /**

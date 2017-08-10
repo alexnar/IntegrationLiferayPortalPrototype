@@ -142,7 +142,9 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
 
         int gitlabProjectId = -1;
 
-        if (!isInteger(infrastructureEntityProjectId)) {
+        boolean isInt = isInteger(infrastructureEntityProjectId);
+
+        if (isInt) {
             gitlabProjectId = Integer.valueOf(infrastructureEntityProjectId);
         }
 
@@ -167,7 +169,7 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
 
         String userGitlabIdString = (String) userGitlabIdSerializable;
 
-        if (!isInteger(userGitlabIdString)) {
+        if (isInteger(userGitlabIdString)) {
             gitlabUserId = Integer.valueOf(userGitlabIdString);
         }
 
@@ -181,6 +183,10 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
     private boolean isInteger(String string) {
         int length = string.length();
 //        int a = 999999999; // Explanation to figure 18 which is lower
-        return 0 < length && length <= 9 && Validator.isNumber(string);
+        boolean a = 0 < length;
+        boolean b = length <= 9;
+        boolean c = Validator.isNumber(string);
+
+        return a && b && c;
     }
 }

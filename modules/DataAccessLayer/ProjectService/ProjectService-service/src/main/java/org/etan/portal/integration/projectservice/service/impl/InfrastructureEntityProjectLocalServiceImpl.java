@@ -81,6 +81,8 @@ public class InfrastructureEntityProjectLocalServiceImpl
                 infrastructureEntityProject.setInfrastructureEntityName(entry.getKey());
                 infrastructureEntityProject
                         .setInfrastructureEntityProjectId(entry.getValue());
+
+                addInfrastructureEntityProject(infrastructureEntityProject);
             }
         }
     }

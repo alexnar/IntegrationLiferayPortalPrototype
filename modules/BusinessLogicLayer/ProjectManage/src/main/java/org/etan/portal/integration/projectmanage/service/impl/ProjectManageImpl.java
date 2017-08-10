@@ -79,6 +79,8 @@ public class ProjectManageImpl implements ProjectManage {
                 logger.info(ASSIGN_USER_ERROR, e);
             }
         }
+
+        projectController.addUser(user, serviceContext);
     }
 
     @Override
@@ -96,6 +98,8 @@ public class ProjectManageImpl implements ProjectManage {
                 logger.info(UNASSIGN_USER_ERROR, e);
             }
         }
+
+        projectController.deleteUser(user, serviceContext);
     }
 
     @Override
