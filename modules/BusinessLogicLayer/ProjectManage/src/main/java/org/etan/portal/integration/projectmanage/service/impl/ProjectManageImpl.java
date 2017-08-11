@@ -36,7 +36,7 @@ public class ProjectManageImpl implements ProjectManage {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, bind = "bind", unbind = "unbind",
             service = InfrastructureEntity.class, policy = ReferencePolicy.DYNAMIC)
-    private List<InfrastructureEntity> infrastructureEntities;
+    private volatile List<InfrastructureEntity> infrastructureEntities;
 
     @Reference
     private ProjectController projectController;
