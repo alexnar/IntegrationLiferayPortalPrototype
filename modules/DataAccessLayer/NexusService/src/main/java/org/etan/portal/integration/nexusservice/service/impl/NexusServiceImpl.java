@@ -93,7 +93,7 @@ public class NexusServiceImpl implements NexusService {
         JsonParser jsonParser = new JsonParser();
         JsonObject responseJson = jsonParser.parse(response).getAsJsonObject();
         String responseResult = responseJson.get(RESPONSE_RESULT_FIELD).getAsString();
-        boolean hasOpportunity = responseResult.equals(REPOSITORY_EXISTS_RESULT);
+        boolean hasOpportunity = responseResult.equals(REPOSITORY_NOT_EXISTS_RESULT);
         return hasOpportunity;
     }
 

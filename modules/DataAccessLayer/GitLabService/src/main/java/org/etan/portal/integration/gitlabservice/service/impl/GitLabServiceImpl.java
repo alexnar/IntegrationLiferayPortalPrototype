@@ -44,8 +44,8 @@ public class GitLabServiceImpl implements GitLabService {
     private static final Log log = LogFactoryUtil.getLog(GitLabServiceImpl.class);
 
     //todo make configurable
-    private static final String SERVER_URL = "https://192.168.0.69";
-    private static final String API_KEY = "th-roADVLPo5VbX4Hk2u";
+    private static final String SERVER_URL = "https://192.168.1.40";
+    private static final String API_KEY = "qLozbm1w5VbyPNshWzce";
 
     //todo if we want one more?
     private static final String PROJECTS_CATALOG_GITLAB_GROUP_PATH = "MyNewGroup2";
