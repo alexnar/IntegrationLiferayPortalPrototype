@@ -1,10 +1,7 @@
 package org.etan.portal.integration.gitlabservice.service.impl;
 
-import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import org.etan.portal.integration.gitlabservice.service.GitLabService;
 import org.etan.portal.integration.gitlabservice.service.GitLabServiceException;
@@ -18,7 +15,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * Service used for get aces to some methods of GitLab server.
@@ -44,8 +40,8 @@ public class GitLabServiceImpl implements GitLabService {
     private static final Log log = LogFactoryUtil.getLog(GitLabServiceImpl.class);
 
     //todo make configurable
-    private static final String SERVER_URL = "https://192.168.1.40";
-    private static final String API_KEY = "qLozbm1w5VbyPNshWzce";
+    private static final String SERVER_URL = "https://192.168.0.69";
+    private static final String API_KEY = "th-roADVLPo5VbX4Hk2u";
 
     //todo if we want one more?
     private static final String PROJECTS_CATALOG_GITLAB_GROUP_PATH = "MyNewGroup2";
@@ -120,7 +116,7 @@ public class GitLabServiceImpl implements GitLabService {
             api.addProjectMember(repositoryId, userId, DEVELOPER_ACCESS);
 
         } catch (IOException e) {
-            throw handle(CREATE_PROJECT_ERROR, e);
+            throw handle(ADD_USER_TO_PROJECT_ERROR, e);
         }
     }
 
@@ -141,7 +137,7 @@ public class GitLabServiceImpl implements GitLabService {
             api.deleteProjectMember(repositoryId, userId);
 
         } catch (IOException e) {
-            throw handle(CREATE_PROJECT_ERROR, e);
+            throw handle(DELETE_USER_FROM_PROJECT_ERROR, e);
         }
 
     }
@@ -155,25 +151,26 @@ public class GitLabServiceImpl implements GitLabService {
      */
     public boolean checkIfRepositoryWithNameExists(String repositoryName)
             throws GitLabServiceException {
+
         boolean exists;
 
         GitlabAPI api = getApiClient();
         try {
             GitlabProject project = api.getProject(repositoryName);
-            exists = (project == null);
+            exists = (project != null);
         } catch (IOException e) {
             boolean instanceofFileNotFoundException = (e instanceof FileNotFoundException);
             if (instanceofFileNotFoundException) {
-                throw handle(e.getMessage(), e);
+                exists = false;
             } else {
-                exists = true;
+                throw handle(e.getMessage(), e);
             }
         }
 
         return exists;
     }
 
-    /*@Activate
+    @Activate
     protected void activate() throws IOException, GitLabServiceException {
 
         GitlabAPI api = getApiClient();
@@ -192,9 +189,8 @@ public class GitLabServiceImpl implements GitLabService {
             }
         }
 
-        api.getProject("rtysdfhj");
-        test();
-    }*/
+//        test();
+    }
 
     private GitlabAPI getApiClient() {//todo config here
         GitlabAPI api = GitlabAPI.connect(SERVER_URL, API_KEY);
