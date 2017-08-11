@@ -79,7 +79,8 @@ function checkName( data ) {
            headerContent: '<h2>Summary of where project will be created</h2>',
            modal: true,
            render: '#modal',
-           width: 500
+           width: 500,
+           zIndex: 5,
          }
        ).render();
         modal.addToolbar(
