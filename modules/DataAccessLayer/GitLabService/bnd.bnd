@@ -5,7 +5,8 @@ Bundle-Description: Provide service that used for get aces to some methods of Gi
 Bundle-ClassPath: .,libs/java-gitlab-api-4.0.0-SNAPSHOT.jar
 
 Export-Package:\
-    org.etan.portal.integration.gitlabservice.service
+    org.etan.portal.integration.gitlabservice.service,\
+    org.gitlab.api.models
 
 Private-Package:\
     org.gitlab

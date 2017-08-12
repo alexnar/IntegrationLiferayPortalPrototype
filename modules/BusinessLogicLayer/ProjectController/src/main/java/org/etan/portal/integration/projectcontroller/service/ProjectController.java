@@ -68,6 +68,7 @@ public interface ProjectController {
     /**
      * Creates organization of organization type Project. Also creates site
      * by template Project Template and assign it to created organization.
+     * The creator of the project will be the only member in the organization.
      * Saves in database list of "infrastructure entity project id" with mapping on
      * created organization.
      *

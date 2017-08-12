@@ -6,7 +6,9 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import org.etan.portal.integration.gitlabservice.service.GitLabService;
 import org.etan.portal.integration.gitlabservice.service.GitLabServiceException;
 import org.gitlab.api.GitlabAPI;
+import org.gitlab.api.Pagination;
 import org.gitlab.api.models.GitlabAccessLevel;
+import org.gitlab.api.models.GitlabCommit;
 import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabProject;
 import org.osgi.service.component.annotations.Activate;
@@ -15,6 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Service used for get aces to some methods of GitLab server.
@@ -69,6 +72,8 @@ public class GitLabServiceImpl implements GitLabService {
             = "There were problems when adding the user to the project.";
     private static final String DELETE_USER_FROM_PROJECT_ERROR
             = "There were problems when deleting the user from the project.";
+    private static final String GET_LAST_COMMITS_ERROR
+            = "There were problems when getting last commits.";
     @Reference
     private volatile OrganizationLocalService organizationLocalService;
 
@@ -143,6 +148,52 @@ public class GitLabServiceImpl implements GitLabService {
     }
 
     /**
+     * Returns up to 20 last commits.
+     * Returns less if there are no more commits at all.
+     *
+     * @param repositoryId id of gitLab repository
+     * @throws GitLabServiceException if any problems occurs
+     */
+    @Override
+    public List<GitlabCommit> getLastCommits(int repositoryId) throws GitLabServiceException {
+        List<GitlabCommit> someLastCommits;
+
+        GitlabAPI api = getApiClient();
+
+        try {
+            someLastCommits = api.getLastCommits(repositoryId);
+        } catch (IOException e) {
+            throw handle(GET_LAST_COMMITS_ERROR, e);
+        }
+
+        return someLastCommits;
+    }
+
+    /**
+     * Returns the specified number of commits.
+     * Returns less if there are no more commits at all.
+     *
+     * @param repositoryId id of gitLab repository
+     * @param number       specified number of commits
+     * @throws GitLabServiceException if any problems occurs
+     */
+    @Override
+    public List<GitlabCommit> getLastCommits(int repositoryId, int number) throws GitLabServiceException {
+        List<GitlabCommit> lastCommits;
+
+        GitlabAPI api = getApiClient();
+        Pagination pagination = new Pagination().withPerPage(number);
+
+        try {
+            lastCommits = api.getCommits(repositoryId, pagination, null);
+        } catch (IOException e) {
+            throw handle(GET_LAST_COMMITS_ERROR, e);
+        }
+
+        return lastCommits;
+    }
+
+    /**
      * Check if repository with name exists.
      *
      * @param repositoryName name of checking repository
@@ -170,6 +221,7 @@ public class GitLabServiceImpl implements GitLabService {
         return exists;
     }
 
+
     @Activate
     protected void activate() throws IOException, GitLabServiceException {
 
@@ -190,6 +242,7 @@ public class GitLabServiceImpl implements GitLabService {
         }
 
 //        test();
+        test2();
     }
 
     private GitlabAPI getApiClient() {//todo config here
@@ -203,91 +256,108 @@ public class GitLabServiceImpl implements GitLabService {
         return new GitLabServiceException(createProjectError, e);
     }
 
-    /*//    @Activate
-    protected void test() {
-        log.info("start of test method");
 
+    private void test2() {
         GitlabAPI api = getApiClient();
 
-        Random random = new Random(System.currentTimeMillis());
-        int r = random.nextInt(100);
-
-        String randName = "EtaProject" + r;
-
+        StringBuilder sb = new StringBuilder();
         try {
-            createRepository(randName);
+            List<GitlabCommit> lastCommits = getLastCommits(55, 13);
+            for (GitlabCommit lastCommit : lastCommits) {
+                sb.append(lastCommit.getTitle() +
+                        " - " + lastCommit.getMessage() +
+                        " - " + lastCommit.getAuthorName() +
+                        " - " + lastCommit.getCommittedDate() + "; ~~~~~~~~~~~~~~~~~\n\n");
+            }
         } catch (GitLabServiceException e) {
-            log.error(randName + " was not created");
+            log.error(e.getMessage());
         }
-
-        Long companyId = 20116L;
-
-        Organization o = null;
-
-        try {
-            o = organizationLocalService.getOrganization(companyId, "Timur");
-        } catch (PortalException e) {
-            if (e instanceof NoSuchOrganizationException) {
-                log.info("NoSuchOrganization for name: " + "Timur");
-            } else {
-                log.error(e, e);
-            }
-        }
-
-        if (o == null) {
-            log.info("o == null");
-        } else {
-            log.info(o.getName());
-            log.info(o.getUserName());
-        }
-
-        try {
-            o = organizationLocalService.getOrganization(companyId, "Projects");
-        } catch (PortalException e) {
-            if (e instanceof NoSuchOrganizationException) {
-                log.info("NoSuchOrganization for name: " + "Projects");
-            } else {
-                log.error(e, e);
-            }
-        }
-
-        if (o == null) {
-            log.info("o == null");
-        } else {
-            log.info(o.getName());
-            log.info(o.getUserName());
-        }
-
+    }
 //
+//    protected void test() {
+//        log.info("start of test method");
 //
 //        GitlabAPI api = getApiClient();
 //
-//        GitlabGroup group = api.getGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
-//        log.info("group.getId()"+group.getId());
-//        log.info("group.getPath()"+group.getPath());
-//        log.info("group.getWebUrl()"+group.getWebUrl());
+//        Random random = new Random(System.currentTimeMillis());
+//        int r = random.nextInt(100);
 //
-//        GitlabProject project = api.getProject(23);
-//        log.info("project.getId()"+project.getId());
-//        log.info("project.getPath()"+project.getPath());
-//        log.info("project.getWebUrl()"+project.getWebUrl());
-//        log.info("project.getHttpUrl()"+project.getHttpUrl());
-//        log.info("project.getNameWithNamespace()"+project.getNameWithNamespace());
-//        log.info("project.getPathWithNamespace()"+project.getPathWithNamespace());
-//        log.info("project.getNamespace().getName()"+project.getNamespace().getName());
-//        log.info("project.getNamespace().getPath()"+project.getNamespace().getPath());
+//        String randName = "EtaProject" + r;
 //
-//        GitlabProject project2 = api.getProject(group.getPath(),"EtaProject64");
-//        log.info("project2.getId()"+project2.getId());
-//        log.info("project2.getPath()"+project2.getPath());
-//        log.info("project2.getWebUrl()"+project2.getWebUrl());
-//        log.info("project2.getHttpUrl()"+project2.getHttpUrl());
-//        log.info("project2.getNameWithNamespace()"+project2.getNameWithNamespace());
-//        log.info("project2.getPathWithNamespace()"+project2.getPathWithNamespace());
-//        log.info("project2.getNamespace().getName()"+project2.getNamespace().getName());
-//        log.info("project2.getNamespace().getPath()"+project2.getNamespace().getPath());
-
-        log.info("end of test method");
-    }*/
+//        try {
+//            createRepository(randName);
+//        } catch (GitLabServiceException e) {
+//            log.error(randName + " was not created");
+//        }
+//
+//        Long companyId = 20116L;
+//
+//        Organization o = null;
+//
+//        try {
+//            o = organizationLocalService.getOrganization(companyId, "Timur");
+//        } catch (PortalException e) {
+//            if (e instanceof NoSuchOrganizationException) {
+//                log.info("NoSuchOrganization for name: " + "Timur");
+//            } else {
+//                log.error(e, e);
+//            }
+//        }
+//
+//        if (o == null) {
+//            log.info("o == null");
+//        } else {
+//            log.info(o.getName());
+//            log.info(o.getUserName());
+//        }
+//
+//        try {
+//            o = organizationLocalService.getOrganization(companyId, "Projects");
+//        } catch (PortalException e) {
+//            if (e instanceof NoSuchOrganizationException) {
+//                log.info("NoSuchOrganization for name: " + "Projects");
+//            } else {
+//                log.error(e, e);
+//            }
+//        }
+//
+//        if (o == null) {
+//            log.info("o == null");
+//        } else {
+//            log.info(o.getName());
+//            log.info(o.getUserName());
+//        }
+//
+////
+////
+////        GitlabAPI api = getApiClient();
+////
+////        GitlabGroup group = api.getGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
+////        log.info("group.getId()"+group.getId());
+////        log.info("group.getPath()"+group.getPath());
+////        log.info("group.getWebUrl()"+group.getWebUrl());
+////
+////        GitlabProject project = api.getProject(23);
+////        log.info("project.getId()"+project.getId());
+////        log.info("project.getPath()"+project.getPath());
+////        log.info("project.getWebUrl()"+project.getWebUrl());
+////        log.info("project.getHttpUrl()"+project.getHttpUrl());
+////        log.info("project.getNameWithNamespace()"+project.getNameWithNamespace());
+////        log.info("project.getPathWithNamespace()"+project.getPathWithNamespace());
+////        log.info("project.getNamespace().getName()"+project.getNamespace().getName());
+////        log.info("project.getNamespace().getPath()"+project.getNamespace().getPath());
+////
+////        GitlabProject project2 = api.getProject(group.getPath(),"EtaProject64");
+////        log.info("project2.getId()"+project2.getId());
+////        log.info("project2.getPath()"+project2.getPath());
+////        log.info("project2.getWebUrl()"+project2.getWebUrl());
+////        log.info("project2.getHttpUrl()"+project2.getHttpUrl());
+////        log.info("project2.getNameWithNamespace()"+project2.getNameWithNamespace());
+////        log.info("project2.getPathWithNamespace()"+project2.getPathWithNamespace());
+////        log.info("project2.getNamespace().getName()"+project2.getNamespace().getName());
+////        log.info("project2.getNamespace().getPath()"+project2.getNamespace().getPath());
+//
+//        log.info("end of test method");
+//    }
 
 }

@@ -1,5 +1,9 @@
 package org.etan.portal.integration.gitlabservice.service;
 
+import org.gitlab.api.models.GitlabCommit;
+
+import java.util.List;
+
 /**
  * Service used for get aces to some methods of GitLab server.
  *
@@ -28,6 +32,16 @@ public interface GitLabService {
             throws GitLabServiceException;
 
     /**
+     * Check if repository with name exists.
+     *
+     * @param repositoryName name of checking repository
+     * @return true, if exists
+     * @throws GitLabServiceException if any problems occurs
+     */
+    boolean checkIfRepositoryWithNameExists(String repositoryName)
+            throws GitLabServiceException;
+
+    /**
      * Takes the user from the repository. Does not do anything
      * if the user does not have access
      *
@@ -39,12 +53,24 @@ public interface GitLabService {
             throws GitLabServiceException;
 
     /**
-     * Check if repository with name exists.
+     * Returns up to 20 last commits.
+     * Returns less if there are no more commits at all.
      *
-     * @param repositoryName name of checking repository
-     * @return true, if exists
+     * @param repositoryId id of gitLab repository
      * @throws GitLabServiceException if any problems occurs
      */
-    boolean checkIfRepositoryWithNameExists(String repositoryName)
+    List<GitlabCommit> getLastCommits(int repositoryId)
             throws GitLabServiceException;
+
+    /**
+     * Returns the specified number of commits.
+     * Returns less if there are no more commits at all.
+     *
+     * @param repositoryId id of gitLab repository
+     * @param number       specified number of commits
+     * @throws GitLabServiceException if any problems occurs
+     */
+    List<GitlabCommit> getLastCommits(int repositoryId, int number)
+            throws GitLabServiceException;
+
 }
