@@ -20,9 +20,8 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>getScreenName</th>
-                    <th>getFullName</th>
-                    <th>getRoles</th>
+                    <th>Full name</th>
+                    <th>Roles</th>
                     <th>Member</th>
                     <th>add \ delete</th>
                 </tr>
@@ -30,7 +29,6 @@
             <tbody>
                 <c:forEach items="${userList}" var="user" varStatus="loop">
                     <tr>
-                        <td>${user.screenName}</td>
                         <td>${user.fullName}</td>
                         <td>
                             <c:forEach items="${user.roles}" var="role">

@@ -43,8 +43,8 @@ public class GitLabServiceImpl implements GitLabService {
     private static final Log log = LogFactoryUtil.getLog(GitLabServiceImpl.class);
 
     //todo make configurable
-    private static final String SERVER_URL = "https://192.168.1.40";
-    private static final String API_KEY = "qLozbm1w5VbyPNshWzce";
+    private static final String SERVER_URL = "https://192.168.0.69";
+    private static final String API_KEY = "th-roADVLPo5VbX4Hk2u";
 
     //todo if we want one more?
     private static final String PROJECTS_CATALOG_GITLAB_GROUP_PATH = "MyNewGroup2";
@@ -222,7 +222,7 @@ public class GitLabServiceImpl implements GitLabService {
     }
 
 
-    /*@Activate
+    @Activate
     protected void activate() throws IOException, GitLabServiceException {
 
         GitlabAPI api = getApiClient();
@@ -242,8 +242,8 @@ public class GitLabServiceImpl implements GitLabService {
         }
 
 //        test();
-        test2();
-    }*/
+//        test2();
+    }
 
     private GitlabAPI getApiClient() {//todo config here
         GitlabAPI api = GitlabAPI.connect(SERVER_URL, API_KEY);
@@ -257,22 +257,22 @@ public class GitLabServiceImpl implements GitLabService {
     }
 
 
-   /* private void test2() {
-        GitlabAPI api = getApiClient();
-
-        StringBuilder sb = new StringBuilder();
-        try {
-            List<GitlabCommit> lastCommits = getLastCommits(55, 13);
-            for (GitlabCommit lastCommit : lastCommits) {
-                sb.append(lastCommit.getTitle() +
-                        " - " + lastCommit.getMessage() +
-                        " - " + lastCommit.getAuthorName() +
-                        " - " + lastCommit.getCommittedDate() + "; ~~~~~~~~~~~~~~~~~\n\n");
-            }
-        } catch (GitLabServiceException e) {
-            log.error(e.getMessage());
-        }
-    }*/
+//   private void test2() {
+//        GitlabAPI api = getApiClient();
+//
+//        StringBuilder sb = new StringBuilder();
+//        try {
+//            List<GitlabCommit> lastCommits = getLastCommits(55, 13);
+//            for (GitlabCommit lastCommit : lastCommits) {
+//                sb.append(lastCommit.getTitle() +
+//                        " - " + lastCommit.getMessage() +
+//                        " - " + lastCommit.getAuthorName() +
+//                        " - " + lastCommit.getCommittedDate() + "; ~~~~~~~~~~~~~~~~~\n\n");
+//            }
+//        } catch (GitLabServiceException e) {
+//            log.error(e.getMessage());
+//        }
+//    }
 //
 //    protected void test() {
 //        log.info("start of test method");

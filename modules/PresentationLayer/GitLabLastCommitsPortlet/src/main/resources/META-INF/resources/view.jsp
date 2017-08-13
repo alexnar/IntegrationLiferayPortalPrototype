@@ -13,21 +13,28 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>getTitle</th>
-                <th>getMessage</th>
-                <th>getAuthorName</th>
-                <th>getCommittedDate</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>AuthorName</th>
+                <th>CommittedDate</th>
             </tr>
         </thead>
         <tbody>
-            <c:forEach items="${lastCommits}" var="commit" varStatus="loop">
+            <c:if test="${empty lastCommits}">
                 <tr>
-                    <td>${commit.title}</td>
-                    <td>${commit.message}</td>
-                    <td>${commit.authorName}</td>
-                    <td>${commit.committedDate}</td>
+                    <td colspan="4" style="text-align: center;">There are still no commits to display</td>
                 </tr>
-            </c:forEach>
+            </c:if>
+            <c:if test="${not empty lastCommits}">
+                <c:forEach items="${lastCommits}" var="commit" varStatus="loop">
+                        <tr>
+                            <td>${commit.title}</td>
+                            <td>${commit.message}</td>
+                            <td>${commit.authorName}</td>
+                            <td>${commit.committedDate}</td>
+                        </tr>
+                </c:forEach>
+            </c:if>
         </tbody>
     </table>
 </div>

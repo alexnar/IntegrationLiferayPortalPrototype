@@ -350,6 +350,43 @@ public class ProjectControllerImpl implements ProjectController {
         return projectDtoList;
     }
 
+    @Override
+    public boolean isOrganizationSite(ServiceContext serviceContext) {
+        boolean isOrganizationSite = false;
+        try {
+            long scopeGroupId = serviceContext.getScopeGroupId();
+            if (scopeGroupId > 0) {
+                Group group = serviceContext.getScopeGroup();
+                isOrganizationSite = group.isOrganization();
+            }
+        } catch (PortalException e) {
+            log.warn(e, e);//unreachable, i think
+        }
+        return isOrganizationSite;
+    }
+
+    @Override
+    public boolean isProjectOrganizationSite(ServiceContext serviceContext) {
+        boolean isProjectOrganizationSite = false;
+        if (isOrganizationSite(serviceContext)) {
+            Organization organization = getOrganization(serviceContext);
+            isProjectOrganizationSite = organization.getType()
+                    .equals(ORGANIZATION_TYPE__PROJECT);
+        }
+        return isProjectOrganizationSite;
+    }
+
+    @Override
+    public boolean isProjectsCatalogOrganizationSite(ServiceContext serviceContext) {
+        boolean isProjectOrganizationSite = false;
+        if (isOrganizationSite(serviceContext)) {
+            Organization organization = getOrganization(serviceContext);
+            isProjectOrganizationSite = organization.getType()
+                    .equals(ORGANIZATION_TYPE__PROJECTS_CATALOG);
+        }
+        return isProjectOrganizationSite;
+    }
+
     /**
      * Assign Project Site Template to site bound new Project organization.
      * Organization must have site. Site of this organization must be empty.
