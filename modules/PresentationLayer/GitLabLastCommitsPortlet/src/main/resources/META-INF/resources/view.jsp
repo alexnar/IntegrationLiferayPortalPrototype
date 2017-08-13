@@ -13,8 +13,10 @@
     <table class="table table-hover">
         <thead>
             <tr>
+                <c:if test="${not isProject}">
+                    <th>Project name</th>
+                </c:if>
                 <th>Title</th>
-                <th>Message</th>
                 <th>AuthorName</th>
                 <th>CommittedDate</th>
             </tr>
@@ -28,10 +30,12 @@
             <c:if test="${not empty lastCommits}">
                 <c:forEach items="${lastCommits}" var="commit" varStatus="loop">
                         <tr>
+                            <c:if test="${not isProject}">
+                                <td>${commitProjectNameMap[commit.id]}</td>
+                            </c:if>
                             <td>${commit.title}</td>
-                            <td>${commit.message}</td>
                             <td>${commit.authorName}</td>
-                            <td>${commit.committedDate}</td>
+                            <td>${dateFormat.format(commit.committedDate)}</td>
                         </tr>
                 </c:forEach>
             </c:if>

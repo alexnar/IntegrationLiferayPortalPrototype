@@ -21,8 +21,9 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author eta
@@ -45,6 +46,20 @@ public class GitLabLastCommitsPortlet extends MVCPortlet {
 
     private static final Log logger =
             LogFactoryUtil.getLog(GitLabLastCommitsPortlet.class);
+    private static final String GITLAB = "GITLAB";
+    /* attribute names */
+    private static final String LAST_COMMITS_ATTRIBUTE_NAME = "lastCommits";
+    private static final String DATE_FORMAT_ATTRIBUTE_NAME = "dateFormat";
+    private static final String COMMIT_PROJECT_NAMES_MAP_ATTRIBUTE_NAME =
+            "commitProjectNameMap";
+    private static final String IS_PROJECT_ATTRIBUTE_NAME = "isProject";
+    private static final int LAST_COMMITS_NUMBER = 10;
+
+    /* dateFormat */
+    private final DateFormat dateFormat = new SimpleDateFormat();
+//    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    /* paths */
     protected String incorrectPortletPlacementTemplate =
             "/incorrectPortletPlacement.jsp";
     protected String unexpectedErrorTemplate =
@@ -66,17 +81,25 @@ public class GitLabLastCommitsPortlet extends MVCPortlet {
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
 
+        boolean isProject = false;
+        boolean isProjectsCatalog = false;
+
         ServiceContext serviceContext = getServiceContext(renderRequest);
-        if (serviceContext != null && isCorrectPortletPlacement(serviceContext)) {
+        if (serviceContext != null) {
+            isProject = isProject(serviceContext);
+            isProjectsCatalog = isProjectsCatalog(serviceContext);
+        }
+
+        if (isProject || isProjectsCatalog) {
             try {
-                includeLastCommitsAttribute(renderRequest, serviceContext);
+                setLastCommitsAttribute(isProject, renderRequest,
+                        renderResponse, serviceContext);
+                renderRequest.setAttribute(DATE_FORMAT_ATTRIBUTE_NAME, dateFormat);
+                renderRequest.setAttribute(IS_PROJECT_ATTRIBUTE_NAME, isProject);
                 super.doView(renderRequest, renderResponse);
             } catch (GitLabServiceException e) {
                 logger.error(e, e);
                 include(gitlabErrorTemplate, renderRequest, renderResponse);
-            } catch (PortalException e) {
-                logger.error(e, e);//unreachable, i think
-                include(unexpectedErrorTemplate, renderRequest, renderResponse);
             }
         } else {
             include(incorrectPortletPlacementTemplate, renderRequest, renderResponse);
@@ -93,21 +116,72 @@ public class GitLabLastCommitsPortlet extends MVCPortlet {
         return serviceContext;
     }
 
-    private void includeLastCommitsAttribute(RenderRequest renderRequest,
-                                             ServiceContext serviceContext)
-            throws GitLabServiceException, PortalException {
+    private void setLastCommitsAttribute(boolean isProject,
+                                         RenderRequest renderRequest,
+                                         RenderResponse renderResponse,
+                                         ServiceContext serviceContext)
+            throws IOException, PortletException, GitLabServiceException {
+
+        if (isProject) {
+            setProjectLastCommitsAttribute(renderRequest, serviceContext);
+        } else {
+            setProjectsCatalogLastCommitsAttribute(renderRequest, serviceContext);
+        }
+    }
+
+    private void setProjectLastCommitsAttribute(RenderRequest renderRequest,
+                                                ServiceContext serviceContext)
+            throws GitLabServiceException {
 
         ProjectDto projectDto = projectController.getProject(serviceContext);
         Map<String, String> map = projectDto.getInfrastructureEntityProjectIdMap();
-        String gitlabProjectId = map.get("GITLAB");
+        String gitlabProjectId = map.get(GITLAB);
         int projectId = Integer.valueOf(gitlabProjectId);
 
-        List<GitlabCommit> lastCommits = gitLabService.getLastCommits(projectId, 10);
-        renderRequest.setAttribute("lastCommits", lastCommits);
+        List<GitlabCommit> lastCommits = gitLabService.getLastCommits(projectId, LAST_COMMITS_NUMBER);
+        renderRequest.setAttribute(LAST_COMMITS_ATTRIBUTE_NAME, lastCommits);
     }
 
-    private boolean isCorrectPortletPlacement(ServiceContext serviceContext) {
-        return projectController.isProjectOrganizationSite(serviceContext)
-                || projectController.isProjectsCatalogOrganizationSite(serviceContext);
+    private void setProjectsCatalogLastCommitsAttribute(RenderRequest renderRequest,
+                                                        ServiceContext serviceContext)
+            throws GitLabServiceException {
+
+        List<GitlabCommit> tenLastCommits = new ArrayList<>();
+        Map<String, String> commitProjectName = new HashMap<>();
+
+        List<ProjectDto> projectDtoList = projectController.getProjects(serviceContext);
+        ArrayList<GitlabCommit> allLastCommits = new ArrayList<>();
+        for (ProjectDto projectDto : projectDtoList) {
+            String projectName = projectDto.getProjectName();
+            Map<String, String> map = projectDto.getInfrastructureEntityProjectIdMap();
+            String gitlabProjectId = map.get(GITLAB);
+            if (gitlabProjectId == null) {
+                continue;
+            }
+            int projectId = Integer.valueOf(gitlabProjectId);
+            List<GitlabCommit> projectLastCommits = gitLabService.getLastCommits(projectId, LAST_COMMITS_NUMBER);
+            for (GitlabCommit lastCommit : projectLastCommits) {
+                //todo make better after test
+                commitProjectName.put(lastCommit.getId(), projectName);
+            }
+            allLastCommits.addAll(projectLastCommits);
+        }
+
+        allLastCommits.sort(Comparator.comparing(GitlabCommit::getCommittedDate).reversed());
+
+        for (int i = 0; i < LAST_COMMITS_NUMBER; i++) {
+            tenLastCommits.add(allLastCommits.get(i));
+        }
+
+        renderRequest.setAttribute(LAST_COMMITS_ATTRIBUTE_NAME, tenLastCommits);
+        renderRequest.setAttribute(COMMIT_PROJECT_NAMES_MAP_ATTRIBUTE_NAME, commitProjectName);
+    }
+
+    private boolean isProject(ServiceContext serviceContext) {
+        return projectController.isProjectOrganizationSite(serviceContext);
+    }
+
+    private boolean isProjectsCatalog(ServiceContext serviceContext) {
+        return projectController.isProjectsCatalogOrganizationSite(serviceContext);
     }
 }

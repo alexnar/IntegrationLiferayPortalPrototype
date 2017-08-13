@@ -16,10 +16,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Component(
         immediate = true,
@@ -36,7 +36,7 @@ public class ProjectManageImpl implements ProjectManage {
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, bind = "bind", unbind = "unbind",
             service = InfrastructureEntity.class, policy = ReferencePolicy.DYNAMIC)
-    private volatile List<InfrastructureEntity> infrastructureEntities;
+    private volatile Set<InfrastructureEntity> infrastructureEntities;
 
     @Reference
     private ProjectController projectController;
@@ -79,7 +79,6 @@ public class ProjectManageImpl implements ProjectManage {
                 logger.info(ASSIGN_USER_ERROR, e);
             }
         }
-
         projectController.addUser(user, serviceContext);
     }
 
@@ -124,7 +123,7 @@ public class ProjectManageImpl implements ProjectManage {
      */
     protected void bind(InfrastructureEntity infrastructureEntity) {
         if (infrastructureEntities == null) {
-            infrastructureEntities = new ArrayList<>();
+            infrastructureEntities = new HashSet<>();
         }
         infrastructureEntities.add(infrastructureEntity);
     }
@@ -136,13 +135,14 @@ public class ProjectManageImpl implements ProjectManage {
      * @param infrastructureEntityRemoved - service to remove
      */
     protected void unbind(InfrastructureEntity infrastructureEntityRemoved) {
-        for (int i = 0; i < infrastructureEntities.size(); i++) {
-            InfrastructureEntity infrastructureEntity = infrastructureEntities.get(i);
-            String infrastructureEntityName = infrastructureEntity.getName();
-            String infrastructureEntityRemovedName = infrastructureEntityRemoved.getName();
-            if (infrastructureEntityName.equals(infrastructureEntityRemovedName)) {
-                infrastructureEntities.remove(i);
+        InfrastructureEntity forDelete = null;
+        for (InfrastructureEntity infrastructureEntity : infrastructureEntities) {
+            if (infrastructureEntityRemoved.getName()
+                    .equals(infrastructureEntity.getName())) {
+                forDelete = infrastructureEntity;
+                break;
             }
         }
+        infrastructureEntities.remove(forDelete);
     }
 }
