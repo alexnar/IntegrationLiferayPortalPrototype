@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Validator;
+import org.etan.portal.integration.projectcontroller.service.ProjectController;
 import org.etan.portal.integration.projectmanage.service.ProjectManage;
 import org.etan.portal.integration.projectmanageportlet.portlet.constants.ProjectManagePortletKeys;
 import org.osgi.service.component.annotations.Component;
@@ -28,7 +29,7 @@ import java.util.List;
         property = {
                 "com.liferay.portlet.display-category=Integration",
                 "com.liferay.portlet.instanceable=true",
-                "javax.portlet.display-name=ProjectManage Portlet",
+                "javax.portlet.display-name=Project Manage",
                 "javax.portlet.init-param.template-path=/",
                 "javax.portlet.init-param.view-template=/view.jsp",
                 "javax.portlet.name=" + ProjectManagePortletKeys.ProjectManage,
@@ -39,7 +40,12 @@ import java.util.List;
 )
 public class ProjectManagePortlet extends MVCPortlet {
 
-    private static final Log logger = LogFactoryUtil.getLog(ProjectManagePortlet.class);
+    private static final Log logger =
+            LogFactoryUtil.getLog(ProjectManagePortlet.class);
+    protected String incorrectPortletPlacementTemplate =
+            "/incorrectPortletPlacement.jsp";
+    protected String unexpectedErrorTemplate =
+            "/unexpected_error.jsp";
 
     @Reference
     private ItemSelector _itemSelector;
@@ -47,6 +53,8 @@ public class ProjectManagePortlet extends MVCPortlet {
     @Reference
     private ProjectManage projectManage;
 
+    @Reference
+    private ProjectController projectController;
 
     @Reference
     private volatile UserLocalService userLocalService;
@@ -56,16 +64,25 @@ public class ProjectManagePortlet extends MVCPortlet {
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse)
             throws IOException, PortletException {
 
-
-        ServiceContext serviceContext = null;
-        long organizationId;
-        try {
-            serviceContext = ServiceContextFactory.getInstance(renderRequest);
-            organizationId = serviceContext.getScopeGroup().getOrganizationId();
-        } catch (PortalException e) {
-            throw new RuntimeException("neozhidanno");
+        ServiceContext serviceContext = getServiceContext(renderRequest);
+        if (serviceContext != null && isCorrectPortletPlacement(serviceContext)) {
+            try {
+                includeUserListAttributes(renderRequest, serviceContext);
+                super.doView(renderRequest, renderResponse);
+            } catch (PortalException e) {
+                logger.error(e, e);
+                include(unexpectedErrorTemplate, renderRequest, renderResponse);
+            }
+        } else {
+            include(incorrectPortletPlacementTemplate, renderRequest, renderResponse);
         }
+    }
 
+    private void includeUserListAttributes(RenderRequest renderRequest,
+                                           ServiceContext serviceContext)
+            throws PortalException {
+
+        long organizationId = serviceContext.getScopeGroup().getOrganizationId();
 
         List<User> userList = userLocalService.getUsers(-1, -1);
         List<Boolean> isMemberList = new ArrayList<>();
@@ -78,27 +95,19 @@ public class ProjectManagePortlet extends MVCPortlet {
 
         renderRequest.setAttribute("userList", userList);
         renderRequest.setAttribute("isMemberList", isMemberList);
-
-
-        super.doView(renderRequest, renderResponse);
     }
 
     @ProcessAction(name = "changeUsersMembership")
     public void changeUsersMembership(ActionRequest actionRequest, ActionResponse actionResponse) {
 
-        ServiceContext serviceContext = null;
-        try {
-            serviceContext = ServiceContextFactory.getInstance(actionRequest);
-        } catch (PortalException e) {
-            throw new RuntimeException("neozhidanno");
-        }
+        ServiceContext serviceContext = getServiceContext(actionRequest);
+        if (serviceContext == null) return;//unreachable, i think
 
         List<User> addedUsers = new ArrayList<>();
         List<User> deletedUsers = new ArrayList<>();
 
         String forAssign[] = actionRequest.getParameterValues("forAssign");
         if (forAssign != null && forAssign.length != 0) {
-            logger.info("~~~~~~You have selected forAssign: ");
             for (String aForAssign : forAssign) {
                 if (aForAssign == null || !Validator.isNumber(aForAssign)) {
                     continue;
@@ -106,7 +115,6 @@ public class ProjectManagePortlet extends MVCPortlet {
                 int userId = Integer.valueOf(aForAssign);
                 try {
                     User user = userLocalService.getUser(userId);
-                    logger.info("~~~~~~~~~~~~" + userId + " user name" + user.getFullName());
                     addedUsers.add(user);
                 } catch (PortalException e) {
                     logger.warn(e, e);
@@ -116,7 +124,6 @@ public class ProjectManagePortlet extends MVCPortlet {
 
         String forUnassign[] = actionRequest.getParameterValues("forUnassign");
         if (forUnassign != null && forUnassign.length != 0) {
-            logger.info("~~~~~~You have selected forUnassign: ");
             for (String aForUnassign : forUnassign) {
                 if (aForUnassign == null || !Validator.isNumber(aForUnassign)) {
                     continue;
@@ -124,7 +131,6 @@ public class ProjectManagePortlet extends MVCPortlet {
                 int userId = Integer.valueOf(aForUnassign);
                 try {
                     User user = userLocalService.getUser(userId);
-                    logger.info("~~~~~~~~~~~~" + userId + " user name" + user.getFullName());
                     deletedUsers.add(user);
                 } catch (PortalException e) {
                     logger.warn(e, e);
@@ -138,6 +144,20 @@ public class ProjectManagePortlet extends MVCPortlet {
         for (User deletedUser : deletedUsers) {
             projectManage.unassignUser(deletedUser, serviceContext);
         }
+    }
+
+    private ServiceContext getServiceContext(PortletRequest portletRequest) {
+        ServiceContext serviceContext = null;
+        try {
+            serviceContext = ServiceContextFactory.getInstance(portletRequest);
+        } catch (PortalException e) {
+            logger.error(e, e);//unreachable, i think
+        }
+        return serviceContext;
+    }
+
+    private boolean isCorrectPortletPlacement(ServiceContext serviceContext) {
+        return projectController.isProjectOrganizationSite(serviceContext);
     }
 
 }

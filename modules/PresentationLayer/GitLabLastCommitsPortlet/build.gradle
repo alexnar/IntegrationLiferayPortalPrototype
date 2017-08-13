@@ -7,5 +7,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.cmpn", version: "6.0.0"
 
 	compile project(':modules:DataAccessLayer:GitLabService')
-	compile project(':modules:BusinessLogicLayer:ProjectManage')
+	compile project(':modules:BusinessLogicLayer:ProjectController')
+//	compile project(':modules:BusinessLogicLayer:ProjectManage')
 }

@@ -141,4 +141,34 @@ public interface ProjectController {
      * @return list of available for projects or empty list, if no projects found
      */
     List<ProjectDto> getProjects(ServiceContext context);
+
+    /**
+     * Checks whether the serviceContext is the context
+     * of an organization's site.
+     *
+     * @param serviceContext serviceContext
+     * @return true, if the serviceContext is the context
+     * of an organization's site
+     */
+    boolean isOrganizationSite(ServiceContext serviceContext);
+
+    /**
+     * Checks whether the serviceContext is the context
+     * of an organization's site with a Project type.
+     *
+     * @param serviceContext serviceContext
+     * @return true, if the serviceContext is the context
+     * of an organization's site with a Project type
+     */
+    boolean isProjectOrganizationSite(ServiceContext serviceContext);
+
+    /**
+     * Checks whether the serviceContext is the context
+     * of an organization's site with a ProjectsCatalog type.
+     *
+     * @param serviceContext serviceContext
+     * @return true, if the serviceContext is the context
+     * of an organization's site with a ProjectsCatalog type
+     */
+    boolean isProjectsCatalogOrganizationSite(ServiceContext serviceContext);
 }
