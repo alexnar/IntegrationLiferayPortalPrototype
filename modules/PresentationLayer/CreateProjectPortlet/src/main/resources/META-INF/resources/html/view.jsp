@@ -6,15 +6,6 @@
 <portlet:resourceURL var="testAjaxResourceUrl"></portlet:resourceURL>
 
 
-
-${renderRequest}
-${renderRequest.getPortletSession()}
-${renderRequest.getPortletSession().getAttribute("projectName")}
-<h1>Summary</h1>
-
-${projectManageSummary}
-
-
 <aui:form name="fm" method="POST" id="formId" action="<%=createProjectUrl.toString()%>" >
 
 <aui:input label="Project name:" name="projectName" type="text"/>

@@ -47,6 +47,12 @@ public class NexusLastArtifactsPortlet extends MVCPortlet {
     private static final String PORTAL_EXCEPTION_MESSAGE = "Error while getting context";
     private static final String NEXUS_EXCEPTION_MESSAGE = "Cannot get last artifacts error";
 
+    protected String incorrectPortletPlacementTemplate =
+            "/html/incorrectPortletPlacement.jsp";
+    protected String unexpectedErrorTemplate =
+            "/html/unexpected_error.jsp";
+    protected String gitlabErrorTemplate =
+            "/html/gitlab_error.jsp";
 
     private static final Log logger = LogFactoryUtil.getLog(NexusLastArtifactsPortlet.class);
 
@@ -60,23 +66,48 @@ public class NexusLastArtifactsPortlet extends MVCPortlet {
 
     @Override
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-        ServiceContext serviceContext;
-        List<NexusComponentDto> lastArtifacts = new ArrayList<>();
+        ServiceContext serviceContext = getServiceContext(renderRequest);
+        if (serviceContext != null && isCorrectPortletPlacement(serviceContext)) {
+            try {
+                includeLastArtifactsAttribute(renderRequest, serviceContext);
+                super.doView(renderRequest, renderResponse);
+            } catch (NexusException e) {
+                logger.error(e.getMessage(), e);
+                include(gitlabErrorTemplate, renderRequest, renderResponse);
+            } catch (PortalException e) {
+                logger.error(e.getMessage(), e);
+                include(unexpectedErrorTemplate, renderRequest, renderResponse);
+            }
+        } else {
+            include(incorrectPortletPlacementTemplate, renderRequest, renderResponse);
+        }
+    }
+
+    private void includeLastArtifactsAttribute(RenderRequest renderRequest,
+                                             ServiceContext serviceContext)
+            throws NexusException, PortalException {
+
+        ProjectDto projectDto = projectController.getProject(serviceContext);
+        Map<String, String> map = projectDto.getInfrastructureEntityProjectIdMap();
+        String nexusProjectId = map.get(NEXUS_REPOSITORY_NAME);
+
+
+        List<NexusComponentDto> lastArtifacts = nexusService.getLastArtifacts(nexusProjectId, 5);
+        renderRequest.setAttribute("lastArtifacts", lastArtifacts);
+    }
+
+    private boolean isCorrectPortletPlacement(ServiceContext serviceContext) {
+        return projectController.isProjectOrganizationSite(serviceContext)
+                || projectController.isProjectsCatalogOrganizationSite(serviceContext);
+    }
+
+    private ServiceContext getServiceContext(RenderRequest renderRequest) {
+        ServiceContext serviceContext = null;
         try {
             serviceContext = ServiceContextFactory.getInstance(renderRequest);
-
-            ProjectDto projectDto = projectController.getProject(serviceContext);
-            Map<String, String> map = projectDto.getInfrastructureEntityProjectIdMap();
-            String nexusProjectId = map.get(NEXUS_REPOSITORY_NAME);
-
-            lastArtifacts = nexusService.getLastArtifacts(nexusProjectId, 5);
         } catch (PortalException e) {
-            logger.info(PORTAL_EXCEPTION_MESSAGE, e);
-        } catch (NexusException e) {
-            logger.info(NEXUS_EXCEPTION_MESSAGE, e);
+            logger.error(e.getMessage(), e);
         }
-
-        renderRequest.setAttribute("lastArtifacts", lastArtifacts);
-        super.doView(renderRequest, renderResponse);
+        return serviceContext;
     }
 }
