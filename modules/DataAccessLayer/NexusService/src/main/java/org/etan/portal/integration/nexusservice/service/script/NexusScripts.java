@@ -143,7 +143,41 @@ public class NexusScripts {
     }
 
     public NexusScriptDto getLastArtifactsScript() {
-        return null;
+        String script = "" +
+                "import groovy.json.JsonBuilder\n" +
+                "import org.sonatype.nexus.repository.storage.StorageFacet;\n" +
+                "import org.sonatype.nexus.repository.storage.Query;\n" +
+                "\n" +
+                "def argsMap = args.split('&').inject([:]) { map, token ->\n" +
+                "    token.split('=').with { map[it[0]] = it[1] }\n" +
+                "    map\n" +
+                "}\n" +
+                "\n" +
+                "def repositoryName = argsMap.getAt(\"repositoryName\").toString();\n" +
+                "def repo = repository.repositoryManager.get(repositoryName);\n" +
+                "StorageFacet storageFacet = repo.facet(StorageFacet);\n" +
+                "def tx = storageFacet.txSupplier().get();\n" +
+                "\n" +
+                "tx.begin();\n" +
+                "\n" +
+                "def components = tx.findComponents(Query.builder().build(), [repo]);\n" +
+                "\n" +
+                "def jsonBuilder = new JsonBuilder();\n" +
+                "\n" +
+                "jsonBuilder (\n" +
+                "        components.collect {\n" +
+                "            [Name: it.name(), Version: it.version(), Group: it.group(), LastUpdated: it.lastUpdated().toString()]\n" +
+                "        }\n" +
+                ");\n" +
+                "\n" +
+                "\n" +
+                "tx.close();\n" +
+                "\n" +
+                "return jsonBuilder;";
+        String scriptName = NexusScriptAction.LAST_ARTIFACTS.getAction();
+        NexusScriptDto nexusScriptDto = new NexusScriptDto.Builder().setScriptName(scriptName).
+                setScriptType(SCRIPT_TYPE).setScriptContent(script).build();
+        return nexusScriptDto;
     }
 
 }

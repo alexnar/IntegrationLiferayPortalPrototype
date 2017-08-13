@@ -59,6 +59,7 @@ public class DataRequesterServiceImpl implements DataRequesterService {
     private static final String CANNOT_ENCODE_PARAMETERS_ERROR = "Cannot encode parameters";
     private static final String BAD_RESPONSE = "Bad response from server";
     private static final int OK_STATUS_CODE = 200;
+    private static final int NO_CONTENT_STATUS_CODE = 204;
 
 
     private static final Log logger = LogFactoryUtil.getLog(DataRequesterServiceImpl.class);
@@ -151,7 +152,8 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         httpPost.setEntity(jsonContentEntity);
         StringBuilder httpResponse;
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
-            if (getStatusCode(response) != OK_STATUS_CODE) {
+            int statusCode = getStatusCode(response);
+            if (statusCode != OK_STATUS_CODE && statusCode!= NO_CONTENT_STATUS_CODE) {
                 throw new DataRequestException(BAD_RESPONSE);
             }
             HttpEntity httpEntity = response.getEntity();
@@ -197,7 +199,8 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         httpPost.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
         StringBuilder httpResponse;
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
-            if (getStatusCode(response) != OK_STATUS_CODE) {
+            int statusCode = getStatusCode(response);
+            if (statusCode != OK_STATUS_CODE && statusCode!= NO_CONTENT_STATUS_CODE) {
                 throw new DataRequestException(BAD_RESPONSE);
             }
             HttpEntity httpEntity = response.getEntity();

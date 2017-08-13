@@ -1,5 +1,6 @@
 package org.etan.portal.integration.nexusservice.service;
 
+import org.etan.portal.integration.nexusservice.service.dto.NexusComponentDto;
 import org.etan.portal.integration.nexusservice.service.exception.NexusException;
 
 import java.util.List;
@@ -66,5 +67,5 @@ public interface NexusService {
      * @throws NexusException - if something went wrong while
      *                        communication with Nexus server.
      */
-    List<Object> getLastArtifacts(String repositoryId, int artifactsCount) throws NexusException;
+    List<NexusComponentDto> getLastArtifacts(String repositoryId, int artifactsCount) throws NexusException;
 }

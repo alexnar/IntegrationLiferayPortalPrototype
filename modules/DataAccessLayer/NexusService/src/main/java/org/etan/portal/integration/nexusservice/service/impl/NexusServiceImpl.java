@@ -1,10 +1,8 @@
 package org.etan.portal.integration.nexusservice.service.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.etan.portal.integration.nexusservice.service.NexusService;
+import org.etan.portal.integration.nexusservice.service.dto.NexusComponentDto;
 import org.etan.portal.integration.nexusservice.service.dto.NexusScriptDto;
 import org.etan.portal.integration.nexusservice.service.exception.NexusException;
 import org.etan.portal.integration.nexusservice.service.script.NexusRemoteScriptManager;
@@ -13,15 +11,14 @@ import org.etan.portal.integration.nexusservice.service.script.NexusScripts;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Component(
         immediate = true,
         property = {
-                // TODO: enter required service properties
+                "osgi.command.scope=test",
+                "osgi.command.function=getLastArtifacts"
         },
         service = NexusService.class
 )
@@ -35,6 +32,9 @@ public class NexusServiceImpl implements NexusService {
     private static final String RESPONSE_RESULT_FIELD = "result";
     private static final String REPOSITORY_EXISTS_RESULT = "REPOSITORY_EXISTS";
     private static final String REPOSITORY_NOT_EXISTS_RESULT = "REPOSITORY_NOT_EXISTS";
+    private static final int START_ARRAY_INDEX = 0;
+    private static final String NEXUS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
 
     private NexusScripts nexusScripts = new NexusScripts();
 
@@ -98,13 +98,33 @@ public class NexusServiceImpl implements NexusService {
     }
 
     @Override
-    public List<Object> getLastArtifacts(String repositoryId, int artifactsCount) throws NexusException {
+    public List<NexusComponentDto> getLastArtifacts(String repositoryId, int artifactsCount) throws NexusException {
         NexusScriptDto lastArtifactsScript =
                 nexusScripts.getLastArtifactsScript();
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(REPOSITORY_NAME_FIELD, repositoryId);
         String executionResponse = nexusRemoteScriptManager.executeScript(
-                lastArtifactsScript, NexusScriptAction.LAST_ARTIFACTS, null);
-        // TODO: get list of artifact from executionResponse
-        return null;
+                lastArtifactsScript, NexusScriptAction.LAST_ARTIFACTS, parameters);
+
+        List<NexusComponentDto> nexusComponentList = parseResponseToNexusComponents(executionResponse);
+        Collections.sort(nexusComponentList);
+        int componentListSize = nexusComponentList.size();
+        if (artifactsCount > componentListSize) {
+            artifactsCount = componentListSize;
+        }
+        List<NexusComponentDto> lastArtifacts = nexusComponentList.subList(START_ARRAY_INDEX, artifactsCount);
+        return lastArtifacts;
+    }
+
+    private List<NexusComponentDto> parseResponseToNexusComponents(String response) {
+        JsonParser jsonParser = new JsonParser();
+        JsonElement responseElement = jsonParser.parse(response);
+        JsonElement resultElement = responseElement.getAsJsonObject().get("result");
+        String result = resultElement.getAsString();
+        Gson gson = new GsonBuilder().setDateFormat(NEXUS_DATE_FORMAT).create();
+        NexusComponentDto[] nexusComponents = gson.fromJson(result, NexusComponentDto[].class);
+        List<NexusComponentDto> nexusComponentList = Arrays.asList(nexusComponents);
+        return nexusComponentList;
     }
 
 }
