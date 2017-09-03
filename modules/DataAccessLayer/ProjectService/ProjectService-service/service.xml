@@ -9,7 +9,6 @@
         <!-- PK fields -->
         <column name="infrastructureEntityProjectPKId" primary="true" type="long"/>
 
-        <!-- Audit fields -->
         <column name="organizationId" type="long"/>
 
         <!-- Other fields -->

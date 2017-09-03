@@ -5,6 +5,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import org.etan.portal.integration.infrastructureentityapi.service.InfrastructureEntity;
 import org.etan.portal.integration.infrastructureentityapi.service.exception.InfrastructureEntityException;
 import org.etan.portal.integration.projectcontroller.service.ProjectController;
@@ -16,10 +17,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Component(
         immediate = true,
@@ -32,24 +33,31 @@ public class ProjectManageImpl implements ProjectManage {
     private static final String UNASSIGN_USER_ERROR = "Error occurred while unassign user";
     private static final String CREATE_PROJECT_ERROR = "Error occurred while creating project";
     private static final Log logger = LogFactoryUtil.getLog(ProjectManageImpl.class);
-
-
+    @Reference
+    UserLocalService userLocalService;
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, bind = "bind", unbind = "unbind",
             service = InfrastructureEntity.class, policy = ReferencePolicy.DYNAMIC)
-    private volatile Set<InfrastructureEntity> infrastructureEntities;
-
+    private volatile Collection<InfrastructureEntity> infrastructureEntities;
     @Reference
     private ProjectController projectController;
 
     @Override
     public ProjectDto createProject(String projectName, ServiceContext serviceContext) {
         Map<String, String> infrastructureEntityProjectIdMap = new HashMap<>();
+        long userId = serviceContext.getUserId();
+        User user = null;
+        try {
+            user = userLocalService.getUser(userId);
+        } catch (PortalException e) {
+            logger.info(e.getMessage(), e);
+        }
         for (InfrastructureEntity infrastructureEntity : infrastructureEntities) {
             String infrastructureEntityName = infrastructureEntity.getName();
             try {
                 String infrastructureEntityProjectId =
                         infrastructureEntity.createInfrastructureEntityProject(projectName);
                 infrastructureEntityProjectIdMap.put(infrastructureEntityName, infrastructureEntityProjectId);
+                infrastructureEntity.assignUser(user, infrastructureEntityProjectId);
             } catch (InfrastructureEntityException e) {
                 logger.info(CREATE_PROJECT_ERROR, e);
             }
@@ -122,7 +130,13 @@ public class ProjectManageImpl implements ProjectManage {
      * @param infrastructureEntity - service to bind
      */
     protected void bind(InfrastructureEntity infrastructureEntity) {
+        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +
+                "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                + "#############################################################3");
         if (infrastructureEntities == null) {
+            logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +
+                    "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                    + "#############################################################2");
             infrastructureEntities = new HashSet<>();
         }
         infrastructureEntities.add(infrastructureEntity);
@@ -135,6 +149,9 @@ public class ProjectManageImpl implements ProjectManage {
      * @param infrastructureEntityRemoved - service to remove
      */
     protected void unbind(InfrastructureEntity infrastructureEntityRemoved) {
+        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +
+                "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                + "#############################################################");
         InfrastructureEntity forDelete = null;
         for (InfrastructureEntity infrastructureEntity : infrastructureEntities) {
             if (infrastructureEntityRemoved.getName()

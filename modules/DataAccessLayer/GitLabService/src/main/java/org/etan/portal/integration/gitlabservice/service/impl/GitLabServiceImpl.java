@@ -43,11 +43,11 @@ public class GitLabServiceImpl implements GitLabService {
     private static final Log log = LogFactoryUtil.getLog(GitLabServiceImpl.class);
 
     //todo make configurable
-    private static final String SERVER_URL = "https://192.168.0.69";
-    private static final String API_KEY = "th-roADVLPo5VbX4Hk2u";
+    private static final String SERVER_URL = "https://192.168.43.89";
+    private static final String API_KEY = "9Q3hhL6QaJvEDXK3TQt_";
 
     //todo if we want one more?
-    private static final String PROJECTS_CATALOG_GITLAB_GROUP_PATH = "MyNewGroup2";
+    private static final String PROJECTS_CATALOG_GITLAB_GROUP_PATH = "GlobalProjects";
 
     //todo better
     private static final int DEFAULT_GITLAB_ROOT_USER_ID = 1;
@@ -182,6 +182,7 @@ public class GitLabServiceImpl implements GitLabService {
         List<GitlabCommit> lastCommits;
 
         GitlabAPI api = getApiClient();
+
         Pagination pagination = new Pagination().withPerPage(number);
 
         try {
@@ -223,7 +224,7 @@ public class GitLabServiceImpl implements GitLabService {
 
 
     @Activate
-    protected void activate() throws IOException, GitLabServiceException {
+    protected void activate() {
 
         GitlabAPI api = getApiClient();
 
@@ -231,13 +232,18 @@ public class GitLabServiceImpl implements GitLabService {
             GitlabGroup group = api.getGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
         } catch (IOException e) {
             if (e instanceof FileNotFoundException) {
-                GitlabGroup group = api.createGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
+                GitlabGroup group = null;
+                try {
+                    group = api.createGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
+                } catch (IOException e1) {
+                    handle(e.getMessage(), e1);
+                }
                 log.info("GitlabGroup created: \n" +
                         "group.getId(): " + group.getId() + "; " +
                         "group.getPath(): " + group.getPath() + "; " +
                         "group.getWebUrl(): " + group.getWebUrl() + ". ");
             } else {
-                throw handle(e.getMessage(), e);
+                handle(e.getMessage(), e);
             }
         }
 

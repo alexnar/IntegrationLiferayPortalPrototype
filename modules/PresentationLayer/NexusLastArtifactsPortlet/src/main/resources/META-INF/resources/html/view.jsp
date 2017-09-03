@@ -18,14 +18,21 @@
             </tr>
         </thead>
         <tbody>
-            <c:forEach items="${lastArtifacts}" var="artifact" varStatus="loop">
+            <c:if test="${empty lastArtifacts}">
                 <tr>
-                    <td>${artifact.name}</td>
-                    <td>${artifact.group}</td>
-                    <td>${artifact.version}</td>
-                    <td>${artifact.lastUpdated}</td>
+                    <td colspan="4" style="text-align: center;">There are still no artifacts to display</td>
                 </tr>
-            </c:forEach>
+            </c:if>
+            <c:if test="${not empty lastArtifacts}">
+                <c:forEach items="${lastArtifacts}" var="artifact" varStatus="loop">
+                    <tr>
+                        <td>${artifact.name}</td>
+                        <td>${artifact.group}</td>
+                        <td>${artifact.version}</td>
+                        <td>${artifact.lastUpdated}</td>
+                    </tr>
+                </c:forEach>
+            </c:if>
         </tbody>
     </table>
 </div>

@@ -1,6 +1,5 @@
 package org.etan.portal.integration.projectmanageportlet.portlet.portlet;
 
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -47,8 +46,6 @@ public class ProjectManagePortlet extends MVCPortlet {
     protected String unexpectedErrorTemplate =
             "/unexpected_error.jsp";
 
-    @Reference
-    private ItemSelector _itemSelector;
 
     @Reference
     private ProjectManage projectManage;
@@ -86,14 +83,21 @@ public class ProjectManagePortlet extends MVCPortlet {
 
         List<User> userList = userLocalService.getUsers(-1, -1);
         List<Boolean> isMemberList = new ArrayList<>();
+        ArrayList<Object> userListNew = new ArrayList<>();
+
 
         for (int i = 0; i < userList.size(); i++) {
             User user = userList.get(i);
+            if (user.getFullName().equals("") || user.getFullName().equals(" ")) {
+                continue;
+            }
+            userListNew.add(user);
             boolean isMember = userLocalService.hasOrganizationUser(organizationId, user.getUserId());
             isMemberList.add(isMember);
         }
 
-        renderRequest.setAttribute("userList", userList);
+
+        renderRequest.setAttribute("userList", userListNew);
         renderRequest.setAttribute("isMemberList", isMemberList);
     }
 

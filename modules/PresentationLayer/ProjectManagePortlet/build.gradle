@@ -9,9 +9,6 @@ dependencies {
 	compile project(':modules:BusinessLogicLayer:ProjectManage')
 	compile project(':modules:BusinessLogicLayer:ProjectController')
 
-	compile group: 'com.liferay', name: 'com.liferay.item.selector.api', version: '2.3.0'
-	compile group: 'com.liferay', name: 'com.liferay.item.selector.criteria.api', version: '2.1.1'
-
 
 
 }

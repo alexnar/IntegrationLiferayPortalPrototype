@@ -43,7 +43,7 @@ public class ProjectControllerImpl implements ProjectController {
     private static final String ORGANIZATION_TYPE__PROJECT = "Project";
     private static final String ORGANIZATION_TYPE__PROJECTS_CATALOG = "ProjectsCatalog";
     private static final String PROJECT_SITE_TEMPLATE_PRIVATE =
-            "Project Template - private";
+            "Project Template";
 //TODO - make osgi config for site template name and etc.
 
     @Reference
@@ -418,7 +418,7 @@ public class ProjectControllerImpl implements ProjectController {
         }
 
         layoutSet = layoutSetLocalService.getLayoutSet(
-                newProjectOrganization.getGroupId(), true);
+                newProjectOrganization.getGroupId(), false);
 
         layoutSet.setLayoutSetPrototypeLinkEnabled(true);
         layoutSet.setLayoutSetPrototypeUuid(layoutSetPrototype.getUuid());

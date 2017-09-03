@@ -28,7 +28,12 @@
             </thead>
             <tbody>
                 <c:forEach items="${userList}" var="user" varStatus="loop">
-                    <tr>
+                    <c:if test="${not isMemberList[loop.index]}">
+                        <tr>
+                    </c:if>
+                    <c:if test="${isMemberList[loop.index]}">
+                        <tr style="background:gray;" >
+                    </c:if>
                         <td>${user.fullName}</td>
                         <td>
                             <c:forEach items="${user.roles}" var="role">
