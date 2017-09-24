@@ -247,12 +247,8 @@ public class DataRequesterServiceImpl implements DataRequesterService {
     public String post(String url, Map<String, String> parametersMap)
             throws DataRequestException {
 
-        if (url == null) {//todo discuss runtime
-//            return new StringBuilder();
+        if (url == null) {
             throw new IllegalArgumentException("url could not be null");
-            // well place for runtime, isn't it?
-            // because this bad solution to get empty StringBuilder
-            // and I do not let do this
         }
 
         Request request = Request.Post(url);
@@ -303,8 +299,6 @@ public class DataRequesterServiceImpl implements DataRequesterService {
         }
         return parametersList;
     }
-
-    //todo do as factory util, mb service in other module
 
     /**
      * Get customized HttpClient.

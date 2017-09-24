@@ -57,7 +57,6 @@ public class GitLabLastCommitsPortlet extends MVCPortlet {
 
     /* dateFormat */
     private final DateFormat dateFormat = new SimpleDateFormat();
-//    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     /* paths */
     protected String incorrectPortletPlacementTemplate =
@@ -111,7 +110,7 @@ public class GitLabLastCommitsPortlet extends MVCPortlet {
         try {
             serviceContext = ServiceContextFactory.getInstance(renderRequest);
         } catch (PortalException e) {
-            logger.error(e, e);//unreachable, i think
+            logger.error(e, e);
         }
         return serviceContext;
     }
@@ -161,7 +160,6 @@ public class GitLabLastCommitsPortlet extends MVCPortlet {
             int projectId = Integer.valueOf(gitlabProjectId);
             List<GitlabCommit> projectLastCommits = gitLabService.getLastCommits(projectId, LAST_COMMITS_NUMBER);
             for (GitlabCommit lastCommit : projectLastCommits) {
-                //todo make better after test
                 commitProjectName.put(lastCommit.getId(), projectName);
             }
             allLastCommits.addAll(projectLastCommits);

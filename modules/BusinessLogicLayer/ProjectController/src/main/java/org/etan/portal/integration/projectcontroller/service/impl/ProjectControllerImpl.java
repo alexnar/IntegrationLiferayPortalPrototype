@@ -152,7 +152,7 @@ public class ProjectControllerImpl implements ProjectController {
         for (User user : users) {
             organizationLocalService.addUserOrganization(
                     user.getUserId(), projectOrganization);
-            reindex(user);//todo some performance issue? )
+            reindex(user);
         }
     }
 
@@ -193,11 +193,9 @@ public class ProjectControllerImpl implements ProjectController {
 
         if (projectName == null) {
             throw new IllegalArgumentException("projectName can not be null");
-            //todo todo discus runtime - this is temporary solution
         }
         if (serviceContext == null) {
             throw new IllegalServiceContextException("serviceContext can not be null");
-            //todo todo discus runtime - this is temporary solution
         }
 
         Organization projectsCatalogOrganization =
@@ -208,7 +206,6 @@ public class ProjectControllerImpl implements ProjectController {
         if (ownerUserId == 0) {
             throw new IllegalServiceContextException(
                     "userId from ServiceContext equals 0");
-            //todo todo discus runtime - this is temporary solution
         }
 
         User owner = userLocalService.getUser(ownerUserId);
@@ -294,7 +291,7 @@ public class ProjectControllerImpl implements ProjectController {
         for (User user : users) {
             organizationLocalService.deleteUserOrganization(
                     user.getUserId(), projectOrganization);
-            reindex(user);//todo some performance issue? )
+            reindex(user);
         }
     }
 
@@ -360,7 +357,7 @@ public class ProjectControllerImpl implements ProjectController {
                 isOrganizationSite = group.isOrganization();
             }
         } catch (PortalException e) {
-            log.warn(e, e);//unreachable, i think
+            log.warn(e, e);
         }
         return isOrganizationSite;
     }
@@ -397,8 +394,8 @@ public class ProjectControllerImpl implements ProjectController {
      */
     private void assignProjectSiteTemplate(
             Organization newProjectOrganization) throws PortalException {
-        LayoutSetPrototype layoutSetPrototype = null;// site template
-        LayoutSet layoutSet = null;// site
+        LayoutSetPrototype layoutSetPrototype = null;
+        LayoutSet layoutSet = null;
 
         List<LayoutSetPrototype> layoutSetPrototypes =
                 layoutSetPrototypeLocalService.getLayoutSetPrototypes(
@@ -413,8 +410,6 @@ public class ProjectControllerImpl implements ProjectController {
 
         if (layoutSetPrototype == null) {
             throw new SiteTemplateNotFoundException(PROJECT_SITE_TEMPLATE_PRIVATE);
-            //todo todo discus runtime - this is temporary solution
-            //todo nm that not runtime...
         }
 
         layoutSet = layoutSetLocalService.getLayoutSet(
@@ -475,13 +470,12 @@ public class ProjectControllerImpl implements ProjectController {
         Organization organization;
 
         try {
-            Group group = serviceContext.getScopeGroup();//here PortalException
+            Group group = serviceContext.getScopeGroup();
 
             if (!group.isOrganization()) {
                 throw new IllegalServiceContextException(
                         "Site with name: " + group.getName()
                                 + "is not assign to organization");
-                //todo todo discus runtime - this is temporary solution
             }
             long organizationId = group.getOrganizationId();
 
@@ -490,7 +484,6 @@ public class ProjectControllerImpl implements ProjectController {
         } catch (PortalException e) {
             throw new IllegalServiceContextException(
                     "Could not get organization from ServiceContext", e);
-            //todo todo discus runtime - this is temporary solution
         }
         return organization;
     }
@@ -542,7 +535,6 @@ public class ProjectControllerImpl implements ProjectController {
             throw new IllegalServiceContextException(
                     "invalid organization type, found: " + organization.getType()
                             + ", expected: " + ORGANIZATION_TYPE__PROJECTS_CATALOG);
-            //todo todo discus runtime - this is temporary solution
         }
         return organization;
     }
@@ -563,7 +555,6 @@ public class ProjectControllerImpl implements ProjectController {
             throw new IllegalServiceContextException(
                     "invalid organization type, found: " + organization.getType()
                             + ", expected: " + ORGANIZATION_TYPE__PROJECT);
-            //todo todo discus runtime - this is temporary solution
         }
         return organization;
     }
@@ -577,9 +568,9 @@ public class ProjectControllerImpl implements ProjectController {
     private void reindex(User user) {
         Indexer indexer = IndexerRegistryUtil.getIndexer(User.class);
         try {
-            indexer.reindex(user);// not important
+            indexer.reindex(user);
         } catch (SearchException e) {
-            log.error(e, e);//unreachable, i think
+            log.error(e, e);
         }
     }
 }

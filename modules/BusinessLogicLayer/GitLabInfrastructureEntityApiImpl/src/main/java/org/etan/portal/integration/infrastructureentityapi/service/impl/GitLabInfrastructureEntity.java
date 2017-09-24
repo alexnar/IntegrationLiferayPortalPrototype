@@ -182,7 +182,6 @@ public class GitLabInfrastructureEntity implements InfrastructureEntity {
 
     private boolean isInteger(String string) {
         int length = string.length();
-//        int a = 999999999; // Explanation to figure 18 which is lower
         boolean a = 0 < length;
         boolean b = length <= 9;
         boolean c = Validator.isNumber(string);

@@ -8,5 +8,4 @@ dependencies {
 
 	compile project(':modules:DataAccessLayer:GitLabService')
 	compile project(':modules:BusinessLogicLayer:ProjectController')
-//	compile project(':modules:BusinessLogicLayer:ProjectManage')
 }

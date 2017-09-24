@@ -16,7 +16,6 @@ import java.util.Map;
  * @author Efimov Timur
  * @version 1.0.1
  */
-//todo mb rename class name
 public interface ProjectController {
 
 

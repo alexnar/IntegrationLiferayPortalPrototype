@@ -28,7 +28,6 @@ import java.util.Map;
 )
 public class ProjectManageImpl implements ProjectManage {
 
-    // TODO implement methods
     private static final String ASSIGN_USER_ERROR = "Error occurred while assign user";
     private static final String UNASSIGN_USER_ERROR = "Error occurred while unassign user";
     private static final String CREATE_PROJECT_ERROR = "Error occurred while creating project";
@@ -130,13 +129,7 @@ public class ProjectManageImpl implements ProjectManage {
      * @param infrastructureEntity - service to bind
      */
     protected void bind(InfrastructureEntity infrastructureEntity) {
-        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +
-                "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                + "#############################################################3");
         if (infrastructureEntities == null) {
-            logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +
-                    "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                    + "#############################################################2");
             infrastructureEntities = new HashSet<>();
         }
         infrastructureEntities.add(infrastructureEntity);
@@ -149,9 +142,6 @@ public class ProjectManageImpl implements ProjectManage {
      * @param infrastructureEntityRemoved - service to remove
      */
     protected void unbind(InfrastructureEntity infrastructureEntityRemoved) {
-        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" +
-                "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-                + "#############################################################");
         InfrastructureEntity forDelete = null;
         for (InfrastructureEntity infrastructureEntity : infrastructureEntities) {
             if (infrastructureEntityRemoved.getName()

@@ -46,10 +46,8 @@ public class GitLabServiceImpl implements GitLabService {
     private static final String SERVER_URL = "https://192.168.43.89";
     private static final String API_KEY = "9Q3hhL6QaJvEDXK3TQt_";
 
-    //todo if we want one more?
     private static final String PROJECTS_CATALOG_GITLAB_GROUP_PATH = "GlobalProjects";
 
-    //todo better
     private static final int DEFAULT_GITLAB_ROOT_USER_ID = 1;
     private static final int DEFAULT_GITLAB_ADMINISTRATOR_USER_ID =
             DEFAULT_GITLAB_ROOT_USER_ID;
@@ -89,10 +87,6 @@ public class GitLabServiceImpl implements GitLabService {
         GitlabAPI api = getApiClient();
 
         try {
-            //todo make group creation or etc. configurable
-//            GitlabProject project = api.createUserProject(
-//                    GITLAB_ADMIN_ID, repositoryName);
-
             GitlabGroup group = api.getGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
             GitlabProject project = api.createProjectForGroup(
                     repositoryName, group, DESCRIPTION, PRIVATE_VISIBILITY);
@@ -246,9 +240,6 @@ public class GitLabServiceImpl implements GitLabService {
                 handle(e.getMessage(), e);
             }
         }
-
-//        test();
-//        test2();
     }
 
     private GitlabAPI getApiClient() {//todo config here
@@ -261,109 +252,5 @@ public class GitLabServiceImpl implements GitLabService {
         log.error(createProjectError, e);
         return new GitLabServiceException(createProjectError, e);
     }
-
-
-//   private void test2() {
-//        GitlabAPI api = getApiClient();
-//
-//        StringBuilder sb = new StringBuilder();
-//        try {
-//            List<GitlabCommit> lastCommits = getLastCommits(55, 13);
-//            for (GitlabCommit lastCommit : lastCommits) {
-//                sb.append(lastCommit.getTitle() +
-//                        " - " + lastCommit.getMessage() +
-//                        " - " + lastCommit.getAuthorName() +
-//                        " - " + lastCommit.getCommittedDate() + "; ~~~~~~~~~~~~~~~~~\n\n");
-//            }
-//        } catch (GitLabServiceException e) {
-//            log.error(e.getMessage());
-//        }
-//    }
-//
-//    protected void test() {
-//        log.info("start of test method");
-//
-//        GitlabAPI api = getApiClient();
-//
-//        Random random = new Random(System.currentTimeMillis());
-//        int r = random.nextInt(100);
-//
-//        String randName = "EtaProject" + r;
-//
-//        try {
-//            createRepository(randName);
-//        } catch (GitLabServiceException e) {
-//            log.error(randName + " was not created");
-//        }
-//
-//        Long companyId = 20116L;
-//
-//        Organization o = null;
-//
-//        try {
-//            o = organizationLocalService.getOrganization(companyId, "Timur");
-//        } catch (PortalException e) {
-//            if (e instanceof NoSuchOrganizationException) {
-//                log.info("NoSuchOrganization for name: " + "Timur");
-//            } else {
-//                log.error(e, e);
-//            }
-//        }
-//
-//        if (o == null) {
-//            log.info("o == null");
-//        } else {
-//            log.info(o.getName());
-//            log.info(o.getUserName());
-//        }
-//
-//        try {
-//            o = organizationLocalService.getOrganization(companyId, "Projects");
-//        } catch (PortalException e) {
-//            if (e instanceof NoSuchOrganizationException) {
-//                log.info("NoSuchOrganization for name: " + "Projects");
-//            } else {
-//                log.error(e, e);
-//            }
-//        }
-//
-//        if (o == null) {
-//            log.info("o == null");
-//        } else {
-//            log.info(o.getName());
-//            log.info(o.getUserName());
-//        }
-//
-////
-////
-////        GitlabAPI api = getApiClient();
-////
-////        GitlabGroup group = api.getGroup(PROJECTS_CATALOG_GITLAB_GROUP_PATH);
-////        log.info("group.getId()"+group.getId());
-////        log.info("group.getPath()"+group.getPath());
-////        log.info("group.getWebUrl()"+group.getWebUrl());
-////
-////        GitlabProject project = api.getProject(23);
-////        log.info("project.getId()"+project.getId());
-////        log.info("project.getPath()"+project.getPath());
-////        log.info("project.getWebUrl()"+project.getWebUrl());
-////        log.info("project.getHttpUrl()"+project.getHttpUrl());
-////        log.info("project.getNameWithNamespace()"+project.getNameWithNamespace());
-////        log.info("project.getPathWithNamespace()"+project.getPathWithNamespace());
-////        log.info("project.getNamespace().getName()"+project.getNamespace().getName());
-////        log.info("project.getNamespace().getPath()"+project.getNamespace().getPath());
-////
-////        GitlabProject project2 = api.getProject(group.getPath(),"EtaProject64");
-////        log.info("project2.getId()"+project2.getId());
-////        log.info("project2.getPath()"+project2.getPath());
-////        log.info("project2.getWebUrl()"+project2.getWebUrl());
-////        log.info("project2.getHttpUrl()"+project2.getHttpUrl());
-////        log.info("project2.getNameWithNamespace()"+project2.getNameWithNamespace());
-////        log.info("project2.getPathWithNamespace()"+project2.getPathWithNamespace());
-////        log.info("project2.getNamespace().getName()"+project2.getNamespace().getName());
-////        log.info("project2.getNamespace().getPath()"+project2.getNamespace().getPath());
-//
-//        log.info("end of test method");
-//    }
 
 }

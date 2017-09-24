@@ -41,7 +41,6 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
 
     @Override
     public void assignUser(User user, String infrastructureEntityProjectId) throws InfrastructureEntityException {
-        // TODO: Check if it works.
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
         Serializable userNexusIdSerializable = userExpandoBridge.getAttribute(USER_NEXUS_ID_FIELD);
         String userNexusId = (String) userNexusIdSerializable;
@@ -54,7 +53,6 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
 
     @Override
     public void unassignUser(User user, String infrastructureEntityProjectId) throws InfrastructureEntityException {
-        // TODO: Check if it works.
         ExpandoBridge userExpandoBridge = user.getExpandoBridge();
         Serializable userNexusIdSerializable = userExpandoBridge.getAttribute(USER_NEXUS_ID_FIELD);
         String userNexusId = (String) userNexusIdSerializable;
@@ -76,8 +74,4 @@ public class NexusInfrastructureEntityImpl implements InfrastructureEntity {
     public String getName() {
         return NEXUS_REPOSITORY_NAME;
     }
-
-    // TODO: implement methods
-
-
 }

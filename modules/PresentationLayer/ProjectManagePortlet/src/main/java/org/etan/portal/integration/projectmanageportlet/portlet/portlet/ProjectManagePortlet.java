@@ -105,7 +105,7 @@ public class ProjectManagePortlet extends MVCPortlet {
     public void changeUsersMembership(ActionRequest actionRequest, ActionResponse actionResponse) {
 
         ServiceContext serviceContext = getServiceContext(actionRequest);
-        if (serviceContext == null) return;//unreachable, i think
+        if (serviceContext == null) return;
 
         List<User> addedUsers = new ArrayList<>();
         List<User> deletedUsers = new ArrayList<>();
@@ -155,7 +155,7 @@ public class ProjectManagePortlet extends MVCPortlet {
         try {
             serviceContext = ServiceContextFactory.getInstance(portletRequest);
         } catch (PortalException e) {
-            logger.error(e, e);//unreachable, i think
+            logger.error(e, e);
         }
         return serviceContext;
     }

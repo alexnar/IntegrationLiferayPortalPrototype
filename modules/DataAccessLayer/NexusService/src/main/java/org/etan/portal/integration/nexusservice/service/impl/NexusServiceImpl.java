@@ -56,7 +56,6 @@ public class NexusServiceImpl implements NexusService {
         NexusScriptDto assignUserToRepositoryScript =
                 nexusScripts.getAssignUserToRepositoryScript();
         Map<String, String> parameters = new HashMap<>();
-        //TODO: repository could be not only maven
         String privileges = "nx-repository-view-maven2-" + repositoryId + "-*";
         String roleName = repositoryId + ROLE_ID_POSTFIX;
         parameters.put(USER_ID_FIELD, userId);
